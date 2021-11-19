@@ -1,7 +1,8 @@
 using System;
 using Newtonsoft.Json;
+using Stac.Api.Models;
 
-namespace Stac.Api.Client
+namespace Stac.Api.Converters
 {
     internal class LandingPageConverter : JsonConverter
     {

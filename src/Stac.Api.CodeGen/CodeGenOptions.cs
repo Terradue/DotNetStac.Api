@@ -14,6 +14,7 @@ namespace Stac.Api.CodeGen
         {
             CSharpClientGeneratorSettings settings = CSharpClientGeneratorSettings;
             var spec = Specifications[key];
+            settings.ClassName = spec.ClassName;
             settings.CSharpGeneratorSettings.Namespace = spec.Namespace;
             settings.CSharpGeneratorSettings.ExcludedTypeNames = spec.ExcludedTypeNames;
             settings.CSharpGeneratorSettings.TypeNameGenerator = new CustomTypeNameGenerator(spec);

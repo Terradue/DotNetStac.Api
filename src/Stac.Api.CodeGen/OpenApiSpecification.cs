@@ -11,5 +11,6 @@ namespace Stac.Api.CodeGen
         public string[] ExcludedTypeNames { get; set; }
         public string Namespace { get; set; }
         public IDictionary<string, string> TypeNamesMapping { get; set; }
+        public string ClassName { get; set; }
     }
 }

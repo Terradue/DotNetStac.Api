@@ -6,8 +6,9 @@ using System.Net.Mime;
 using System.Text.Json.Serialization;
 using Semver;
 using Stac;
+using Stac.Api.Converters;
 
-namespace Stac.Api.Client
+namespace Stac.Api.Models
 {
     [JsonConverter(typeof(LandingPageConverter))]
     public class LandingPage : IStacCatalog

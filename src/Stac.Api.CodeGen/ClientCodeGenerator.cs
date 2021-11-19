@@ -19,7 +19,7 @@ namespace Stac.Api.CodeGen
         protected override async Task ExecuteAsync()
         {
             ClientCodeGen clientCodeGen = ServiceProvider.GetService<ClientCodeGen>();
-            await clientCodeGen.ExecuteAsync(Path.Join(GetBasePath(), "../../../../Stac.Api.Client/Generated/"));
+            await clientCodeGen.ExecuteAsync(Path.Join(GetBasePath(), "../../../../"));
         }
 
         protected override void RegisterOperationServices(IServiceCollection collection)
