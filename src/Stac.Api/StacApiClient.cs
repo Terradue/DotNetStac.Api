@@ -1,3 +1,5 @@
+using System.Net.Http;
+
 namespace Stac.Api
 {
     public abstract class StacApiClient
@@ -6,6 +8,12 @@ namespace Stac.Api
 
         protected StacApiClient()
         {
+            BaseUrl = null;
+        }
+
+        protected StacApiClient(string baseUrl)
+        {
+            _baseUrl = baseUrl;
         }
 
         public string BaseUrl

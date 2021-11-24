@@ -2,6 +2,7 @@
 using System;
 using System.Net.Http;
 using Stac.Api.Generated.Clients;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Stac.Api
 {
@@ -22,9 +23,9 @@ namespace Stac.Api
             
         }
 
-        public StacApiClient CoreClient
+        public CoreClient Core()
         {
-            get { return null; }
+            return _serviceProvider.GetService<CoreClient>();
         }
 
     }
