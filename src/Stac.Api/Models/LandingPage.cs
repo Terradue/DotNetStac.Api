@@ -3,9 +3,8 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Mime;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using Semver;
-using Stac;
 using Stac.Api.Converters;
 
 namespace Stac.Api.Models
@@ -15,20 +14,31 @@ namespace Stac.Api.Models
     {
         private readonly IStacCatalog stacCatalog;
         private const string _conformsToFieldName = "conformsTo";
-        private static object _lock;
+        private static object _lock = new object();
+
+        public LandingPage(string id, string description, IEnumerable<StacLink> links = null)
+        {
+            this.stacCatalog = new StacCatalog(id, description, links);
+            this.ConformanceClasses = new ObservableCollection<string>();
+            (ConformanceClasses as ObservableCollection<string>).CollectionChanged += ConformsToCollectionChanged;
+        }
 
         public LandingPage(IStacCatalog stacCatalog)
         {
             this.stacCatalog = stacCatalog;
             this.ConformanceClasses = new ObservableCollection<string>();
-            (ConformanceClasses as ObservableCollection<StacLink>).CollectionChanged += ConformsToCollectionChanged;
+            (ConformanceClasses as ObservableCollection<string>).CollectionChanged += ConformsToCollectionChanged;
         }
 
         private void ConformsToCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             lock (_lock)
             {
-                var conformsTo = this.GetProperty<string[]>(_conformsToFieldName).ToList();
+                List<string> conformsTo = this.GetProperty<List<string>>(_conformsToFieldName);
+                if (conformsTo == null)
+                {
+                    conformsTo = new List<string>();
+                }
                 if (e.OldItems != null)
                 {
                     foreach (var oldConformance in e.OldItems.Cast<string>())

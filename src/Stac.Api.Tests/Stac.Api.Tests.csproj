@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <IsPackable>false</IsPackable>
     <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -10,6 +11,10 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.*" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
+    <PackageReference Include="JustEat.HttpClientInterception" Version="3.1.*" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+    <PackageReference Include="Moq" Version="4.16.*" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -19,10 +24,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Xunit.DependencyInjection.Logging" Version="8.0.*" />
+    <PackageReference Include="MartinCostello.Logging.XUnit" Version="0.3.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Stac.Api.WebApi\Stac.Api.WebApi.csproj" />
+    <ProjectReference Include="..\Stac.Api.Clients\Stac.Api.Clients.csproj" />
     <ProjectReference Include="..\Stac.Api\Stac.Api.csproj" />
   </ItemGroup>
 

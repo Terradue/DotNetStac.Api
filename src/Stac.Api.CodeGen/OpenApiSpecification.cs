@@ -10,7 +10,8 @@ namespace Stac.Api.CodeGen
         public string ClientOutputFilePath { get; set; }
         public string ControllerOutputFilePath { get; set; }
         public string[] ExcludedTypeNames { get; set; }
-        public string NamespacePrefix { get; set; }
+        public string ClientNamespace { get; set; }
+        public string ControllerNamespace { get; set; }
         public IDictionary<string, string> TypeNamesMapping { get; set; }
         public string ClientClassName { get; set; }
         public string ControllerClassName { get; set; }

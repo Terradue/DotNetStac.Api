@@ -1,5 +1,7 @@
 using System;
+using System.Globalization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Stac.Api.Models;
 
 namespace Stac.Api.Converters
@@ -13,12 +15,14 @@ namespace Stac.Api.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return new LandingPage(StacConvert.Deserialize<IStacCatalog>(reader.ToString()));
+            JObject jo = JObject.Load(reader);
+            string json = jo.ToString(Formatting.None);
+            return new LandingPage(StacConvert.Deserialize<StacCatalog>(json));
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteRawValue(StacConvert.Serialize(((LandingPage)value).StacCatalog));
+            serializer.Serialize(writer, ((LandingPage)value).StacCatalog, typeof(StacCatalog));
         }
     }
 }

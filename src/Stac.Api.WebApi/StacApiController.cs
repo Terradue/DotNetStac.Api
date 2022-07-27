@@ -1,7 +1,7 @@
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Stac.Api
+namespace Stac.Api.WebApi
 {
     public abstract class StacApiController : ControllerBase
     {

@@ -16,7 +16,7 @@ using Stac.Api.Models;
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 
-namespace Stac.Api.Generated.Controllers
+namespace Stac.Api.WebApi.Controllers
 {
     using System = global::System;
 
@@ -39,7 +39,7 @@ namespace Stac.Api.Generated.Controllers
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
 
-    public partial class CoreController : Stac.Api.StacApiController
+    public partial class CoreController : Stac.Api.WebApi.StacApiController
     {
         private ICoreController _implementation;
 
@@ -55,7 +55,7 @@ namespace Stac.Api.Generated.Controllers
         /// <br/>(link relations `service-desc` and `service-doc`)
         /// <br/>and the Feature Collection (path `/collections`, link relation
         /// <br/>`data`).</returns>
-        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("")]
+        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("/")]
         public System.Threading.Tasks.Task<LandingPage> GetLandingPage(System.Threading.CancellationToken cancellationToken)
         {
 

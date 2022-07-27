@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json.Schema;
 using Stac.Schemas;
+using Xunit.Abstractions;
 
 namespace Stac.Api.Tests
 {
@@ -18,9 +19,16 @@ namespace Stac.Api.Tests
         private static readonly string AssemblyName = ThisAssembly.GetName().Name;
 
         private static StacValidator stacValidator = new StacValidator(new JSchemaUrlResolver());
+        private StacApiAppFixture Fixture;
+        private ITestOutputHelper OutputHelper;
 
-        protected TestBase()
+        protected TestBase(StacApiAppFixture fixture, ITestOutputHelper outputHelper)
         {
+            Fixture = fixture;
+
+            // Route output from the fixture's logs to xunit's output
+            OutputHelper = outputHelper;
+            Fixture.SetOutputHelper(OutputHelper);
         }
 
         public static string AssemblyDirectory

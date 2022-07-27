@@ -1,7 +1,16 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using JustEat.HttpClientInterception;
+using MartinCostello.Logging.XUnit;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Logging;
-using Xunit.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Xunit.Abstractions;
+using Microsoft.Extensions.Http;
 
 namespace Stac.Api.Tests
 {
@@ -45,10 +54,7 @@ namespace Stac.Api.Tests
                 // Also override the default options for the GitHub OAuth provider
                 var config = new[]
                 {
-                KeyValuePair.Create("DataDirectory", dataDirectory),
-                KeyValuePair.Create("GitHub:ClientId", "github-id"),
-                KeyValuePair.Create("GitHub:ClientSecret", "github-secret"),
-                KeyValuePair.Create("GitHub:EnterpriseDomain", string.Empty)
+                    KeyValuePair.Create("DataDirectory", dataDirectory),
                 };
 
                 configBuilder.AddInMemoryCollection(config);
@@ -58,7 +64,7 @@ namespace Stac.Api.Tests
             builder.ConfigureLogging(loggingBuilder => loggingBuilder.ClearProviders().AddXUnit(this));
 
             // Configure the correct content root for the static content and Razor pages
-            builder.UseSolutionRelativeContentRoot(Path.Combine("src", "TodoApp"));
+            builder.UseSolutionRelativeContentRoot(Path.Combine("src", "Stac.Api.WebApi"));
 
             // Configure the application so HTTP requests related to the OAuth flow
             // can be intercepted and redirected to not use the real GitHub service.
@@ -69,11 +75,7 @@ namespace Stac.Api.Tests
                 services.AddSingleton<IHttpMessageHandlerBuilderFilter, HttpRequestInterceptionFilter>(
                     _ => new HttpRequestInterceptionFilter(Interceptor));
 
-                services.AddSingleton<IPostConfigureOptions<GitHubAuthenticationOptions>, RemoteAuthorizationEventsFilter>();
-                services.AddScoped<LoopbackOAuthEvents>();
             });
-
-            // Configure a bundle of HTTP requests to intercept for the OAuth flow.
-            Interceptor.RegisterBundle("oauth-http-bundle.json");
         }
     }
+}

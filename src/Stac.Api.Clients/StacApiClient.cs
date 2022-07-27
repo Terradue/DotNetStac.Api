@@ -1,6 +1,6 @@
 using System.Net.Http;
 
-namespace Stac.Api
+namespace Stac.Api.Clients
 {
     public abstract class StacApiClient
     {
