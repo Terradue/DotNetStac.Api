@@ -9,7 +9,7 @@ namespace Stac.Api.CodeGen
     [HelpOption]
     [Subcommand(
         typeof(ClientCodeGenerator),
-        typeof(WebApiCodeGenerator)
+        typeof(ControllerCodeGenerator)
     )]
     class Program
     {

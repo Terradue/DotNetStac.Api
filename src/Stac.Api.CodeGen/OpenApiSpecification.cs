@@ -7,10 +7,12 @@ namespace Stac.Api.CodeGen
     public class OpenApiSpecification
     {
         public string Url { get; set; }
-        public string OutputFilePath { get; set; }
+        public string ClientOutputFilePath { get; set; }
+        public string ControllerOutputFilePath { get; set; }
         public string[] ExcludedTypeNames { get; set; }
-        public string Namespace { get; set; }
+        public string NamespacePrefix { get; set; }
         public IDictionary<string, string> TypeNamesMapping { get; set; }
-        public string ClassName { get; set; }
+        public string ClientClassName { get; set; }
+        public string ControllerClassName { get; set; }
     }
 }

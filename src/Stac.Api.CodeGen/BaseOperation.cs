@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Stac.Api.CodeGen
 {
@@ -96,7 +95,7 @@ namespace Stac.Api.CodeGen
             // Add Configuration
             var builder = new ConfigurationBuilder();
             // tell the builder to look for the appsettings.json file
-            builder.AddNewtonsoftJsonFile(Path.Join(GetBasePath(), "../../..", "appsettings.json"), optional: false);
+            builder.AddJsonFile(Path.Join(GetBasePath(), "../../..", "appsettings.json"), optional: false);
 
             Configuration = builder.Build();
 

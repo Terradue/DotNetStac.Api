@@ -11,7 +11,7 @@ using Stac.Api.Converters;
 namespace Stac.Api.Models
 {
     [JsonConverter(typeof(LandingPageConverter))]
-    public class LandingPage : IStacCatalog
+    public class LandingPage : IStacCatalog, IStacObject
     {
         private readonly IStacCatalog stacCatalog;
         private const string _conformsToFieldName = "conformsTo";
@@ -67,5 +67,7 @@ namespace Stac.Api.Models
         {
             get; internal set;
         }
+
+        public IStacCatalog StacCatalog => stacCatalog;
     }
 }

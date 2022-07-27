@@ -13,12 +13,12 @@ namespace Stac.Api.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return StacConvert.Deserialize<IStacCatalog>(reader.ToString());
+            return new LandingPage(StacConvert.Deserialize<IStacCatalog>(reader.ToString()));
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteRawValue(StacConvert.Serialize((IStacCatalog)value));
+            writer.WriteRawValue(StacConvert.Serialize(((LandingPage)value).StacCatalog));
         }
     }
 }

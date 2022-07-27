@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/Stac.Api.CodeGen/bin/Debug/net5.0/Stac.Api.CodeGen.dll",
+            "program": "${workspaceFolder}/src/Stac.Api.CodeGen/bin/Debug/net6.0/Stac.Api.CodeGen.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/Stac.Api.CodeGen",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
@@ -29,9 +29,30 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/Stac.Api.CodeGen/bin/Debug/net5.0/Stac.Api.CodeGen.dll",
+            "program": "${workspaceFolder}/src/Stac.Api.CodeGen/bin/Debug/net6.0/Stac.Api.CodeGen.dll",
             "args": [
                 "client"
+            ],
+            "cwd": "${workspaceFolder}/src/Stac.Api.CodeGen",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "logging": {
+                "moduleLoad": false
+            }
+        },
+        {
+            // Use IntelliSense to find out which attributes exist for C# debugging
+            // Use hover for the description of the existing attributes
+            // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+            "name": "Launch CodeGen (controller)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/src/Stac.Api.CodeGen/bin/Debug/net6.0/Stac.Api.CodeGen.dll",
+            "args": [
+                "controller"
             ],
             "cwd": "${workspaceFolder}/src/Stac.Api.CodeGen",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console

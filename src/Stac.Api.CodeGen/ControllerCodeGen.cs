@@ -9,11 +9,11 @@ using NSwag.CodeGeneration.CSharp;
 
 namespace Stac.Api.CodeGen
 {
-    internal class ClientCodeGen
+    internal class ControllerCodeGen
     {
         private readonly IOptions<CodeGenOptions> options;
 
-        public ClientCodeGen(IOptions<CodeGenOptions> options)
+        public ControllerCodeGen(IOptions<CodeGenOptions> options)
         {
             this.options = options;
         }
@@ -22,18 +22,18 @@ namespace Stac.Api.CodeGen
         {
             foreach (var spec in options.Value.Specifications)
             {
-                string code = await GenerateCodeFromUrl(spec.Value.Url, options.Value.GenerateClientGeneratorSettings(spec.Key));
-                string path = Path.Join(generatedCodeBasePath, spec.Value.ClientOutputFilePath);
+                string code = await GenerateCodeFromUrl(spec.Value.Url, options.Value.GenerateControllerGeneratorSettings(spec.Key));
+                string path = Path.Join(generatedCodeBasePath, spec.Value.ControllerOutputFilePath);
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 File.WriteAllText(path, code);
             }
         }
 
-        private async Task<string> GenerateCodeFromUrl(string url, CSharpClientGeneratorSettings settings)
+        private async Task<string> GenerateCodeFromUrl(string url, CSharpControllerGeneratorSettings settings)
         {
             var document = await OpenApiYamlDocument.FromUrlAsync(url);
 
-            var generator = new CSharpClientGenerator(document, settings);
+            var generator = new CSharpControllerGenerator(document, settings);
 
             return generator.GenerateFile();
         }
