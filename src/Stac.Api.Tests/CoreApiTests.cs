@@ -18,7 +18,7 @@ namespace Stac.Api.Tests
 
         [Fact]
         public void DeserializeLandingPageAsync(){
-            LandingPage lp = new LandingPage("test", "test");
+            LandingPage lp = new LandingPage("sentinel", "Copernicus Sentinel Imagery");
             lp.ConformanceClasses.Add("https://api.stacspec.org/v1.0.0-rc.1/core");
             string json = JsonConvert.SerializeObject(lp);
             ValidateJson(json);

@@ -12,7 +12,7 @@ namespace Stac.Api.Models
     [JsonConverter(typeof(LandingPageConverter))]
     public class LandingPage : IStacCatalog, IStacObject
     {
-        private readonly IStacCatalog stacCatalog;
+        private readonly StacCatalog stacCatalog;
         private const string _conformsToFieldName = "conformsTo";
         private static object _lock = new object();
 
@@ -23,7 +23,7 @@ namespace Stac.Api.Models
             (ConformanceClasses as ObservableCollection<string>).CollectionChanged += ConformsToCollectionChanged;
         }
 
-        public LandingPage(IStacCatalog stacCatalog)
+        public LandingPage(StacCatalog stacCatalog)
         {
             this.stacCatalog = stacCatalog;
             this.ConformanceClasses = new ObservableCollection<string>();
@@ -59,9 +59,44 @@ namespace Stac.Api.Models
 
         public string Id => stacCatalog.Id;
 
-        public string Title => stacCatalog.Title;
+        public string Title
+        {
+            get
+            {
+                return stacCatalog.Title;
+            }
 
-        public SemVersion StacVersion => stacCatalog.StacVersion;
+            set
+            {
+                stacCatalog.Title = value;
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                return stacCatalog.Description;
+            }
+
+            set
+            {
+                stacCatalog.Description = value;
+            }
+        }
+
+        public SemVersion StacVersion
+        {
+            get
+            {
+                return stacCatalog.StacVersion;
+            }
+
+            set
+            {
+                stacCatalog.StacVersion = value;
+            }
+        }
 
         public ICollection<StacLink> Links => stacCatalog.Links;
 
@@ -78,6 +113,6 @@ namespace Stac.Api.Models
             get; internal set;
         }
 
-        public IStacCatalog StacCatalog => stacCatalog;
+        public StacCatalog StacCatalog => stacCatalog;
     }
 }
