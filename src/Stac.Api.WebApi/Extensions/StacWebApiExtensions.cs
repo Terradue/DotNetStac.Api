@@ -9,7 +9,9 @@ namespace Stac.Api.WebApi.Extensions
         public static IServiceCollection AddStacWebApi(this IServiceCollection services)
         {
             services.AddControllers().AddNewtonsoftJson();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor> ();
             services.AddSingleton<ICoreController, DefaultCoreController>();
+            services.AddSingleton<ICollectionsController, DefaultCollectionsController>();
             return services;
         }
     }

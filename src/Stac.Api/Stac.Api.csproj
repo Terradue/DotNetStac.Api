@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.*"/>
-    <PackageReference Include="DotNetStac" Version="1.3.*"/>
+    <PackageReference Include="DotNetStac" Version="1.4.*"/>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.*"/>
   </ItemGroup>
 

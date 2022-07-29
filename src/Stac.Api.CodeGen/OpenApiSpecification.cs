@@ -15,5 +15,6 @@ namespace Stac.Api.CodeGen
         public IDictionary<string, string> TypeNamesMapping { get; set; }
         public string ClientClassName { get; set; }
         public string ControllerClassName { get; set; }
+        public IEnumerable<string> ExcludedPaths { get; set; }
     }
 }

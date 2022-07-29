@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Stac.Api\Stac.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\..\data\examples\**" LinkBase="examples\" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+
 </Project>
