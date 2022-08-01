@@ -35,5 +35,15 @@ namespace Stac.Api.WebApi.Implementations
                 yield return collection;
             }
         }
+
+        protected IEnumerable<StacItem> GetItems(string path, string collectionId)
+        {
+            var files = Directory.GetFiles(Path.Combine(AssemblyDirectory, path, collectionId));
+            foreach (var file in files)
+            {
+                var item = StacConvert.Deserialize<StacItem>(File.ReadAllText(file));
+                yield return item;
+            }
+        }
     }
 }

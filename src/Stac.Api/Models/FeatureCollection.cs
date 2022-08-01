@@ -19,6 +19,11 @@ namespace Stac.Api.Models
             (Links as ObservableCollection<StacLink>).CollectionChanged += LinksCollectionChanged;
         }
 
+        public StacFeatureCollection(IEnumerable<StacItem> items): this()
+        {
+            Items.AddRange(items);
+        }
+
         private void LinksCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
         }

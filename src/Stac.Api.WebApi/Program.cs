@@ -22,8 +22,20 @@ builder.Services.AddCodeGenOptions(configuration.GetSection("CodeGen"));
 // Configure OpenAPI documentation for the Todo API
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("All",
+                builder =>
+                {
+                    builder.AllowAnyOrigin()
+                    .AllowAnyHeader();
+                });
+    });
+
+
 // Create the app
 var app = builder.Build();
+
 
 // Require use of HTTPS in production
 if (!app.Environment.IsDevelopment())
@@ -37,7 +49,7 @@ app.UseOpenApi(app.Services.GetService<IOptions<CodeGenOptions>>().Value);
 app.UseSwaggerUi3(c =>
 {
     c.ConfigureSwaggerUi3(app.Services.GetService<IOptions<CodeGenOptions>>().Value);
-    
+
 }); // serve Swagger UI
 
 app.UseReDoc(c =>
@@ -47,6 +59,7 @@ app.UseReDoc(c =>
 }); // serve ReDoc UI
 
 app.UseRouting();
+app.UseCors();
 
 // Add the HTTP endpoints
 app.UseEndpoints(endpoints =>

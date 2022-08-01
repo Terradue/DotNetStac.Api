@@ -13,7 +13,7 @@ namespace Stac.Api.WebApi.Extensions
                 endpoints.MapGet(basePath + spec.Value.OpenApiPath, async context =>
                 {
                     await WriteOpenApiAsync(context, spec.Value);
-                });
+                }).RequireCors("All");
             }
 
             return endpoints;
@@ -21,9 +21,10 @@ namespace Stac.Api.WebApi.Extensions
 
         private static async Task WriteOpenApiAsync(HttpContext context, OpenApiSpecification value)
         {
+            HttpClient client = new HttpClient();
             context.Response.Headers.ContentType = "application/yaml";
-            NSwag.OpenApiDocument document = await NSwag.OpenApiYamlDocument.FromUrlAsync(value.Url);
-            await context.Response.WriteAsync(NSwag.OpenApiYamlDocument.ToYaml(document));
+            string document = await client.GetStringAsync(value.Url);
+            await context.Response.WriteAsync(document);
         }
 
         public static SwaggerUi3Settings ConfigureSwaggerUi3(this SwaggerUi3Settings c, CodeGenOptions code)

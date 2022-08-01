@@ -14,6 +14,7 @@ namespace Stac.Api.WebApi.Extensions
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ICoreController, DefaultCoreController>();
             services.AddSingleton<ICollectionsController, DefaultCollectionsController>();
+            services.AddSingleton<IOgcApiFeaturesController, DefaultOgcApiFeaturesController>();
             return services;
         }
 
