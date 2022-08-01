@@ -1,21 +1,26 @@
 // Copyright (c) Martin Costello, 2021. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Options;
+using Stac.Api.CodeGen;
 using Stac.Api.WebApi.Extensions;
+using Microsoft.Extensions.Configuration;
+using NSwag.AspNetCore;
 
 // Create the default web application builder
 var builder = WebApplication.CreateBuilder(args);
 
+var configBuilder = new ConfigurationBuilder();
+
+configBuilder.AddJsonFile("codegensettings.json", optional: true, reloadOnChange: true);
+var configuration = configBuilder.Build();
+
 // Configure the Todo repository and associated services
 builder.Services.AddStacWebApi();
+builder.Services.AddCodeGenOptions(configuration.GetSection("CodeGen"));
 
 // Configure OpenAPI documentation for the Todo API
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new() { Title = "STAC API", Version = "v1" });
-});
 
 // Create the app
 var app = builder.Build();
@@ -28,11 +33,18 @@ if (!app.Environment.IsDevelopment())
 }
 
 // Add Swagger endpoint for OpenAPI
-app.UseSwagger();
-app.UseSwaggerUI(options =>
+app.UseOpenApi(app.Services.GetService<IOptions<CodeGenOptions>>().Value);
+app.UseSwaggerUi3(c =>
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "STAC API");
-});
+    c.ConfigureSwaggerUi3(app.Services.GetService<IOptions<CodeGenOptions>>().Value);
+    
+}); // serve Swagger UI
+
+app.UseReDoc(c =>
+{
+    c.Path = "/redoc";
+    c.DocumentPath = "/openapi/v1.0.0-rc.1/core/openapi.yaml";
+}); // serve ReDoc UI
 
 app.UseRouting();
 
@@ -40,6 +52,7 @@ app.UseRouting();
 app.UseEndpoints(endpoints =>
     {
         endpoints.MapControllers();
+
     });
 
 // Run the application

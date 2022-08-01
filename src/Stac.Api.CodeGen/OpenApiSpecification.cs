@@ -16,5 +16,6 @@ namespace Stac.Api.CodeGen
         public string ClientClassName { get; set; }
         public string ControllerClassName { get; set; }
         public IEnumerable<string> ExcludedPaths { get; set; }
+        public string OpenApiPath { get; set; }
     }
 }

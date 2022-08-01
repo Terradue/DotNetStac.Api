@@ -4,19 +4,25 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.16.*" />
+    <PackageReference Include="NSwag.Core.Yaml" Version="13.16.*" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.*"/>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Stac.Api\Stac.Api.csproj" />
+    <ProjectReference Include="..\Stac.Api.CodeGen\Stac.Api.CodeGen.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="..\..\data\examples\**" LinkBase="examples\" CopyToOutputDirectory="Always" />
+    <Content Include="..\Stac.Api.CodeGen\appsettings.json" Link="codegensettings.json"  CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>

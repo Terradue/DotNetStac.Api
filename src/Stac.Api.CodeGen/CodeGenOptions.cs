@@ -6,6 +6,8 @@ namespace Stac.Api.CodeGen
 {
     public class CodeGenOptions
     {
+        public string ApiVersion { get; set; }
+
         public CSharpClientGeneratorSettings CSharpClientGeneratorSettings { get;  set; }
 
         public CSharpControllerGeneratorSettings CSharpControllerGeneratorSettings { get;  set; }
