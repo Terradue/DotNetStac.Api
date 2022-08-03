@@ -34,7 +34,7 @@ namespace Stac.Api.WebApi.Implementations
             return item == null ? new NotFoundResult() : (ActionResult<StacItem>)item;
         }
 
-        public async Task<ActionResult<StacFeatureCollection>> GetFeaturesAsync(string collectionId, int limit, object bbox, string datetime, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<StacFeatureCollection>> GetFeaturesAsync(string collectionId, int limit, string bbox, string datetime, CancellationToken cancellationToken = default)
         {
             var collection = GetCollections("examples/collections").FirstOrDefault(c => c.Id == collectionId);
             if (collection == null) return new NotFoundResult();

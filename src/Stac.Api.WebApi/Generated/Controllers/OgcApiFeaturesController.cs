@@ -6,6 +6,7 @@
 
 using Stac;
 using Stac.Api.Models;
+using Stac.Api.Models.Fragments.Filter;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -115,7 +116,7 @@ namespace Stac.Api.WebApi.Controllers
         /// <br/>returned features (`numberMatched` and `numberReturned`) as well as
         /// <br/>links to support paging (link relation `next`).</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetFeaturesAsync(string collectionId, int limit, object bbox, string datetime, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetFeaturesAsync(string collectionId, int limit, string bbox, string datetime, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// fetch a single feature
@@ -232,7 +233,7 @@ namespace Stac.Api.WebApi.Controllers
         /// <br/>returned features (`numberMatched` and `numberReturned`) as well as
         /// <br/>links to support paging (link relation `next`).</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("collections/{collectionId}/items")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetFeatures([Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string collectionId, [Microsoft.AspNetCore.Mvc.FromQuery] int? limit, [Microsoft.AspNetCore.Mvc.FromQuery] object bbox, [Microsoft.AspNetCore.Mvc.FromQuery] string datetime, System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetFeatures([Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string collectionId, [Microsoft.AspNetCore.Mvc.FromQuery] int? limit, [Microsoft.AspNetCore.Mvc.FromQuery] string bbox, [Microsoft.AspNetCore.Mvc.FromQuery] string datetime, System.Threading.CancellationToken cancellationToken)
         {
 
             return _implementation.GetFeaturesAsync(collectionId, limit ?? 10, bbox, datetime, cancellationToken);

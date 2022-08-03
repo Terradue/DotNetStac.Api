@@ -15,4 +15,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.*"/>
     <PackageReference Include="NSwag.Core.Yaml" Version="13.16.*"/>
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Schemas\**" LinkBase="Schemas\" CopyToOutputDirectory="Always" />
+  </ItemGroup>
 </Project>
