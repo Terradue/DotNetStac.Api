@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 namespace Stac.Api.Tests
 {
     [Collection(StacApiAppCollection.Name)]
-    public class CoreApiTests : TestBase
+    public class CoreApiTests : AppTestBase
     {
         public CoreApiTests(StacApiAppFixture fixture, ITestOutputHelper outputHelper) : base(fixture, outputHelper)
         {

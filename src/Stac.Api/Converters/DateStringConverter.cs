@@ -1,29 +1,26 @@
 using System;
-using System.Globalization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Stac.Api.Models;
+using Stac.Api.Models.Cql2;
 
 namespace Stac.Api.Converters
 {
-    internal class LandingPageConverter : JsonConverter
+    internal class DateStringConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(LandingPage);
+            return objectType == typeof(DateString);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             reader.DateParseHandling = DateParseHandling.None;
-            JObject jo = JObject.Load(reader);
-            string json = jo.ToString(Formatting.None);
-            return new LandingPage(StacConvert.Deserialize<StacCatalog>(json));
+            return DateString.Parse(reader.ReadAsString());
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, ((LandingPage)value).StacCatalog, typeof(StacCatalog));
+            writer.WriteRawValue(((DateString)value).ToString());
         }
     }
 }

@@ -1,0 +1,10 @@
+{
+  "filter-lang": "cql2-json",
+  "filter": {
+    "op": "=",
+    "args": [
+      { "property": "prop1" },
+      { "property": "prop2" }
+    ]
+  }
+}

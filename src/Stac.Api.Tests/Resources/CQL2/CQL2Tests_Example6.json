@@ -1,0 +1,10 @@
+{
+  "filter-lang": "cql2-json",
+  "filter": {
+    "op": "t_intersects",
+    "args": [
+      { "property": "datetime" },
+      { "interval" : [ "2020-11-11T00:00:00Z", "2020-11-12T00:00:00Z"] }
+    ]
+  }
+}

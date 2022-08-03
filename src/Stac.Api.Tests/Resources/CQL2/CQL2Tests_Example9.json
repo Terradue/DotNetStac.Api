@@ -1,0 +1,29 @@
+{
+  "filter-lang": "cql2-json",
+  "filter": {
+    "op": "or",
+    "args": [
+      {
+        "op": ">",
+        "args": [ { "property": "sentinel:data_coverage" }, 50 ]
+      },
+      {
+        "op": "<",
+        "args": [ { "property": "landsat:coverage_percent" }, 10 ]
+      },
+      {
+        "op": "and",
+        "args": [
+          {
+            "op": "isNull",
+            "args": { "property": "sentinel:data_coverage" }
+          },
+          {
+            "op": "isNull",
+            "args": { "property": "landsat:coverage_percent" }
+          }
+        ]
+      }
+    ]
+  }
+}

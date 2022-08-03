@@ -19,16 +19,12 @@ namespace Stac.Api.Tests
         private static readonly string AssemblyName = ThisAssembly.GetName().Name;
 
         private static StacValidator stacValidator = new StacValidator(new JSchemaUrlResolver());
-        private StacApiAppFixture Fixture;
-        private ITestOutputHelper OutputHelper;
+        protected ITestOutputHelper OutputHelper;
 
-        protected TestBase(StacApiAppFixture fixture, ITestOutputHelper outputHelper)
+        protected TestBase(ITestOutputHelper outputHelper)
         {
-            Fixture = fixture;
-
             // Route output from the fixture's logs to xunit's output
             OutputHelper = outputHelper;
-            Fixture.SetOutputHelper(OutputHelper);
         }
 
         public static string AssemblyDirectory

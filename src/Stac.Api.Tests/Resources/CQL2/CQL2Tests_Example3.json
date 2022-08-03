@@ -1,0 +1,16 @@
+{
+  "filter-lang": "cql2-json",
+  "filter": {
+    "op": "and",
+    "args": [
+      {
+        "op": ">",
+        "args": [ { "property": "sentinel:data_coverage" }, 50 ]
+      },
+      {
+        "op": "<",
+        "args": [ { "property": "eo:cloud_cover" }, 10 ]
+      }
+    ]
+  }
+}

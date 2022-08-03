@@ -1,0 +1,17 @@
+{
+  "filter-lang": "cql2-json",
+  "filter": {
+    "op": "s_intersects",
+    "args": [
+      { "property": "geometry" } ,
+      {
+        "type": "Polygon",
+        "coordinates": [[
+            [-77.0824, 38.7886], [-77.0189, 38.7886],
+            [-77.0189, 38.8351], [-77.0824, 38.8351],
+            [-77.0824, 38.7886]
+        ]]
+      }
+    ]
+  }
+}
