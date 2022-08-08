@@ -95,7 +95,7 @@ namespace Stac.Api.CodeGen
             // Add Configuration
             var builder = new ConfigurationBuilder();
             // tell the builder to look for the appsettings.json file
-            builder.AddJsonFile(Path.Join(GetBasePath(), "../../..", "appsettings.json"), optional: false);
+            builder.AddNewtonsoftJsonFile(Path.Join(GetBasePath(), "../../..", "appsettings.json"), optional: false);
 
             Configuration = builder.Build();
 

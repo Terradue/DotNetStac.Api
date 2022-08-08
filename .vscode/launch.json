@@ -19,7 +19,19 @@
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
+            },
+            "justMyCode": false,
+            "requireExactSource": false,
+            "symbolOptions": {
+                "searchPaths": [
+                    "${workspaceFolder}/../../../../Others/NJsonSchema/src/NJsonSchema/obj/Debug/netstandard2.0",
+                    "${workspaceFolder}/../../../../Others/NSwag/src/"
+                ],
             }
+            // "symbolOptions": {
+            //     // "searchMicrosoftSymbolServer": true,
+            //     // "searchNuGetOrgSymbolServer": true
+            // },
         },
         {
             // Use IntelliSense to find out which attributes exist for C# debugging
@@ -80,6 +92,14 @@
             "stopAtEntry": false,
             "logging": {
                 "moduleLoad": false
+            },
+            "justMyCode": false,
+            "requireExactSource": false,
+            "symbolOptions": {
+                "searchPaths": [
+                    "${workspaceFolder}/../../../../Others/NJsonSchema/src/NJsonSchema/bin/Debug/netstandard2.0",
+                    "${workspaceFolder}/../../../../Others/NSwag/src/"
+                ],
             }
         },
         {

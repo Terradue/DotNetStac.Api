@@ -12,9 +12,15 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.*"/>
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.*"/>
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.*"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration.NewtonsoftJson" Version="5.0.*" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.*"/>
     <PackageReference Include="NSwag.Core.Yaml" Version="13.16.*"/>
   </ItemGroup>
+
+  <!-- <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\Others\NJsonSchema\src\NJsonSchema\NJsonSchema.csproj"/>
+    <ProjectReference Include="..\..\..\..\..\..\Others\NSwag\src\NSwag.CodeGeneration.CSharp\NSwag.CodeGeneration.CSharp.csproj"/>
+  </ItemGroup> -->
 
   <ItemGroup>
     <Content Include="Schemas\**" LinkBase="Schemas\" CopyToOutputDirectory="Always" />

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NSwag.CodeGeneration.CSharp;
 
 namespace Stac.Api.CodeGen
@@ -20,7 +21,7 @@ namespace Stac.Api.CodeGen
             var spec = Specifications[key];
             settings.ClassName = spec.ClientClassName;
             settings.CSharpGeneratorSettings.Namespace = spec.ClientNamespace;
-            settings.CSharpGeneratorSettings.ExcludedTypeNames = spec.ExcludedTypeNames;
+            settings.CSharpGeneratorSettings.ExcludedTypeNames = spec.ExcludedTypeNames.ToArray();
             settings.CSharpGeneratorSettings.TypeNameGenerator = new CustomTypeNameGenerator(spec);
             return settings;
         }
@@ -31,7 +32,7 @@ namespace Stac.Api.CodeGen
             var spec = Specifications[key];
             settings.ClassName = spec.ControllerClassName;
             settings.CSharpGeneratorSettings.Namespace = spec.ControllerNamespace;
-            settings.CSharpGeneratorSettings.ExcludedTypeNames = spec.ExcludedTypeNames;
+            settings.CSharpGeneratorSettings.ExcludedTypeNames = spec.ExcludedTypeNames.ToArray();
             settings.CSharpGeneratorSettings.TypeNameGenerator = new CustomTypeNameGenerator(spec);
             return settings;
         }
