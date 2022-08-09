@@ -87,6 +87,20 @@ namespace Stac.Api.CodeGen
                 }
             }
 
+            // Set filter as string (https://github.com/radiantearth/stac-api-spec/blob/master/fragments/filter/openapi.yaml#L95)
+            try
+            {
+                OpenApiParameter filterParam = document.Paths["/search"]?["get"]?.Parameters.Cast<OpenApiParameter>().FirstOrDefault(p => ((OpenApiParameter)p.Reference).Name == "filter");
+                if (filterParam != null)
+                {
+                    var filterSchema = filterParam.Reference as OpenApiParameter;
+                    filterSchema.Schema.Type = JsonObjectType.String;
+                    filterSchema.Schema.OneOf.Clear();
+                    filterSchema.Schema.Items.Clear();
+                }
+            }
+            catch { }
+
             // foreach (var path in document.Paths)
             // {
             //     foreach (var method in path.Value)
