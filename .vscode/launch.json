@@ -40,7 +40,7 @@
             "name": "Launch CodeGen (help)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "buildCodeGen",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/src/Stac.Api.CodeGen/bin/Debug/net6.0/Stac.Api.CodeGen.dll",
             "args": [],
@@ -59,7 +59,7 @@
             "name": "Launch CodeGen (client)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "buildCodeGen",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/src/Stac.Api.CodeGen/bin/Debug/net6.0/Stac.Api.CodeGen.dll",
             "args": [
@@ -80,7 +80,7 @@
             "name": "Launch CodeGen (controller)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "buildCodeGen",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/src/Stac.Api.CodeGen/bin/Debug/net6.0/Stac.Api.CodeGen.dll",
             "args": [

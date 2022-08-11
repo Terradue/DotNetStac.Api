@@ -6,11 +6,6 @@
 
 using Stac;
 using Stac.Api.Models;
-using Stac.Api.WebApi.Controllers;
-using Stac.Api.WebApi.Controllers;
-using Stac.Api.WebApi.Controllers.Fragments.Fields;
-using Stac.Api.WebApi.Controllers.Fragments.Filter;
-using Stac.Api.WebApi.Controllers.Fragments.Sort;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -21,14 +16,56 @@ using Stac.Api.WebApi.Controllers.Fragments.Sort;
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 
-namespace Stac.Api.Clients
+namespace Stac.Api.WebApi.Controllers.Fragments.Sort
 {
     using System = global::System;
 
     
 
-    
+    /// <summary>
+    /// An array of objects containing a property name and sort direction.
+    /// <br/>
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Sortby : System.Collections.ObjectModel.Collection<Anonymous>
+    {
 
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Anonymous
+    {
+        [Newtonsoft.Json.JsonProperty("field", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public string Field { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("direction", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Direction Direction { get; set; } = Stac.Api.WebApi.Controllers.Fragments.Sort.Direction.Asc;
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties; }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Direction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"asc")]
+        Asc = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"desc")]
+        Desc = 1,
+
+    }
 
 
 }
