@@ -6,7 +6,6 @@
 
 using Stac;
 using Stac.Api.Models;
-using Stac.Api.Models.Fragments.Filter;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -17,7 +16,7 @@ using Stac.Api.Models.Fragments.Filter;
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 
-namespace Stac.Api.WebApi.Controllers
+namespace Stac.Api.WebApi.Controllers.Fragments.Filter
 {
     using System = global::System;
 
@@ -81,23 +80,9 @@ namespace Stac.Api.WebApi.Controllers
 
     }
 
-    /// <summary>
-    /// **Extension:** Filter
-    /// <br/>
-    /// <br/>A filter for properties in Items.
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class SearchBody
+    public partial class FilterCql2Json
     {
-        [Newtonsoft.Json.JsonProperty("filter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FilterCql2Json Filter { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("filter-lang", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public FilterLang FilterLang { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("filter-crs", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Uri FilterCrs { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
 

@@ -1,17 +1,18 @@
 using System;
+using GeoJSON.Net.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Stac.Api.Models.Cql2;
 
-namespace Stac.Api.Converters
+namespace Stac.Api.WebApi.Controllers.ItemSearch
 {
-    internal class ISpatialLiteralConverter : JsonConverter
+    internal class SearchRequestConverter : JsonConverter
     {
-        GeometryStringConverter geometryLiteralConverter = new GeometryStringConverter();
+        GeometryConverter geometryConverter = new GeometryConverter();
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(ISpatialLiteral);
+            return objectType == typeof(SearchRequest);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

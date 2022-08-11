@@ -427,7 +427,7 @@ namespace Stac.Api.Models.Cql2
 
     }
 
-    [JsonConverter(typeof(GeometryLiteralConverter))]
+    [JsonConverter(typeof(GeometryStringConverter))]
     public class GeometryLiteral : IGeometryObject, ISpatialLiteral
     {
         public GeometryLiteral(IGeometryObject value)

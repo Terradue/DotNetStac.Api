@@ -7,7 +7,7 @@ namespace Stac.Api.Converters
 {
     internal class ITemporalLiteralConverter : JsonConverter
     {
-        GeometryLiteralConverter geometryLiteralConverter = new GeometryLiteralConverter();
+        GeometryStringConverter geometryLiteralConverter = new GeometryStringConverter();
 
         public override bool CanConvert(Type objectType)
         {
