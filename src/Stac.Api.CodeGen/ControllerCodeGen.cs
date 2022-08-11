@@ -103,30 +103,31 @@ namespace Stac.Api.CodeGen
             catch { }
 
             // Set fields parameter as query string (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/fragments/fields/openapi.yaml#L9)
-            try
-            {
-                OpenApiParameter fieldsParam = document.Paths["/search"]?["get"]?.Parameters.Cast<OpenApiParameter>().FirstOrDefault(p => ((OpenApiParameter)p.Reference).Name == "fields");
-                if (fieldsParam != null)
-                {
-                    var fieldsSchema = fieldsParam.Reference as OpenApiParameter;
-                    fieldsSchema.Name = "FieldsQueryString";
-                    fieldsSchema.Schema.Type = JsonObjectType.Object;
-                }
-            }
-            catch { }
+            // try
+            // {
+            //     OpenApiParameter fieldsParam = document.Paths["/search"]?["get"]?.Parameters.Cast<OpenApiParameter>().FirstOrDefault(p => ((OpenApiParameter)p.Reference).Name == "fields");
+            //     if (fieldsParam != null)
+            //     {
+            //         var fieldsSchema = fieldsParam.Reference as OpenApiParameter;
+            //         fieldsSchema.Name = "FieldsQueryString";
+            //         fieldsSchema.Schema.Type = JsonObjectType.Object;
+            //         fieldsSchema.Schema.Items.Add
+            //     }
+            // }
+            // catch { }
 
             // Set sortby parameter as query string (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/fragments/fields/openapi.yaml#L9)
-            try
-            {
-                OpenApiParameter fieldsParam = document.Paths["/search"]?["get"]?.Parameters.Cast<OpenApiParameter>().FirstOrDefault(p => ((OpenApiParameter)p.Reference).Name == "sortby");
-                if (fieldsParam != null)
-                {
-                    var fieldsSchema = fieldsParam.Reference as OpenApiParameter;
-                    fieldsSchema.Name = "SortByQueryString";
-                    fieldsSchema.Schema.Type = JsonObjectType.Object;
-                }
-            }
-            catch { }
+            // try
+            // {
+            //     OpenApiParameter fieldsParam = document.Paths["/search"]?["get"]?.Parameters.Cast<OpenApiParameter>().FirstOrDefault(p => ((OpenApiParameter)p.Reference).Name == "sortby");
+            //     if (fieldsParam != null)
+            //     {
+            //         var fieldsSchema = fieldsParam.Reference as OpenApiParameter;
+            //         fieldsSchema.Name = "SortByQueryString";
+            //         fieldsSchema.Schema.Type = JsonObjectType.Object;
+            //     }
+            // }
+            // catch { }
 
             // Set intersects parameter as string (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/item-search/openapi.yaml#L207)
             try

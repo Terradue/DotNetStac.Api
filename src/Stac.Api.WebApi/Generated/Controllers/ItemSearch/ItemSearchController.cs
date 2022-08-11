@@ -92,11 +92,11 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
         /// <param name="collections">Array of Collection IDs to include in the search for items.
         /// <br/>Only Item objects in one of the provided collections will be searched</param>
 
-        /// <param name="fieldsQueryString">**Extension:** Fields
+        /// <param name="fields">**Extension:** Fields
         /// <br/>
         /// <br/>Determines the shape of the features in the response</param>
 
-        /// <param name="sortByQueryString">**Extension:** Sort
+        /// <param name="sortby">**Extension:** Sort
         /// <br/>
         /// <br/>An array of property names, prefixed by either "+" for ascending or
         /// <br/>"-" for descending. If no prefix is provided, "+" is assumed.</param>
@@ -107,7 +107,7 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
 
         /// <returns>A feature collection.</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<SearchResponse>> GetItemSearchAsync(string bbox, IntersectsQueryString intersectsQueryString, string datetime, int limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, object fieldsQueryString, object sortByQueryString, Controllers.Fragments.Filter.FilterParameter filterParameter, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<SearchResponse>> GetItemSearchAsync(string bbox, IntersectsQueryString intersectsQueryString, string datetime, int limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, string fields, string sortby, Controllers.Fragments.Filter.FilterParameter filterParameter, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// Search STAC items with full-featured filtering.
@@ -192,10 +192,10 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
         /// <param name="ids">Array of Item ids to return.</param>
         /// <param name="collections">Array of Collection IDs to include in the search for items.
         /// <br/>Only Item objects in one of the provided collections will be searched</param>
-        /// <param name="fieldsQueryString">**Extension:** Fields
+        /// <param name="fields">**Extension:** Fields
         /// <br/>
         /// <br/>Determines the shape of the features in the response</param>
-        /// <param name="sortByQueryString">**Extension:** Sort
+        /// <param name="sortby">**Extension:** Sort
         /// <br/>
         /// <br/>An array of property names, prefixed by either "+" for ascending or
         /// <br/>"-" for descending. If no prefix is provided, "+" is assumed.</param>
@@ -204,10 +204,10 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
         /// <br/>A CQL2 filter expression for filtering items.</param>
         /// <returns>A feature collection.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("search")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<SearchResponse>> GetItemSearch([Microsoft.AspNetCore.Mvc.FromQuery] string bbox, [Microsoft.AspNetCore.Mvc.FromQuery] IntersectsQueryString intersectsQueryString, [Microsoft.AspNetCore.Mvc.FromQuery] string datetime, [Microsoft.AspNetCore.Mvc.FromQuery] int? limit, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> ids, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> collections, [Microsoft.AspNetCore.Mvc.FromQuery] object fieldsQueryString, [Microsoft.AspNetCore.Mvc.FromQuery] object sortByQueryString, [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] Controllers.Fragments.Filter.FilterParameter filterParameter, System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<SearchResponse>> GetItemSearch([Microsoft.AspNetCore.Mvc.FromQuery] string bbox, [Microsoft.AspNetCore.Mvc.FromQuery] IntersectsQueryString intersectsQueryString, [Microsoft.AspNetCore.Mvc.FromQuery] string datetime, [Microsoft.AspNetCore.Mvc.FromQuery] int? limit, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> ids, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> collections, [Microsoft.AspNetCore.Mvc.FromQuery] string fields, [Microsoft.AspNetCore.Mvc.FromQuery] string sortby, [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] Controllers.Fragments.Filter.FilterParameter filterParameter, System.Threading.CancellationToken cancellationToken)
         {
 
-            return _implementation.GetItemSearchAsync(bbox, intersectsQueryString, datetime, limit ?? 10, ids, collections, fieldsQueryString, sortByQueryString, filterParameter, cancellationToken);
+            return _implementation.GetItemSearchAsync(bbox, intersectsQueryString, datetime, limit ?? 10, ids, collections, fields, sortby, filterParameter, cancellationToken);
         }
 
         /// <summary>
