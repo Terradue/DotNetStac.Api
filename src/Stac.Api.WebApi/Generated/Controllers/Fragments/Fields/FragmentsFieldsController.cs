@@ -6,6 +6,9 @@
 
 using Stac;
 using Stac.Api.Models;
+using Stac.Api.WebApi.Controllers;
+using Stac.Api.WebApi.Controllers;
+using Stac.Api.WebApi.Controllers.Fragments.Fields;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -16,39 +19,14 @@ using Stac.Api.Models;
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 
-namespace Stac.Api.WebApi.Controllers.Fragments.Fields
+namespace Stac.Api.Clients
 {
     using System = global::System;
 
     
 
-    /// <summary>
-    /// The include and exclude members specify an array of
-    /// <br/>property names that are either included or excluded
-    /// <br/>from the result, respectively. If both include and
-    /// <br/>exclude are specified, include takes precedence.
-    /// <br/>Values should include the full JSON path of the property.
-    /// <br/>
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Fields
-    {
-        [Newtonsoft.Json.JsonProperty("include", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<string> Include { get; set; }
+    
 
-        [Newtonsoft.Json.JsonProperty("exclude", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<string> Exclude { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
 
 
 }
