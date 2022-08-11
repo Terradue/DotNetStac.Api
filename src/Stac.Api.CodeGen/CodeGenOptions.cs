@@ -9,9 +9,9 @@ namespace Stac.Api.CodeGen
     {
         public string ApiVersion { get; set; }
 
-        public CSharpClientGeneratorSettings CSharpClientGeneratorSettings { get;  set; }
+        public CSharpClientGeneratorSettings CSharpClientGeneratorSettings { get; set; }
 
-        public CSharpControllerGeneratorSettings CSharpControllerGeneratorSettings { get;  set; }
+        public CSharpControllerGeneratorSettings CSharpControllerGeneratorSettings { get; set; }
 
         public IDictionary<string, OpenApiSpecification> Specifications { get; set; }
 
@@ -23,6 +23,8 @@ namespace Stac.Api.CodeGen
             settings.CSharpGeneratorSettings.Namespace = spec.ClientNamespace;
             settings.CSharpGeneratorSettings.ExcludedTypeNames = spec.ExcludedTypeNames.ToArray();
             settings.CSharpGeneratorSettings.TypeNameGenerator = new CustomTypeNameGenerator(spec);
+            settings.GenerateDtoTypes = false;
+            settings.AdditionalNamespaceUsages = settings.AdditionalNamespaceUsages.Concat(new string[] { spec.ControllerNamespace }).ToArray();
             return settings;
         }
 

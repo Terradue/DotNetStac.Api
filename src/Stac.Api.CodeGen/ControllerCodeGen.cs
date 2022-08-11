@@ -14,7 +14,7 @@ using NSwag.CodeGeneration.CSharp;
 
 namespace Stac.Api.CodeGen
 {
-    internal class ControllerCodeGen
+    internal class ControllerCodeGen: BaseCodeGen
     {
         private readonly IOptions<CodeGenOptions> options;
 
@@ -47,12 +47,6 @@ namespace Stac.Api.CodeGen
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 File.WriteAllText(path, code);
             }
-        }
-
-        private JsonReferenceResolver GetResolver(OpenApiDocument arg, IEnumerable<string> excludedDefinitions)
-        {
-            var schemaResolver = new OpenApiSchemaResolver(arg, new JsonSchemaGeneratorSettings());
-            return new StacReferenceResolver(schemaResolver, excludedDefinitions);
         }
 
         private async Task<string> GenerateCode(OpenApiDocument document, CSharpControllerGeneratorSettings settings, IEnumerable<string> excludedPaths)
