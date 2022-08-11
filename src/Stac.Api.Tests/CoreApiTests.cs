@@ -1,10 +1,9 @@
-using System;
 using Xunit;
 using System.Threading.Tasks;
-using Stac.Api.Clients;
 using Xunit.Abstractions;
 using Stac.Api.Models;
 using Newtonsoft.Json;
+using Stac.Api.Clients.Core;
 
 namespace Stac.Api.Tests
 {

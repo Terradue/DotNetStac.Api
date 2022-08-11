@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Stac.Api.Models;
-using Stac.Api.WebApi.Controllers;
+using Stac.Api.WebApi.Controllers.OgcApiFeatures;
 
 namespace Stac.Api.WebApi.Implementations
 {

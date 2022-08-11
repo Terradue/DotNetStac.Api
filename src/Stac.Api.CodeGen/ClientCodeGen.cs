@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -38,16 +39,26 @@ namespace Stac.Api.CodeGen
                 }
                 OpenApiDocument document = await OpenApiYamlDocument.FromYamlAsync(content, documentPath, SchemaType.OpenApi3, doc => GetResolver(doc, spec.Value.ExcludedSchemas));
                 // JsonSchemaReferenceUtilities.UpdateSchemaReferencePaths(document, true, new DefaultContractResolver());
-                string code = await GenerateCode(document, options.Value.GenerateClientGeneratorSettings(spec.Key));
-                string path = Path.Join(generatedCodeBasePath, spec.Value.ControllerOutputFilePath);
+                string code = await GenerateCode(document, options.Value.GenerateClientGeneratorSettings(spec.Key), spec.Value.ExcludedPaths);
+                string path = Path.Join(generatedCodeBasePath, spec.Value.ClientOutputFilePath);
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 File.WriteAllText(path, code);
             }
         }
 
-        private async Task<string> GenerateCode(OpenApiDocument document, CSharpClientGeneratorSettings settings)
+        private async Task<string> GenerateCode(OpenApiDocument document, CSharpClientGeneratorSettings settings, IEnumerable<string> excludedPaths)
         {
+            if (excludedPaths != null)
+            {
+                foreach (var path in excludedPaths)
+                {
+                    document.Paths.Remove(path);
+                }
+            }
+
             var generator = new CSharpClientGenerator(document, settings);
+
+            FilterDocument(document);
 
             return generator.GenerateFile();
         }

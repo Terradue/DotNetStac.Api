@@ -1,7 +1,7 @@
-using Microsoft.Extensions.DependencyInjection;
-using NSwag.AspNetCore;
 using Stac.Api.CodeGen;
-using Stac.Api.WebApi.Controllers;
+using Stac.Api.WebApi.Controllers.Collections;
+using Stac.Api.WebApi.Controllers.Core;
+using Stac.Api.WebApi.Controllers.OgcApiFeatures;
 using Stac.Api.WebApi.Implementations;
 
 namespace Stac.Api.WebApi.Extensions

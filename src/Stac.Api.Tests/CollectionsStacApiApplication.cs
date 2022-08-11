@@ -1,11 +1,7 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Moq;
-using Stac.Api.Models;
-using Stac.Api.WebApi.Controllers;
+using Stac.Api.WebApi.Controllers.Collections;
 using Stac.Api.WebApi.Implementations;
 
 namespace Stac.Api.Tests

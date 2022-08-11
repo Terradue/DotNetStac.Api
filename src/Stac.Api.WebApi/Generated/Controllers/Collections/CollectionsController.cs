@@ -16,7 +16,7 @@ using Stac.Api.Models;
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 
-namespace Stac.Api.WebApi.Controllers
+namespace Stac.Api.WebApi.Controllers.Collections
 {
     using System = global::System;
 
@@ -44,7 +44,7 @@ namespace Stac.Api.WebApi.Controllers
         /// <br/>* An optional extent that can be used to provide an indication of the spatial and temporal extent of the collection - typically derived from the data;
         /// <br/>* An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<Collections>> GetCollectionsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacCollections>> GetCollectionsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// describe the feature collection with id `collectionId`
@@ -99,7 +99,7 @@ namespace Stac.Api.WebApi.Controllers
         /// <br/>* An optional extent that can be used to provide an indication of the spatial and temporal extent of the collection - typically derived from the data;
         /// <br/>* An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("collections")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<Collections>> GetCollections(System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacCollections>> GetCollections(System.Threading.CancellationToken cancellationToken)
         {
 
             return _implementation.GetCollectionsAsync(cancellationToken);
@@ -131,7 +131,7 @@ namespace Stac.Api.WebApi.Controllers
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Collections
+    public partial class StacCollections
     {
         [Newtonsoft.Json.JsonProperty("links", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
@@ -139,7 +139,7 @@ namespace Stac.Api.WebApi.Controllers
 
         [Newtonsoft.Json.JsonProperty("collections", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
-        public System.Collections.Generic.List<StacCollection> Collections1 { get; set; } = new System.Collections.Generic.List<StacCollection>();
+        public System.Collections.Generic.List<StacCollection> Collections { get; set; } = new System.Collections.Generic.List<StacCollection>();
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
 

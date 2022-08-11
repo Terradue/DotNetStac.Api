@@ -1,10 +1,7 @@
-using System;
 using Xunit;
 using System.Threading.Tasks;
-using Stac.Api.Clients;
 using Xunit.Abstractions;
-using Stac.Api.Models;
-using Newtonsoft.Json;
+using Stac.Api.Clients.Collections;
 
 namespace Stac.Api.Tests
 {
@@ -24,15 +21,9 @@ namespace Stac.Api.Tests
             var client = application.CreateClient();
             CollectionsClient collectionsClient = new CollectionsClient("https://localhost", client);
 
-            var landingPage = await collectionsClient.GetLandingPageAsync();
-
-            var landingPageJson = StacConvert.Serialize(landingPage);
-
-            ValidateJson(landingPageJson);
-
             var collections = await collectionsClient.GetCollectionsAsync();
 
-            foreach(var collection in collections.Collections1){
+            foreach(var collection in collections.Collections){
                 var collectionJson = StacConvert.Serialize(collection);
                 ValidateJson(collectionJson);
                 var collectionById = await collectionsClient.DescribeCollectionAsync(collection.Id);

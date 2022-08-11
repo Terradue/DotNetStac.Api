@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Stac.Api\Stac.Api.csproj" />
+    <ProjectReference Include="..\Stac.Api.WebApi\Stac.Api.WebApi.csproj" />
   </ItemGroup>
 
 </Project>
