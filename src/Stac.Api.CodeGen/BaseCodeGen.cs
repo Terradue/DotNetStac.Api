@@ -86,7 +86,7 @@ namespace Stac.Api.CodeGen
 
             // Remove first reference of the search response (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/item-search/openapi.yaml#L52)
             // This is a Stac Feature Collection already implemented
-             try
+            try
             {
                 JsonSchema responseSchema = document.Paths["/search"]?["get"]?.Responses["200"].Content["application/geo+json"].Schema;
                 if (responseSchema != null)
@@ -103,7 +103,7 @@ namespace Stac.Api.CodeGen
                 OpenApiResponse response = document.Components.Responses.FirstOrDefault(s => s.Key == "Queryables").Value;
                 if (response != null)
                 {
-                    
+
                     JsonSchema responseSchema = new JsonSchema();
                     responseSchema.Type = JsonObjectType.Object;
                     responseSchema.Items.Add(new JsonSchema
@@ -113,6 +113,26 @@ namespace Stac.Api.CodeGen
                     });
                     response.Content["application/schema+json"].Schema.Reference = responseSchema;
                     document.Components.Schemas.Add("JsonSchema", responseSchema);
+                }
+            }
+            catch { }
+
+            // Change Children Schema name (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/children/openapi.yaml#L88)
+            try
+            {
+                OpenApiOperation childrenOperation = document.Paths["/children"]["get"];
+                OpenApiResponse childrenResponse = document.Components.Responses["Children"];
+                JsonSchema childrenSchema = document.Components.Schemas["children"];
+
+                document.Components.Responses.Remove("Children");
+                document.Components.Schemas.Remove("children");
+                document.Components.Schemas.Add("stacChildren", childrenSchema);
+                childrenResponse.Content["application/json"].Schema.Reference = childrenSchema;
+                document.Components.Responses.Add("StacChildren", childrenResponse);
+
+                if (childrenOperation.Tags.Contains("Children"))
+                {
+                   childrenOperation.Responses["200"] = childrenResponse;
                 }
             }
             catch { }

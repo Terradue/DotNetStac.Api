@@ -6,7 +6,7 @@
 
 using Stac;
 using Stac.Api.Models;
-using Stac.Api.WebApi.Controllers.Fragments.Filter;
+using Stac.Api.WebApi.Controllers.Children;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -17,17 +17,17 @@ using Stac.Api.WebApi.Controllers.Fragments.Filter;
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 
-namespace Stac.Api.Clients.Fragments.Filter
+namespace Stac.Api.Clients.Children
 {
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FragmentsFilterClient : Stac.Api.Clients.StacApiClient
+    public partial class ChildrenClient : Stac.Api.Clients.StacApiClient
     {
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public FragmentsFilterClient(string baseUrl, System.Net.Http.HttpClient httpClient)
+        public ChildrenClient(string baseUrl, System.Net.Http.HttpClient httpClient)
         {
             BaseUrl = baseUrl;
             _httpClient = httpClient;
@@ -50,25 +50,25 @@ namespace Stac.Api.Clients.Fragments.Filter
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <summary>
-        /// Get the JSON Schema defining the list of variable terms that can be used in CQL2 expressions.
+        /// the child catalogs and collections of the root catalog
         /// </summary>
-        /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
+        /// <returns>The child catalogs and collections of the root catalog this API represents.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<NJsonSchema.JsonSchema> GetQueryablesAsync()
+        public virtual System.Threading.Tasks.Task<StacChildren> GetChildrenAsync()
         {
-            return GetQueryablesAsync(System.Threading.CancellationToken.None);
+            return GetChildrenAsync(System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Get the JSON Schema defining the list of variable terms that can be used in CQL2 expressions.
+        /// the child catalogs and collections of the root catalog
         /// </summary>
-        /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
+        /// <returns>The child catalogs and collections of the root catalog this API represents.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<NJsonSchema.JsonSchema> GetQueryablesAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<StacChildren> GetChildrenAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/queryables");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/children");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -77,7 +77,7 @@ namespace Stac.Api.Clients.Fragments.Filter
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
                     request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/schema+json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -102,7 +102,7 @@ namespace Stac.Api.Clients.Fragments.Filter
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<NJsonSchema.JsonSchema>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<StacChildren>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -110,103 +110,19 @@ namespace Stac.Api.Clients.Fragments.Filter
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<NJsonSchema.JsonSchema>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<NJsonSchema.JsonSchema>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
-        /// <summary>
-        /// Get the JSON Schema defining the list of variable terms that can be used in CQL2 expressions.
-        /// </summary>
-        /// <param name="collectionId">ID of Collection</param>
-        /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
-        /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<NJsonSchema.JsonSchema> GetQueryablesForCollectionAsync(string collectionId)
-        {
-            return GetQueryablesForCollectionAsync(collectionId, System.Threading.CancellationToken.None);
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Get the JSON Schema defining the list of variable terms that can be used in CQL2 expressions.
-        /// </summary>
-        /// <param name="collectionId">ID of Collection</param>
-        /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
-        /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<NJsonSchema.JsonSchema> GetQueryablesForCollectionAsync(string collectionId, System.Threading.CancellationToken cancellationToken)
-        {
-            if (collectionId == null)
-                throw new System.ArgumentNullException("collectionId");
-
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/{collectionId}/queryables");
-            urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
-
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/schema+json"));
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<NJsonSchema.JsonSchema>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<NJsonSchema.JsonSchema>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new StacApiException<NJsonSchema.JsonSchema>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new StacApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally

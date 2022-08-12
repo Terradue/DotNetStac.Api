@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using NSwag.CodeGeneration.CSharp;
 
 namespace Stac.Api.CodeGen
@@ -17,7 +18,7 @@ namespace Stac.Api.CodeGen
 
         internal CSharpClientGeneratorSettings GenerateClientGeneratorSettings(string key)
         {
-            CSharpClientGeneratorSettings settings = CSharpClientGeneratorSettings;
+            CSharpClientGeneratorSettings settings = JsonConvert.DeserializeObject<CSharpClientGeneratorSettings>(JsonConvert.SerializeObject(CSharpClientGeneratorSettings));
             var spec = Specifications[key];
             settings.ClassName = spec.ClientClassName;
             settings.CSharpGeneratorSettings.Namespace = spec.ClientNamespace;

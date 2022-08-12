@@ -6,12 +6,6 @@
 
 using Stac;
 using Stac.Api.Models;
-using Stac.Api.WebApi.Controllers.Collections;
-using Stac.Api.WebApi.Controllers.Core;
-using Stac.Api.WebApi.Controllers.Fragments.Fields;
-using Stac.Api.WebApi.Controllers.Fragments.Filter;
-using Stac.Api.WebApi.Controllers.Fragments.Sort;
-using Stac.Api.WebApi.Controllers.ItemSearch;
 using Stac.Api.WebApi.Controllers.OgcApiFeatures;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."

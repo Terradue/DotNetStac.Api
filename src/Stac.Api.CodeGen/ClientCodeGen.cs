@@ -56,9 +56,9 @@ namespace Stac.Api.CodeGen
                 }
             }
 
-            var generator = new CSharpClientGenerator(document, settings);
-
             FilterDocument(document);
+
+            var generator = new CSharpClientGenerator(document, settings);
 
             return generator.GenerateFile();
         }
