@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO.Abstractions;
 using Microsoft.AspNetCore.Mvc;
-using Stac.Api.Models;
-using Stac.Api.WebApi.Controllers;
 using Stac.Api.WebApi.Controllers.Fragments.Filter;
 using Stac.Api.WebApi.Controllers.ItemSearch;
 
-namespace Stac.Api.WebApi.Implementations
+namespace Stac.Api.WebApi.Implementations.FileSystem
 {
-    public class DefaultItemSearchController : DefaultBaseController, IItemSearchController
+    public class FileSystemItemSearchController : FileSystemBaseController, IItemSearchController
     {
-        public DefaultItemSearchController(IHttpContextAccessor httpContextAccessor): base (httpContextAccessor)
+        public FileSystemItemSearchController(IHttpContextAccessor httpContextAccessor,
+                                               StacFileSystemResolver fileSystem) : base(httpContextAccessor, fileSystem)
         {
         }
 

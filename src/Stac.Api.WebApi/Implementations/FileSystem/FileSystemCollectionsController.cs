@@ -1,17 +1,19 @@
+using System.IO.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Stac.Api.WebApi.Controllers.Collections;
 
-namespace Stac.Api.WebApi.Implementations
+namespace Stac.Api.WebApi.Implementations.FileSystem
 {
-    public class DefaultCollectionsController : DefaultBaseController, ICollectionsController
+    public class FileSystemCollectionsController : FileSystemBaseController, ICollectionsController
     {
-        public DefaultCollectionsController(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        public FileSystemCollectionsController(IHttpContextAccessor httpContextAccessor,
+                                               StacFileSystemResolver fileSystem) : base(httpContextAccessor, fileSystem)
         {
         }
 
         public async Task<ActionResult<StacCollection>> DescribeCollectionAsync(string collectionId, CancellationToken cancellationToken = default)
         {
-            var collection = GetCollections("examples/collections").FirstOrDefault(c => c.Id == collectionId);
+            var collection = GetCollections().FirstOrDefault(c => c.Id == collectionId);
             return collection == null ? new NotFoundResult() : (ActionResult<StacCollection>)collection;
         }
 
@@ -19,7 +21,7 @@ namespace Stac.Api.WebApi.Implementations
         {
             return new StacCollections()
             {
-                Collections = GetCollections("examples/collections").ToList()
+                Collections = GetCollections().ToList()
             };
         }
 

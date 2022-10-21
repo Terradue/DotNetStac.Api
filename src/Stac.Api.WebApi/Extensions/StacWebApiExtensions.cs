@@ -3,6 +3,7 @@ using Stac.Api.WebApi.Controllers.Collections;
 using Stac.Api.WebApi.Controllers.Core;
 using Stac.Api.WebApi.Controllers.OgcApiFeatures;
 using Stac.Api.WebApi.Implementations;
+using Stac.Api.WebApi.Implementations.FileSystem;
 
 namespace Stac.Api.WebApi.Extensions
 {
@@ -12,9 +13,17 @@ namespace Stac.Api.WebApi.Extensions
         {
             services.AddControllers().AddNewtonsoftJson();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<ICoreController, DefaultCoreController>();
-            services.AddSingleton<ICollectionsController, DefaultCollectionsController>();
-            services.AddSingleton<IOgcApiFeaturesController, DefaultOgcApiFeaturesController>();
+            return services;
+        }
+
+        public static IServiceCollection AddFileSystemControllers(this IServiceCollection services, Action<IStacWebApiBuilder> configure)
+        {
+            services.AddSingleton<ICoreController, FileSystemCoreController>();
+            services.AddSingleton<ICollectionsController, FileSystemCollectionsController>();
+            services.AddSingleton<IOgcApiFeaturesController, FileSystemOgcApiFeaturesController>();
+            // Let's Configure
+            var builder = new StacWebApiBuilder(services);
+            configure(builder);
             return services;
         }
 

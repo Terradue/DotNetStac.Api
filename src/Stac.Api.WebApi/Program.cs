@@ -17,6 +17,9 @@ var configuration = configBuilder.Build();
 
 // Configure the Todo repository and associated services
 builder.Services.AddStacWebApi();
+builder.Services.AddFileSystemControllers(builder =>
+                    builder.UseFileSystemRoot(Path.Combine(Path.GetTempPath(), "StacApi"), true)
+                );
 builder.Services.AddCodeGenOptions(configuration.GetSection("CodeGen"));
 
 // Configure OpenAPI documentation for the Todo API

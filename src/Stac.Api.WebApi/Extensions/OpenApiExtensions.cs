@@ -10,7 +10,7 @@ namespace Stac.Api.WebApi.Extensions
             string basePath = string.Format("/openapi/{0}/", code.ApiVersion);
             foreach ( var spec in code.Specifications)
             {
-                endpoints.MapGet(basePath + spec.Value.OpenApiPath, async context =>
+                endpoints.MapGet(basePath + spec.Value.OpenApiPath.ToLower(), async context =>
                 {
                     await WriteOpenApiAsync(context, spec.Value);
                 }).RequireCors("All");
@@ -32,7 +32,7 @@ namespace Stac.Api.WebApi.Extensions
             string basePath = string.Format("/openapi/{0}/", code.ApiVersion);
             foreach ( var spec in code.Specifications)
             {
-                c.SwaggerRoutes.Add(new SwaggerUi3Route(spec.Key, basePath + spec.Value.OpenApiPath));
+                c.SwaggerRoutes.Add(new SwaggerUi3Route(spec.Key.ToLower(), basePath + spec.Value.OpenApiPath.ToLower()));
             }
             
             return c;

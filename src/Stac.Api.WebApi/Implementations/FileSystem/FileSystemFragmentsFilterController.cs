@@ -1,12 +1,14 @@
+using System.IO.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using NJsonSchema;
 using Stac.Api.WebApi.Controllers.Fragments.Filter;
 
-namespace Stac.Api.WebApi.Implementations
+namespace Stac.Api.WebApi.Implementations.FileSystem
 {
-    public class DefaultFragmentsFilterController : DefaultBaseController, IFragmentsFilterController
+    public class FileSystemFragmentsFilterController : FileSystemBaseController, IFragmentsFilterController
     {
-        public DefaultFragmentsFilterController(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        public FileSystemFragmentsFilterController(IHttpContextAccessor httpContextAccessor,
+                                                   StacFileSystemResolver fileSystem) : base(httpContextAccessor, fileSystem)
         {
         }
 

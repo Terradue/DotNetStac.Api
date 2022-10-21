@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Stac.Api.WebApi.Controllers.Collections;
 using Stac.Api.WebApi.Implementations;
+using Stac.Api.WebApi.Implementations.FileSystem;
 
 namespace Stac.Api.Tests
 {
@@ -13,7 +14,7 @@ namespace Stac.Api.Tests
         {
             builder.ConfigureServices(services =>
             {
-                services.AddSingleton<ICollectionsController, DefaultCollectionsController>();
+                services.AddSingleton<ICollectionsController, FileSystemCollectionsController>();
             });
             return base.CreateHost(builder);
         }

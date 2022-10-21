@@ -13,6 +13,7 @@
     <PackageReference Include="NSwag.Core.Yaml" Version="13.16.*" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.*" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.*"/>
+    <PackageReference Include="System.IO.Abstractions" Version="17.0.*" />
   </ItemGroup>
 
   <ItemGroup>

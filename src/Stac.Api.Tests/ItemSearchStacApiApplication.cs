@@ -8,6 +8,7 @@ using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers;
 using Stac.Api.WebApi.Controllers.ItemSearch;
 using Stac.Api.WebApi.Implementations;
+using Stac.Api.WebApi.Implementations.FileSystem;
 
 namespace Stac.Api.Tests
 {
@@ -18,7 +19,7 @@ namespace Stac.Api.Tests
         {
             builder.ConfigureServices(services =>
             {
-                services.AddSingleton<IItemSearchController, DefaultItemSearchController>();
+                services.AddSingleton<IItemSearchController, FileSystemItemSearchController>();
             });
             return base.CreateHost(builder);
         }
