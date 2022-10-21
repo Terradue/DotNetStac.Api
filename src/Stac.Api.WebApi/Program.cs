@@ -39,7 +39,6 @@ builder.Services.AddCors(options =>
 // Create the app
 var app = builder.Build();
 
-
 // Require use of HTTPS in production
 if (!app.Environment.IsDevelopment())
 {

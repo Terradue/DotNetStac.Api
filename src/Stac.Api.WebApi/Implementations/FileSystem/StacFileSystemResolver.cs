@@ -26,12 +26,20 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
             return _fileSystem.DirectoryInfo.FromDirectoryName(RootPath);
         }
 
-        internal void CreateRootDirIfNotExists()
+        internal void CreateRootCatalogIfNotExists()
         {
             if ( ! GetRootDirectory().Exists)
             {
                 GetRootDirectory().Create();
             }
+            StacCatalog rootCatalog = new StacCatalog("root", "Root catalog");
+            
+            _fileSystem.File.WriteAllText(GetRootDirectory().FullName + "/catalog.json", StacConvert.Serialize(rootCatalog));
+        }
+
+        internal IDirectoryInfo GetDirectory(string path)
+        {
+            return _fileSystem.DirectoryInfo.FromDirectoryName(_fileSystem.Path.Combine(RootPath, path));
         }
     }
 }

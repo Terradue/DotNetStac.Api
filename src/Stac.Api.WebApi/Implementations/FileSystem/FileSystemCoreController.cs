@@ -33,6 +33,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
             lp.Links.Add(StacLink.CreateRootLink(AppBaseUrl, "application/json"));
             lp.Links.Add(new StacLink(new Uri(AppBaseUrl, "/swagger/v1/swagger.json"), "service-desc", null, "application/vnd.oai.openapi+json;version=3.0"));
             lp.Links.Add(new StacLink(new Uri(AppBaseUrl, "/swagger"), "service-doc", null, "text/html"));
+            lp.Links.Add(new StacLink(new Uri(AppBaseUrl, "/collections"), "data", null, "application/json"));
 
             return lp;
         }

@@ -20,7 +20,7 @@ namespace Stac.Api.WebApi.Extensions
                 var stacFileSystem = new StacFileSystemResolver(sp.GetRequiredService<IFileSystem>(), rootPath);
                 if ( createIfNotExists )
                 {
-                    stacFileSystem.CreateRootDirIfNotExists();
+                    stacFileSystem.CreateRootCatalogIfNotExists();
                 }
                 return stacFileSystem;
             });

@@ -38,13 +38,17 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
 
         protected IEnumerable<StacCollection> GetCollections()
         {
-            return null;
-            // var collectionFiles = _stacFileSystem.Directory.GetFiles(COLLECTIONS_DIR, "*.json");
-            // foreach (var collectionFile in collectionFiles)
-            // {
-            //     var collection = _stacFileSystem.File.ReadAllText(_stacFileSystem.File.ReadAllText(collectionFile));
-            //     yield return StacConvert.Deserialize<StacCollection>(collection);
-            // }
+            var collectionFiles = _stacFileSystem.GetDirectory(COLLECTIONS_DIR).GetFiles("*.json");
+            foreach (var collectionFile in collectionFiles)
+            {
+                var collection = _stacFileSystem.FileSystem.File.ReadAllText(collectionFile.FullName);
+                yield return StacConvert.Deserialize<StacCollection>(collection);
+            }
+        }
+
+        protected StacCollection GetCollectionById(string collectionId)
+        {
+            return StacConvert.Deserialize<StacCollection>(_stacFileSystem.FileSystem.File.ReadAllText(_stacFileSystem.GetDirectory(COLLECTIONS_DIR).FullName + $"/{collectionId}.json"));
         }
     }
 }

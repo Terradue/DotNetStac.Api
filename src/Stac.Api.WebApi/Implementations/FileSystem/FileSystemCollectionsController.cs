@@ -13,7 +13,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
 
         public async Task<ActionResult<StacCollection>> DescribeCollectionAsync(string collectionId, CancellationToken cancellationToken = default)
         {
-            var collection = GetCollections().FirstOrDefault(c => c.Id == collectionId);
+            StacCollection collection = GetCollectionById(collectionId);
             return collection == null ? new NotFoundResult() : (ActionResult<StacCollection>)collection;
         }
 
@@ -24,7 +24,6 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
                 Collections = GetCollections().ToList()
             };
         }
-
         
     }
 }
