@@ -14,7 +14,7 @@ using NSwag.CodeGeneration.CSharp;
 
 namespace Stac.Api.CodeGen
 {
-    internal class ControllerCodeGen: BaseCodeGen
+    internal class ControllerCodeGen : BaseCodeGen
     {
         private readonly IOptions<CodeGenOptions> options;
 
@@ -32,7 +32,14 @@ namespace Stac.Api.CodeGen
                 if (!string.IsNullOrEmpty(spec.Value.Url))
                 {
                     HttpClient client = new HttpClient();
-                    content = await client.GetStringAsync(spec.Value.Url);
+                    try
+                    {
+                        content = await client.GetStringAsync(spec.Value.Url);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception($"Unable to download OpenAPI specification from {spec.Value.Url}", e);
+                    }
                     documentPath = spec.Value.Url;
                 }
                 else if (!string.IsNullOrEmpty(spec.Value.File))
@@ -66,6 +73,6 @@ namespace Stac.Api.CodeGen
             return generator.GenerateFile();
         }
 
-        
+
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.Core;
 
-namespace Stac.Api.WebApi.Implementations.FileSystem
+namespace Stac.Api.WebApi.Implementations.FileSystem.Core
 {
     public class FileSystemCoreController : FileSystemBaseController, ICoreController
     {

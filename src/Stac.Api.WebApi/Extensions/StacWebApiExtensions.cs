@@ -4,6 +4,9 @@ using Stac.Api.WebApi.Controllers.Core;
 using Stac.Api.WebApi.Controllers.OgcApiFeatures;
 using Stac.Api.WebApi.Implementations;
 using Stac.Api.WebApi.Implementations.FileSystem;
+using Stac.Api.WebApi.Implementations.FileSystem.Collections;
+using Stac.Api.WebApi.Implementations.FileSystem.Core;
+using Stac.Api.WebApi.Implementations.FileSystem.OgcApiFeatures;
 
 namespace Stac.Api.WebApi.Extensions
 {

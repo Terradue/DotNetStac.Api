@@ -1,9 +1,10 @@
 using System.IO.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.Fragments.Filter;
 using Stac.Api.WebApi.Controllers.ItemSearch;
 
-namespace Stac.Api.WebApi.Implementations.FileSystem
+namespace Stac.Api.WebApi.Implementations.FileSystem.ItemSearch
 {
     public class FileSystemItemSearchController : FileSystemBaseController, IItemSearchController
     {
@@ -12,12 +13,12 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
         {
         }
 
-        public Task<ActionResult<SearchResponse>> GetItemSearchAsync(string bbox, IntersectsQueryString intersectsQueryString, string datetime, int limit, IEnumerable<string> ids, IEnumerable<string> collections, string fields, string sortby, FilterParameter filterParameter, CancellationToken cancellationToken = default)
+        public Task<ActionResult<StacFeatureCollection>> GetItemSearchAsync(string bbox, IntersectsQueryString intersectsQueryString, string datetime, int limit, IEnumerable<string> ids, IEnumerable<string> collections, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ActionResult<SearchResponse>> PostItemSearchAsync(SearchRequest body, CancellationToken cancellationToken = default)
+        public Task<ActionResult<StacFeatureCollection>> PostItemSearchAsync(SearchBody body, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

@@ -2,7 +2,7 @@ using System.IO.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Stac.Api.WebApi.Controllers.Collections;
 
-namespace Stac.Api.WebApi.Implementations.FileSystem
+namespace Stac.Api.WebApi.Implementations.FileSystem.Collections
 {
     public class FileSystemCollectionsController : FileSystemBaseController, ICollectionsController
     {

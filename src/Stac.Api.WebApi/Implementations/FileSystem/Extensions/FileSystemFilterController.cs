@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using NJsonSchema;
 using Stac.Api.WebApi.Controllers.Fragments.Filter;
 
-namespace Stac.Api.WebApi.Implementations.FileSystem
+namespace Stac.Api.WebApi.Implementations.FileSystem.Extensions
 {
-    public class FileSystemFragmentsFilterController : FileSystemBaseController, IFragmentsFilterController
+    public class FileSystemFilterController : FileSystemBaseController, Controllers.Extensions.Filter.IFilterController
     {
-        public FileSystemFragmentsFilterController(IHttpContextAccessor httpContextAccessor,
+        public FileSystemFilterController(IHttpContextAccessor httpContextAccessor,
                                                    StacFileSystemResolver fileSystem) : base(httpContextAccessor, fileSystem)
         {
         }

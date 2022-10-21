@@ -6,7 +6,7 @@
 
 using Stac;
 using Stac.Api.Models;
-using Stac.Api.WebApi.Controllers.ItemSearch;
+using Stac.Api.WebApi.Controllers.Extensions.Filter;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -17,17 +17,17 @@ using Stac.Api.WebApi.Controllers.ItemSearch;
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 
-namespace Stac.Api.Clients.ItemSearch
+namespace Stac.Api.Clients.Extensions.Filter
 {
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ItemSearchClient : Stac.Api.Clients.StacApiClient
+    public partial class FilterClient : Stac.Api.Clients.StacApiClient
     {
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public ItemSearchClient(string baseUrl, System.Net.Http.HttpClient httpClient)
+        public FilterClient(string baseUrl, System.Net.Http.HttpClient httpClient)
         {
             BaseUrl = baseUrl;
             _httpClient = httpClient;
@@ -50,166 +50,25 @@ namespace Stac.Api.Clients.ItemSearch
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <summary>
-        /// Search STAC items with simple filtering.
+        /// Get the JSON Schema defining the list of variable terms that can be used in CQL2 expressions.
         /// </summary>
-        /// <param name="bbox">Only features that have a geometry that intersects the bounding box are selected.
-        /// <br/>The bounding box is provided as four or six numbers, depending on
-        /// <br/>whether the coordinate reference system includes a vertical axis (height
-        /// <br/>or depth):
-        /// <br/>
-        /// <br/>* Lower left corner, coordinate axis 1
-        /// <br/>* Lower left corner, coordinate axis 2
-        /// <br/>* Minimum value, coordinate axis 3 (optional)
-        /// <br/>* Upper right corner, coordinate axis 1
-        /// <br/>* Upper right corner, coordinate axis 2
-        /// <br/>* Maximum value, coordinate axis 3 (optional)
-        /// <br/>
-        /// <br/>The coordinate reference system of the values is WGS 84
-        /// <br/>longitude/latitude (http://www.opengis.net/def/crs/OGC/1.3/CRS84).
-        /// <br/>
-        /// <br/>For WGS 84 longitude/latitude the values are in most cases the sequence
-        /// <br/>of minimum longitude, minimum latitude, maximum longitude and maximum
-        /// <br/>latitude. However, in cases where the box spans the antimeridian the
-        /// <br/>first value (west-most box edge) is larger than the third value
-        /// <br/>(east-most box edge).
-        /// <br/>
-        /// <br/>If the vertical axis is included, the third and the sixth number are
-        /// <br/>the bottom and the top of the 3-dimensional bounding box.
-        /// <br/>
-        /// <br/>If a feature has multiple spatial geometry properties, it is the
-        /// <br/>decision of the server whether only a single spatial geometry property
-        /// <br/>is used to determine the extent or all relevant geometries.
-        /// <br/>
-        /// <br/>Example: The bounding box of the New Zealand Exclusive Economic Zone in
-        /// <br/>WGS 84 (from 160.6°E to 170°W and from 55.95°S to 25.89°S) would be
-        /// <br/>represented in JSON as `[160.6, -55.95, -170, -25.89]` and in a query as
-        /// <br/>`bbox=160.6,-55.95,-170,-25.89`.</param>
-        /// <param name="intersectsQueryString">The optional intersects parameter filters the result Items in the same was as bbox, only with
-        /// <br/>a GeoJSON Geometry rather than a bbox.</param>
-        /// <param name="datetime">Either a date-time or an interval, open or closed. Date and time expressions
-        /// <br/>adhere to RFC 3339. Open intervals are expressed using double-dots.
-        /// <br/>
-        /// <br/>Examples:
-        /// <br/>
-        /// <br/>* A date-time: "2018-02-12T23:20:50Z"
-        /// <br/>* A closed interval: "2018-02-12T00:00:00Z/2018-03-18T12:31:12Z"
-        /// <br/>* Open intervals: "2018-02-12T00:00:00Z/.." or "../2018-03-18T12:31:12Z"
-        /// <br/>
-        /// <br/>Only features that have a temporal property that intersects the value of
-        /// <br/>`datetime` are selected.
-        /// <br/>
-        /// <br/>If a feature has multiple temporal properties, it is the decision of the
-        /// <br/>server whether only a single temporal property is used to determine
-        /// <br/>the extent or all relevant temporal properties.</param>
-        /// <param name="limit">The optional limit parameter recommends the number of items that should be present in the response document.
-        /// <br/>
-        /// <br/>Only items are counted that are on the first level of the collection in the response document.
-        /// <br/>Nested objects contained within the explicitly requested items must not be counted.
-        /// <br/>
-        /// <br/>Minimum = 1. Maximum = 10000. Default = 10.</param>
-        /// <param name="ids">Array of Item ids to return.</param>
-        /// <param name="collections">Array of Collection IDs to include in the search for items.
-        /// <br/>Only Item objects in one of the provided collections will be searched</param>
-        /// <returns>A feature collection.</returns>
+        /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, IntersectsQueryString intersectsQueryString, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections)
+        public virtual System.Threading.Tasks.Task<NJsonSchema.JsonSchema> GetQueryablesAsync()
         {
-            return GetItemSearchAsync(bbox, intersectsQueryString, datetime, limit, ids, collections, System.Threading.CancellationToken.None);
+            return GetQueryablesAsync(System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Search STAC items with simple filtering.
+        /// Get the JSON Schema defining the list of variable terms that can be used in CQL2 expressions.
         /// </summary>
-        /// <param name="bbox">Only features that have a geometry that intersects the bounding box are selected.
-        /// <br/>The bounding box is provided as four or six numbers, depending on
-        /// <br/>whether the coordinate reference system includes a vertical axis (height
-        /// <br/>or depth):
-        /// <br/>
-        /// <br/>* Lower left corner, coordinate axis 1
-        /// <br/>* Lower left corner, coordinate axis 2
-        /// <br/>* Minimum value, coordinate axis 3 (optional)
-        /// <br/>* Upper right corner, coordinate axis 1
-        /// <br/>* Upper right corner, coordinate axis 2
-        /// <br/>* Maximum value, coordinate axis 3 (optional)
-        /// <br/>
-        /// <br/>The coordinate reference system of the values is WGS 84
-        /// <br/>longitude/latitude (http://www.opengis.net/def/crs/OGC/1.3/CRS84).
-        /// <br/>
-        /// <br/>For WGS 84 longitude/latitude the values are in most cases the sequence
-        /// <br/>of minimum longitude, minimum latitude, maximum longitude and maximum
-        /// <br/>latitude. However, in cases where the box spans the antimeridian the
-        /// <br/>first value (west-most box edge) is larger than the third value
-        /// <br/>(east-most box edge).
-        /// <br/>
-        /// <br/>If the vertical axis is included, the third and the sixth number are
-        /// <br/>the bottom and the top of the 3-dimensional bounding box.
-        /// <br/>
-        /// <br/>If a feature has multiple spatial geometry properties, it is the
-        /// <br/>decision of the server whether only a single spatial geometry property
-        /// <br/>is used to determine the extent or all relevant geometries.
-        /// <br/>
-        /// <br/>Example: The bounding box of the New Zealand Exclusive Economic Zone in
-        /// <br/>WGS 84 (from 160.6°E to 170°W and from 55.95°S to 25.89°S) would be
-        /// <br/>represented in JSON as `[160.6, -55.95, -170, -25.89]` and in a query as
-        /// <br/>`bbox=160.6,-55.95,-170,-25.89`.</param>
-        /// <param name="intersectsQueryString">The optional intersects parameter filters the result Items in the same was as bbox, only with
-        /// <br/>a GeoJSON Geometry rather than a bbox.</param>
-        /// <param name="datetime">Either a date-time or an interval, open or closed. Date and time expressions
-        /// <br/>adhere to RFC 3339. Open intervals are expressed using double-dots.
-        /// <br/>
-        /// <br/>Examples:
-        /// <br/>
-        /// <br/>* A date-time: "2018-02-12T23:20:50Z"
-        /// <br/>* A closed interval: "2018-02-12T00:00:00Z/2018-03-18T12:31:12Z"
-        /// <br/>* Open intervals: "2018-02-12T00:00:00Z/.." or "../2018-03-18T12:31:12Z"
-        /// <br/>
-        /// <br/>Only features that have a temporal property that intersects the value of
-        /// <br/>`datetime` are selected.
-        /// <br/>
-        /// <br/>If a feature has multiple temporal properties, it is the decision of the
-        /// <br/>server whether only a single temporal property is used to determine
-        /// <br/>the extent or all relevant temporal properties.</param>
-        /// <param name="limit">The optional limit parameter recommends the number of items that should be present in the response document.
-        /// <br/>
-        /// <br/>Only items are counted that are on the first level of the collection in the response document.
-        /// <br/>Nested objects contained within the explicitly requested items must not be counted.
-        /// <br/>
-        /// <br/>Minimum = 1. Maximum = 10000. Default = 10.</param>
-        /// <param name="ids">Array of Item ids to return.</param>
-        /// <param name="collections">Array of Collection IDs to include in the search for items.
-        /// <br/>Only Item objects in one of the provided collections will be searched</param>
-        /// <returns>A feature collection.</returns>
+        /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, IntersectsQueryString intersectsQueryString, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<NJsonSchema.JsonSchema> GetQueryablesAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/search?");
-            if (bbox != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("bbox") + "=").Append(System.Uri.EscapeDataString(ConvertToString(bbox, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (intersectsQueryString != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("IntersectsQueryString") + "=").Append(System.Uri.EscapeDataString(ConvertToString(intersectsQueryString, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (datetime != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("datetime") + "=").Append(System.Uri.EscapeDataString(ConvertToString(datetime, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (limit != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("limit") + "=").Append(System.Uri.EscapeDataString(ConvertToString(limit, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (ids != null)
-            {
-                foreach (var item_ in ids) { urlBuilder_.Append(System.Uri.EscapeDataString("ids") + "=").Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append("&"); }
-            }
-            if (collections != null)
-            {
-                foreach (var item_ in collections) { urlBuilder_.Append(System.Uri.EscapeDataString("collections") + "=").Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append("&"); }
-            }
-            urlBuilder_.Length--;
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/queryables");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -218,7 +77,7 @@ namespace Stac.Api.Clients.ItemSearch
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
                     request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/geo+json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/schema+json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -243,7 +102,7 @@ namespace Stac.Api.Clients.ItemSearch
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<StacFeatureCollection>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<NJsonSchema.JsonSchema>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -252,12 +111,12 @@ namespace Stac.Api.Clients.ItemSearch
                         }
                         else
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<StacFeatureCollection>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Exception>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<StacFeatureCollection>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Exception>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                     }
                     finally
@@ -275,25 +134,31 @@ namespace Stac.Api.Clients.ItemSearch
         }
 
         /// <summary>
-        /// Search STAC items with full-featured filtering.
+        /// Get the JSON Schema defining the list of variable terms that can be used in CQL2 expressions.
         /// </summary>
-        /// <returns>A feature collection.</returns>
+        /// <param name="collectionId">ID of Collection</param>
+        /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<StacFeatureCollection> PostItemSearchAsync(SearchBody body)
+        public virtual System.Threading.Tasks.Task<NJsonSchema.JsonSchema> GetQueryablesForCollectionAsync(string collectionId)
         {
-            return PostItemSearchAsync(body, System.Threading.CancellationToken.None);
+            return GetQueryablesForCollectionAsync(collectionId, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Search STAC items with full-featured filtering.
+        /// Get the JSON Schema defining the list of variable terms that can be used in CQL2 expressions.
         /// </summary>
-        /// <returns>A feature collection.</returns>
+        /// <param name="collectionId">ID of Collection</param>
+        /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> PostItemSearchAsync(SearchBody body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<NJsonSchema.JsonSchema> GetQueryablesForCollectionAsync(string collectionId, System.Threading.CancellationToken cancellationToken)
         {
+            if (collectionId == null)
+                throw new System.ArgumentNullException("collectionId");
+
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/search");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/{collectionId}/queryables");
+            urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -301,11 +166,8 @@ namespace Stac.Api.Clients.ItemSearch
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/geo+json"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/schema+json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -330,7 +192,7 @@ namespace Stac.Api.Clients.ItemSearch
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<StacFeatureCollection>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<NJsonSchema.JsonSchema>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -339,12 +201,12 @@ namespace Stac.Api.Clients.ItemSearch
                         }
                         else
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<StacFeatureCollection>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Exception>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<StacFeatureCollection>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Exception>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                     }
                     finally

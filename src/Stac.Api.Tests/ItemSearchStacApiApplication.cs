@@ -9,6 +9,7 @@ using Stac.Api.WebApi.Controllers;
 using Stac.Api.WebApi.Controllers.ItemSearch;
 using Stac.Api.WebApi.Implementations;
 using Stac.Api.WebApi.Implementations.FileSystem;
+using Stac.Api.WebApi.Implementations.FileSystem.ItemSearch;
 
 namespace Stac.Api.Tests
 {

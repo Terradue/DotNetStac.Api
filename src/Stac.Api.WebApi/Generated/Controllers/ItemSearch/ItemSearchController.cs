@@ -92,22 +92,9 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
         /// <param name="collections">Array of Collection IDs to include in the search for items.
         /// <br/>Only Item objects in one of the provided collections will be searched</param>
 
-        /// <param name="fields">**Extension:** Fields
-        /// <br/>
-        /// <br/>Determines the shape of the features in the response</param>
-
-        /// <param name="sortby">**Extension:** Sort
-        /// <br/>
-        /// <br/>An array of property names, prefixed by either "+" for ascending or
-        /// <br/>"-" for descending. If no prefix is provided, "+" is assumed.</param>
-
-        /// <param name="filterParameter">**Extension:** Filter
-        /// <br/>
-        /// <br/>A CQL2 filter expression for filtering items.</param>
-
         /// <returns>A feature collection.</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<SearchResponse>> GetItemSearchAsync(string bbox, IntersectsQueryString intersectsQueryString, string datetime, int limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, string fields, string sortby, Stac.Api.WebApi.Controllers.Fragments.Filter.FilterParameter filterParameter, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearchAsync(string bbox, IntersectsQueryString intersectsQueryString, string datetime, int limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// Search STAC items with full-featured filtering.
@@ -116,7 +103,7 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
 
         /// <returns>A feature collection.</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<SearchResponse>> PostItemSearchAsync(SearchRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> PostItemSearchAsync(SearchBody body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -192,22 +179,12 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
         /// <param name="ids">Array of Item ids to return.</param>
         /// <param name="collections">Array of Collection IDs to include in the search for items.
         /// <br/>Only Item objects in one of the provided collections will be searched</param>
-        /// <param name="fields">**Extension:** Fields
-        /// <br/>
-        /// <br/>Determines the shape of the features in the response</param>
-        /// <param name="sortby">**Extension:** Sort
-        /// <br/>
-        /// <br/>An array of property names, prefixed by either "+" for ascending or
-        /// <br/>"-" for descending. If no prefix is provided, "+" is assumed.</param>
-        /// <param name="filterParameter">**Extension:** Filter
-        /// <br/>
-        /// <br/>A CQL2 filter expression for filtering items.</param>
         /// <returns>A feature collection.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("search")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<SearchResponse>> GetItemSearch([Microsoft.AspNetCore.Mvc.FromQuery] string bbox, [Microsoft.AspNetCore.Mvc.FromQuery] IntersectsQueryString intersectsQueryString, [Microsoft.AspNetCore.Mvc.FromQuery] string datetime, [Microsoft.AspNetCore.Mvc.FromQuery] int? limit, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> ids, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> collections, [Microsoft.AspNetCore.Mvc.FromQuery] string fields, [Microsoft.AspNetCore.Mvc.FromQuery] string sortby, [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] Stac.Api.WebApi.Controllers.Fragments.Filter.FilterParameter filterParameter, System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearch([Microsoft.AspNetCore.Mvc.FromQuery] string bbox, [Microsoft.AspNetCore.Mvc.FromQuery] IntersectsQueryString intersectsQueryString, [Microsoft.AspNetCore.Mvc.FromQuery] string datetime, [Microsoft.AspNetCore.Mvc.FromQuery] int? limit, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> ids, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken)
         {
 
-            return _implementation.GetItemSearchAsync(bbox, intersectsQueryString, datetime, limit ?? 10, ids, collections, fields, sortby, filterParameter, cancellationToken);
+            return _implementation.GetItemSearchAsync(bbox, intersectsQueryString, datetime, limit ?? 10, ids, collections, cancellationToken);
         }
 
         /// <summary>
@@ -215,7 +192,7 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
         /// </summary>
         /// <returns>A feature collection.</returns>
         [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("search")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<SearchResponse>> PostItemSearch([Microsoft.AspNetCore.Mvc.FromBody] SearchRequest body, System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> PostItemSearch([Microsoft.AspNetCore.Mvc.FromBody] SearchBody body, System.Threading.CancellationToken cancellationToken)
         {
 
             return _implementation.PostItemSearchAsync(body, cancellationToken);
@@ -288,28 +265,6 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
 
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class SearchRequest : SearchBody
-    {
-        [Newtonsoft.Json.JsonProperty("fields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Controllers.Fragments.Fields.Fields Fields { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("filter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Stac.Api.WebApi.Controllers.Fragments.Filter.FilterParameter Filter { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("filter-lang", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Controllers.Fragments.Filter.FilterLang FilterLang { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("filter-crs", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Uri FilterCrs { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("sortby", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.MinLength(1)]
-        public Controllers.Fragments.Sort.Sortby Sortby { get; set; }
-
-    }
-
     /// <summary>
     /// Only features that have a geometry that intersects the bounding box are
     /// <br/>selected. The bounding box is provided as four or six numbers,
@@ -344,32 +299,6 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Bbox : System.Collections.ObjectModel.Collection<double>
     {
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Context
-    {
-        [Newtonsoft.Json.JsonProperty("returned", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Range(0, int.MaxValue)]
-        public int Returned { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("limit", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.Range(0, int.MaxValue)]
-        public int? Limit { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("matched", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.Range(0, int.MaxValue)]
-        public int Matched { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
 
     }
 

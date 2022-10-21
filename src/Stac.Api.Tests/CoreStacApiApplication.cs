@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Stac.Api.WebApi.Controllers.Core;
 using Stac.Api.WebApi.Implementations;
 using Stac.Api.WebApi.Implementations.FileSystem;
+using Stac.Api.WebApi.Implementations.FileSystem.Core;
 
 namespace Stac.Api.Tests
 {
