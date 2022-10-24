@@ -417,7 +417,7 @@ namespace Stac.Api.Clients.Extensions
         /// <param name="featureId">local identifier of a feature</param>
         /// <returns>The item was replaced</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<StacItem> PatchFeatureAsync(string if_Match, StacItem body, string collectionId, string featureId)
+        public virtual System.Threading.Tasks.Task<StacItem> PatchFeatureAsync(string if_Match, PatchStacItem body, string collectionId, string featureId)
         {
             return PatchFeatureAsync(if_Match, body, collectionId, featureId, System.Threading.CancellationToken.None);
         }
@@ -431,7 +431,7 @@ namespace Stac.Api.Clients.Extensions
         /// <param name="featureId">local identifier of a feature</param>
         /// <returns>The item was replaced</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<StacItem> PatchFeatureAsync(string if_Match, StacItem body, string collectionId, string featureId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<StacItem> PatchFeatureAsync(string if_Match, PatchStacItem body, string collectionId, string featureId, System.Threading.CancellationToken cancellationToken)
         {
             if (collectionId == null)
                 throw new System.ArgumentNullException("collectionId");
