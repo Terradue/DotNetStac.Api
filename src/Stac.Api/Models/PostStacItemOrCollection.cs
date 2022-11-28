@@ -14,7 +14,7 @@ namespace Stac.Api.Models
         [JsonConstructor]
         public PostStacItemOrCollection(object obj)
         {
-            if ( obj is StacItem stacItem)
+            if (obj is StacItem stacItem)
             {
                 StacItem = stacItem;
             }
@@ -30,3 +30,4 @@ namespace Stac.Api.Models
 
         public StacFeatureCollection StacFeatureCollection { get; }
     }
+}

@@ -8,7 +8,8 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Core
     public class FileSystemCoreController : FileSystemBaseController, ICoreController
     {
         public FileSystemCoreController(IHttpContextAccessor httpContextAccessor,
-                                        StacFileSystemResolver fileSystem) : base(httpContextAccessor, fileSystem)
+                                        LinkGenerator linkGenerator,
+                                        StacFileSystemResolver fileSystem) : base(httpContextAccessor, linkGenerator, fileSystem)
         {
         }
 

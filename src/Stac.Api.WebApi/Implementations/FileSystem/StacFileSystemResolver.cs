@@ -8,6 +8,8 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
 {
     public class StacFileSystemResolver
     {
+        public const string COLLECTIONS_DIR = "collections";
+
         private readonly IFileSystem _fileSystem;
 
         public string RootPath { get; }

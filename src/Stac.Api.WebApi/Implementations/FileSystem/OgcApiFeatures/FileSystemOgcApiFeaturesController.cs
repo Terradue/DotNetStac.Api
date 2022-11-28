@@ -8,7 +8,8 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.OgcApiFeatures
     public class FileSystemOgcApiFeaturesController : FileSystemBaseController, IOgcApiFeaturesController
     {
         public FileSystemOgcApiFeaturesController(IHttpContextAccessor httpContextAccessor,
-                                                  StacFileSystemResolver fileSystem) : base(httpContextAccessor, fileSystem)
+                                                  LinkGenerator linkGenerator,
+                                                  StacFileSystemResolver fileSystem) : base(httpContextAccessor, linkGenerator, fileSystem)
         {
         }
 
@@ -29,7 +30,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.OgcApiFeatures
 
         public async Task<ActionResult<StacItem>> GetFeatureAsync(string collectionId, string featureId, CancellationToken cancellationToken = default)
         {
-            var collection = GetCollections().FirstOrDefault(c => c.Id == collectionId);
+            var collection = _stacFileSystemReaderService.GetCollectionById(collectionId);
             if (collection == null) return new NotFoundResult();
 
             // var item = GetItems("examples/collections", collectionId).FirstOrDefault(i => i.Id == featureId);
@@ -40,7 +41,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.OgcApiFeatures
 
         public async Task<ActionResult<StacFeatureCollection>> GetFeaturesAsync(string collectionId, int limit, string bbox, string datetime, CancellationToken cancellationToken = default)
         {
-            var collection = GetCollections().FirstOrDefault(c => c.Id == collectionId);
+            var collection = _stacFileSystemReaderService.GetCollectionById(collectionId);
             if (collection == null) return new NotFoundResult();
 
             var items = new List<StacItem>();

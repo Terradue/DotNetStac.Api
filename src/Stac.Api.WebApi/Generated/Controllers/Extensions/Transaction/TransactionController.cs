@@ -5,6 +5,7 @@
 //----------------------
 
 using Stac;
+using Stac.Common;
 using Stac.Api.Models;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
@@ -35,15 +36,6 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Transaction
 
         System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacItem>> PostFeatureAsync(PostStacItemOrCollection body, string collectionId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
-
-        /// <param name="collectionId">local identifier of a collection</param>
-
-        /// <param name="featureId">local identifier of a feature</param>
-
-        /// <returns>Adds a ETag header to the response specified in STAC API - Features</returns>
-
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> GetFeatureAsync(string collectionId, string featureId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
         /// <summary>
         /// update an existing feature by Id with a complete item definition
         /// </summary>
@@ -73,7 +65,7 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Transaction
 
         /// <returns>The item was replaced</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacItem>> PatchFeatureAsync(string if_Match, PatchStacItem body, string collectionId, string featureId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacItem>> PatchFeatureAsync(string if_Match, Patch body, string collectionId, string featureId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// delete an existing feature by Id
@@ -114,16 +106,6 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Transaction
             return _implementation.PostFeatureAsync(body, collectionId, cancellationToken);
         }
 
-        /// <param name="collectionId">local identifier of a collection</param>
-        /// <param name="featureId">local identifier of a feature</param>
-        /// <returns>Adds a ETag header to the response specified in STAC API - Features</returns>
-        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("collections/{collectionId}/items/{featureId}")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> GetFeature([Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string collectionId, [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string featureId, System.Threading.CancellationToken cancellationToken)
-        {
-
-            return _implementation.GetFeatureAsync(collectionId, featureId, cancellationToken);
-        }
-
         /// <summary>
         /// update an existing feature by Id with a complete item definition
         /// </summary>
@@ -147,7 +129,7 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Transaction
         /// <param name="featureId">local identifier of a feature</param>
         /// <returns>The item was replaced</returns>
         [Microsoft.AspNetCore.Mvc.HttpPatch, Microsoft.AspNetCore.Mvc.Route("collections/{collectionId}/items/{featureId}")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacItem>> PatchFeature([Microsoft.AspNetCore.Mvc.FromHeader(Name = "If-Match")] string if_Match, [Microsoft.AspNetCore.Mvc.FromBody] PatchStacItem body, [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string collectionId, [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string featureId, System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacItem>> PatchFeature([Microsoft.AspNetCore.Mvc.FromHeader(Name = "If-Match")] string if_Match, [Microsoft.AspNetCore.Mvc.FromBody] Patch body, [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string collectionId, [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string featureId, System.Threading.CancellationToken cancellationToken)
         {
 
             return _implementation.PatchFeatureAsync(if_Match, body, collectionId, featureId, cancellationToken);
@@ -169,117 +151,7 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Transaction
 
     }
 
-    /// <summary>
-    /// An object that contains at least a subset of the fields for a STAC Item.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PatchStacItem
-    {
-        [Newtonsoft.Json.JsonProperty("stac_version", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Stac_version { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("stac_extensions", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Stac_extensions Stac_extensions { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("bbox", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.MinLength(4)]
-        [System.ComponentModel.DataAnnotations.MaxLength(6)]
-        public Bbox Bbox { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("geometry", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Geometry Geometry { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public ItemType Type { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("properties", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public PatchItemProperties Properties { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("links", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<Link> Links { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("assets", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Assets Assets { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    /// <summary>
-    /// A GeoJSON FeatureCollection augmented with foreign members that contain values relevant to a STAC entity
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PostStacItemOrCollection
-    {
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public PostStacItemOrCollectionType Type { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("features", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public System.Collections.Generic.List<StacItem> Features { get; set; } = new System.Collections.Generic.List<StacItem>();
-
-        /// <summary>
-        /// An array of links. Can be used for pagination, e.g. by providing a link with the `next` relation type.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("links", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<Link> Links { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    /// <summary>
-    /// Information about the exception: an error code plus an optional description.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Stac.Api.WebApi.Controllers.Core.ExceptionInfo
-    {
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Code { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Description { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum PostStacItemOrCollectionType
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"FeatureCollection")]
-        FeatureCollection = 0,
-
-    }
+    
 
 
 }

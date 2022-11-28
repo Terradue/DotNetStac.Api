@@ -17,66 +17,22 @@ using Stac.Api.Models;
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 
-namespace Stac.Api.WebApi.Controllers.Core
+namespace Stac.Api.WebApi.Controllers.Extensions.Query
 {
     using System = global::System;
 
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public interface ICoreController
-    {
-
-        /// <summary>
-        /// landing page
-        /// </summary>
-
-        /// <returns>The landing page provides links to the API definition
-        /// <br/>(link relations `service-desc` and `service-doc`)
-        /// <br/>and the Feature Collection (path `/collections`, link relation
-        /// <br/>`data`).</returns>
-
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<LandingPage>> GetLandingPageAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-
-    public partial class CoreController : Stac.Api.WebApi.StacApiController
-    {
-        private ICoreController _implementation;
-
-        public CoreController(ICoreController implementation)
-        {
-            _implementation = implementation;
-        }
-
-        /// <summary>
-        /// landing page
-        /// </summary>
-        /// <returns>The landing page provides links to the API definition
-        /// <br/>(link relations `service-desc` and `service-doc`)
-        /// <br/>and the Feature Collection (path `/collections`, link relation
-        /// <br/>`data`).</returns>
-        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<LandingPage>> GetLandingPage(System.Threading.CancellationToken cancellationToken)
-        {
-
-            return _implementation.GetLandingPageAsync(cancellationToken);
-        }
-
-    }
+    
 
     /// <summary>
-    /// Information about the exception: an error code plus an optional description.
+    /// **Extension:** Query
+    /// <br/>
+    /// <br/>Allows users to query properties for specific values
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ExceptionInfo
+    public partial class SearchBody
     {
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Code { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Description { get; set; }
+        [Newtonsoft.Json.JsonProperty("query", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Query Query { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
 
@@ -89,8 +45,20 @@ namespace Stac.Api.WebApi.Controllers.Core
 
     }
 
+    /// <summary>
+    /// Define which properties to query and the operations to apply
+    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous
+    public partial class Query : System.Collections.Generic.Dictionary<string, QueryProp>
+    {
+
+    }
+
+    /// <summary>
+    /// Apply query operations to a specific property
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class QueryProp
     {
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();

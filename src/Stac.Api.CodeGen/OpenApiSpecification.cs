@@ -14,7 +14,7 @@ namespace Stac.Api.CodeGen
         {
             ExcludedTypeNames = new Collection<string>();
             ExcludedSchemas = new Collection<string>();
-            ExcludedPaths = new Collection<string>();
+            ExcludedOperations = new Collection<string>();
             TypeNamesMapping = new Dictionary<string, string>();
         }
 
@@ -27,7 +27,7 @@ namespace Stac.Api.CodeGen
         public IDictionary<string, string> TypeNamesMapping { get; set; }
         public string ClientClassName { get; set; }
         public string ControllerClassName { get; set; }
-        public ICollection<string> ExcludedPaths { get; set; }
+        public ICollection<string> ExcludedOperations { get; set; }
         public string OpenApiPath { get; set; }
         public string File { get; set; }
         public ICollection<string> ExcludedSchemas { get; set; }

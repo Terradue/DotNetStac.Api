@@ -49,20 +49,21 @@ namespace Stac.Api.CodeGen
                 }
                 OpenApiDocument document = await OpenApiYamlDocument.FromYamlAsync(content, documentPath, SchemaType.OpenApi3, doc => GetResolver(doc, spec.Value.ExcludedSchemas));
                 // JsonSchemaReferenceUtilities.UpdateSchemaReferencePaths(document, true, new DefaultContractResolver());
-                string code = await GenerateCode(document, options.Value.GenerateControllerGeneratorSettings(spec.Key), spec.Value.ExcludedPaths);
+                string code = await GenerateCode(document, options.Value.GenerateControllerGeneratorSettings(spec.Key), spec.Value.ExcludedOperations);
                 string path = Path.Join(generatedCodeBasePath, spec.Value.ControllerOutputFilePath);
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 File.WriteAllText(path, code);
             }
         }
 
-        private async Task<string> GenerateCode(OpenApiDocument document, CSharpControllerGeneratorSettings settings, IEnumerable<string> excludedPaths)
+        private async Task<string> GenerateCode(OpenApiDocument document, CSharpControllerGeneratorSettings settings, IEnumerable<string> excludedOperations)
         {
-            if (excludedPaths != null)
+            if (excludedOperations != null)
             {
-                foreach (var path in excludedPaths)
+                foreach (var path in excludedOperations)
                 {
-                    document.Paths.Remove(path);
+                    var operation = path.Split(' ');
+                    document.Paths[operation[1]].Remove(operation[0].ToLower());
                 }
             }
 

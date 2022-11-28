@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using System.Reflection;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Multiformats.Hash.Algorithms;
 using Stac.Extensions.File;
 
@@ -8,20 +9,24 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
 {
     public class FileSystemBaseController
     {
-        private const string COLLECTIONS_DIR = "collections";
-
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         private readonly StacFileSystemResolver _stacFileSystem;
-
-        private readonly MultihashAlgorithm _hashAlgorithm = new MD5();
+        protected readonly StacFileSystemReaderService _stacFileSystemReaderService;
+        
 
         public Uri AppBaseUrl => new Uri($"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}");
 
-        public FileSystemBaseController(IHttpContextAccessor httpContextAccessor, StacFileSystemResolver stacFileSystem)
+        public LinkGenerator LinkGenerator { get; }
+
+        public FileSystemBaseController(IHttpContextAccessor httpContextAccessor,
+                                        LinkGenerator linkGenerator,
+                                        StacFileSystemResolver stacFileSystem)
         {
             _httpContextAccessor = httpContextAccessor;
+            LinkGenerator = linkGenerator;
             _stacFileSystem = stacFileSystem;
+            _stacFileSystemReaderService = new StacFileSystemReaderService(_stacFileSystem);
         }
 
         private static readonly Assembly ThisAssembly = typeof(FileSystemBaseController).Assembly;
@@ -41,50 +46,34 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
             return new Uri(AppBaseUrl, path);
         }
 
-        protected IEnumerable<StacCollection> GetCollections()
-        {
-            var collectionFiles = _stacFileSystem.GetDirectory(COLLECTIONS_DIR).GetFiles("*.json");
-            foreach (var collectionFile in collectionFiles)
-            {
-                var collection = _stacFileSystem.FileSystem.File.ReadAllText(collectionFile.FullName);
-                yield return StacConvert.Deserialize<StacCollection>(collection);
-            }
-        }
-
-        protected StacCollection GetCollectionById(string collectionId)
-        {
-            return StacConvert.Deserialize<StacCollection>(_stacFileSystem.FileSystem.File.ReadAllText(_stacFileSystem.GetDirectory(COLLECTIONS_DIR).FullName + $"/{collectionId}.json"));
-        }
-
-        protected StacItem GetFeatureById(string collectionId, string featureId)
-        {
-            return StacConvert.Deserialize<StacItem>(_stacFileSystem.FileSystem.File.ReadAllText(_stacFileSystem.GetDirectory(COLLECTIONS_DIR).FullName + $"/{collectionId}/{featureId}.json"));
-        }
-
         protected void CheckExists(string collectionId, string featureId)
         {
-            if (!_stacFileSystem.FileSystem.File.Exists(_stacFileSystem.GetDirectory(COLLECTIONS_DIR).FullName + $"/{collectionId}/{featureId}.json"))
-            {
-                throw new StacApiException($"Feature {featureId} not found in collection {collectionId}", 404, null, null, null);
-            }
+            _stacFileSystemReaderService.GetStacItemById(collectionId, featureId);
         }
 
         protected void CheckEtag(string if_Match, string collectionId, string featureId)
         {
-            var featureJson = _stacFileSystem.FileSystem.File.ReadAllText(_stacFileSystem.GetDirectory(COLLECTIONS_DIR).FullName + $"/{collectionId}/{featureId}.json");
-            if (_hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(featureJson)).ToString() != if_Match)
+            var checksum = _stacFileSystemReaderService.GetStacItemEtagById(collectionId, featureId);
+            
+            if (checksum != if_Match)
             {
                 throw new StacApiException($"Feature {featureId} in collection {collectionId} has changed", 412, null, null, null);
             }
         }
 
-        protected Task DeleteItem(string collectionId, string featureId)
+        protected void CheckFeatureId(StacItem body, string featureId)
         {
-            StacItem feature = GetFeatureById(collectionId, featureId);
-            _stacFileSystem.FileSystem.File.Delete(_stacFileSystem.GetDirectory(COLLECTIONS_DIR).FullName + $"/{collectionId}/{featureId}.json");
-            return Task.CompletedTask;
+            throw new NotImplementedException();
         }
 
-        
+        protected void Relink(IStacObject c)
+        {
+            AddSelfLink(c);
+        }
+
+        private void AddSelfLink(IStacObject c)
+        {
+            LinkGenerator.GetUriByAction(_httpContextAccessor.HttpContext, "DescribeCollectionAsync", "Collections", new {collectionId = c.Id});
+        }
     }
 }

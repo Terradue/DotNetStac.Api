@@ -1,7 +1,6 @@
 using System.IO.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Stac.Api.Models;
-using Stac.Api.WebApi.Controllers.Fragments.Filter;
 using Stac.Api.WebApi.Controllers.ItemSearch;
 
 namespace Stac.Api.WebApi.Implementations.FileSystem.ItemSearch
@@ -9,7 +8,8 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.ItemSearch
     public class FileSystemItemSearchController : FileSystemBaseController, IItemSearchController
     {
         public FileSystemItemSearchController(IHttpContextAccessor httpContextAccessor,
-                                               StacFileSystemResolver fileSystem) : base(httpContextAccessor, fileSystem)
+                                               LinkGenerator linkGenerator,
+                                               StacFileSystemResolver fileSystem) : base(httpContextAccessor, linkGenerator, fileSystem)
         {
         }
 

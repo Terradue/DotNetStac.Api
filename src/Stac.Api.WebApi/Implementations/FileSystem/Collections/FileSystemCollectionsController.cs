@@ -6,14 +6,16 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Collections
 {
     public class FileSystemCollectionsController : FileSystemBaseController, ICollectionsController
     {
+
         public FileSystemCollectionsController(IHttpContextAccessor httpContextAccessor,
-                                               StacFileSystemResolver fileSystem) : base(httpContextAccessor, fileSystem)
+                                               LinkGenerator linkGenerator,
+                                               StacFileSystemResolver fileSystem) : base(httpContextAccessor, linkGenerator, fileSystem)
         {
         }
 
         public async Task<ActionResult<StacCollection>> DescribeCollectionAsync(string collectionId, CancellationToken cancellationToken = default)
         {
-            StacCollection collection = GetCollectionById(collectionId);
+            StacCollection collection = _stacFileSystemReaderService.GetCollectionById(collectionId);
             return collection == null ? new NotFoundResult() : (ActionResult<StacCollection>)collection;
         }
 
@@ -21,9 +23,13 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Collections
         {
             return new StacCollections()
             {
-                Collections = GetCollections().ToList()
+                Collections = _stacFileSystemReaderService.GetCollections().Select(c => {
+                    Relink(c);
+                    return c;
+                }).ToList()
             };
         }
+
         
     }
 }
