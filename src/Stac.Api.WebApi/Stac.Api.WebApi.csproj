@@ -14,11 +14,19 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.*" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.*"/>
     <PackageReference Include="System.IO.Abstractions" Version="17.0.*" />
+    <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="5.4.0" />
+    <PackageReference Include="NetTopologySuite.IO.GeoJSON" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Stac.Api\Stac.Api.csproj" />
     <ProjectReference Include="..\Stac.Api.CodeGen\Stac.Api.CodeGen.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../../systems/Stars/src/Stars.Interface/Terradue.Stars.Interface.csproj" />
+    <ProjectReference Include="../../../../systems/Stars/src/Stars.Services/Terradue.Stars.Services.csproj" />
+    <ProjectReference Include="../../../../systems/Stars/src/Stars.Geometry/Terradue.Stars.Geometry.csproj" />
   </ItemGroup>
 
   <ItemGroup>

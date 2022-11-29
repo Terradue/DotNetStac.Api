@@ -4,6 +4,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Stac.Collection;
 
 namespace Stac.Api.WebApi.Implementations.FileSystem
 {
@@ -29,6 +30,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
         {
             var json = StacConvert.Serialize(CreateFileSystemLinkedStacCollection(stacCollection));
             var path = _fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{stacCollection.Id}.json";
+            PreparePath(path);
             _fileSystemResolver.FileSystem.File.WriteAllText(path, json);
             return Task.FromResult(stacCollection);
         }
@@ -36,29 +38,76 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
         private StacCollection CreateFileSystemLinkedStacCollection(StacCollection stacCollection)
         {
             StacCollection fsStacCollection = new StacCollection(stacCollection);
-            ClearFileSystemLink(fsStacCollection.Links);
+            ClearFileSystemLink(fsStacCollection);
             return fsStacCollection;
         }
 
-        private void ClearFileSystemLink(ICollection<StacLink> links)
+        private void ClearFileSystemLink(ILinksCollectionObject linksCollectionObject)
         {
-            links.Where(l => l.RelationshipType == "self").ToList().ForEach(l => links.Remove(l));
-            links.Where(l => l.RelationshipType == "root").ToList().ForEach(l => links.Remove(l));
-            links.Where(l => l.RelationshipType == "parent").ToList().ForEach(l => links.Remove(l));
+            linksCollectionObject.Links.Where(l => l.RelationshipType == "self").ToList().ForEach(l => linksCollectionObject.Links.Remove(l));
+            linksCollectionObject.Links.Where(l => l.RelationshipType == "root").ToList().ForEach(l => linksCollectionObject.Links.Remove(l));
+            linksCollectionObject.Links.Where(l => l.RelationshipType == "parent").ToList().ForEach(l => linksCollectionObject.Links.Remove(l));
+            linksCollectionObject.Links.Where(l => l.RelationshipType == "collection").ToList().ForEach(l => linksCollectionObject.Links.Remove(l));
         }
 
         internal Task<StacItem> CreateStacItemAsync(StacItem stacItem, string collectionId, CancellationToken cancellationToken)
         {
-            var json = StacConvert.Serialize(CreateFileSystemLinkedStacItem(stacItem));
-            var path = _fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{collectionId}/{stacItem.Id}.json";
+            StacItem preparedItem = PrepareStacItem(stacItem, collectionId);
+            var json = StacConvert.Serialize(preparedItem);
+            var path = _fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{collectionId}/items/{preparedItem.Id}.json";
+            PreparePath(path);
             _fileSystemResolver.FileSystem.File.WriteAllText(path, json);
-            return Task.FromResult(stacItem);
+            UpdateStacCollectionWithNewItem(collectionId, preparedItem);
+            return Task.FromResult(preparedItem);
         }
 
-        private StacItem CreateFileSystemLinkedStacItem(StacItem stacItem)
+        private void UpdateStacCollectionWithNewItem(string collectionId, StacItem preparedItem)
+        {
+            StacCollection existingCollection = null;
+            try
+            {
+                existingCollection = _fileSystemReaderService.GetCollectionById(collectionId);
+            }
+            catch { }
+            StacCollection collection = StacCollection.Create(
+                collectionId, null,
+                _fileSystemReaderService.GetStacItemsByCollectionId(collectionId)
+                    .ToDictionary(i => new Uri($"items/{i.Id}.json", UriKind.Relative), i => i));
+
+            if (existingCollection != null){
+                collection.Title = existingCollection.Title;
+                collection.Description = existingCollection.Description;
+                collection.Keywords.AddRange(existingCollection.Keywords);
+                collection.License = existingCollection.License;
+                collection.Providers.AddRange(existingCollection.Providers);
+                collection.Assets.AddRange(existingCollection.Assets);
+                collection.Links.AddRange(existingCollection.Links);
+            }
+            UpdateStacCollection(collection);
+        }
+
+        private void UpdateStacCollection(StacCollection collection)
+        {
+            var json = StacConvert.Serialize(collection);
+            var path = _fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{collection.Id}.json";
+            PreparePath(path);
+            _fileSystemResolver.FileSystem.File.WriteAllText(path, json);
+        }
+
+        private void PreparePath(string path)
+        {
+            var dir = _fileSystemResolver.FileSystem.Path.GetDirectoryName(path);
+            if (!_fileSystemResolver.FileSystem.Directory.Exists(dir))
+            {
+                _fileSystemResolver.FileSystem.Directory.CreateDirectory(dir);
+            }
+        }
+
+        private StacItem PrepareStacItem(StacItem stacItem, string collectionId)
         {
             StacItem fsStacItem = new StacItem(stacItem);
-            ClearFileSystemLink(fsStacItem.Links);
+            ClearFileSystemLink(fsStacItem);
+            fsStacItem.Collection = collectionId;
             return fsStacItem;
         }
 

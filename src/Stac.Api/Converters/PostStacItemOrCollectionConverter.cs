@@ -23,11 +23,11 @@ namespace Stac.Api.Converters
             // Stac Item
             if (jo.ContainsKey("type") && jo["type"].ToString() == "Feature")
             {
-                return jo.ToObject<StacItem>(serializer);
+                return new PostStacItemOrCollection(jo.ToObject<StacItem>(serializer));
             }
 
             // Stac Features Collection
-            return jo.ToObject<StacFeatureCollection>(serializer);
+            return new PostStacItemOrCollection(jo.ToObject<StacFeatureCollection>(serializer));
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

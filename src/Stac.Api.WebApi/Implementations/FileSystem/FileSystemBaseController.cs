@@ -1,9 +1,4 @@
-using System.IO.Abstractions;
 using System.Reflection;
-using System.Text;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Multiformats.Hash.Algorithms;
-using Stac.Extensions.File;
 
 namespace Stac.Api.WebApi.Implementations.FileSystem
 {
@@ -14,10 +9,11 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
         private readonly StacFileSystemResolver _stacFileSystem;
         protected readonly StacFileSystemReaderService _stacFileSystemReaderService;
         
-
-        public Uri AppBaseUrl => new Uri($"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}");
+        public Uri AppBaseUrl => new Uri($"{HttpContextAccessor.HttpContext.Request.Scheme}://{HttpContextAccessor.HttpContext.Request.Host}{HttpContextAccessor.HttpContext.Request.PathBase}");
 
         public LinkGenerator LinkGenerator { get; }
+
+        public IHttpContextAccessor HttpContextAccessor => _httpContextAccessor;
 
         public FileSystemBaseController(IHttpContextAccessor httpContextAccessor,
                                         LinkGenerator linkGenerator,
@@ -33,17 +29,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
 
         protected async Task<StacCatalog> GetRootCatalogAsync(CancellationToken ct)
         {
-            return StacConvert.Deserialize<StacCatalog>(GetFile("catalog.json").OpenRead());
-        }
-
-        private IFileInfo GetFile(string path)
-        {
-            return _stacFileSystem.FileSystem.FileInfo.FromFileName(_stacFileSystem.FileSystem.Path.Combine(_stacFileSystem.RootPath, path));
-        }
-
-        protected Uri MakeUriFromFileSystem(string path)
-        {
-            return new Uri(AppBaseUrl, path);
+            return _stacFileSystemReaderService.GetCatalog();
         }
 
         protected void CheckExists(string collectionId, string featureId)
@@ -66,14 +52,52 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
             throw new NotImplementedException();
         }
 
-        protected void Relink(IStacObject c)
+        protected StacLink GetSelfLink(IStacObject stacObject)
         {
-            AddSelfLink(c);
+            return new StacLink(
+                new Uri (GetSelfUrl(stacObject)),
+                "self",
+                stacObject.Title,
+                stacObject.MediaType.ToString()
+            );
         }
 
-        private void AddSelfLink(IStacObject c)
+        protected StacLink GetRootLink(IStacObject stacObject)
         {
-            LinkGenerator.GetUriByAction(_httpContextAccessor.HttpContext, "DescribeCollectionAsync", "Collections", new {collectionId = c.Id});
+            StacCatalog rootCatalog = _stacFileSystemReaderService.GetCatalog();
+            return new StacLink(
+                new Uri (GetSelfUrl(rootCatalog)),
+                "root",
+                rootCatalog.Title,
+                rootCatalog.MediaType.ToString()
+            );
+        }
+
+        protected StacLink GetCollectionLink(StacItem stacItem)
+        {
+            StacCollection collection = _stacFileSystemReaderService.GetCollectionById(stacItem.Collection);
+            return new StacLink(
+                new Uri (GetSelfUrl(collection)),
+                "collection",
+                collection.Title,
+                collection.MediaType.ToString()
+            );
+        }
+
+        protected string GetSelfUrl(IStacObject stacObject)
+        {
+            switch (stacObject)
+            {
+                case StacCatalog catalog:
+                    return LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "GetLandingPage", "Core", new {});
+                case StacCollection collection:
+                    return LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "DescribeCollection", "Collections", new {collectionId = collection.Id});
+                case StacItem item:
+                    return LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "GetFeature", "OgcApiFeatures", new {collectionId = item.Collection, featureId = item.Id});
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(stacObject), stacObject, null);
+            }
+            
         }
     }
 }

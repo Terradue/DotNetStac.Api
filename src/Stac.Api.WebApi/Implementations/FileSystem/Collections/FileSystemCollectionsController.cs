@@ -16,7 +16,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Collections
         public async Task<ActionResult<StacCollection>> DescribeCollectionAsync(string collectionId, CancellationToken cancellationToken = default)
         {
             StacCollection collection = _stacFileSystemReaderService.GetCollectionById(collectionId);
-            return collection == null ? new NotFoundResult() : (ActionResult<StacCollection>)collection;
+            return collection;
         }
 
         public async Task<ActionResult<StacCollections>> GetCollectionsAsync(CancellationToken cancellationToken = default)
@@ -24,7 +24,8 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Collections
             return new StacCollections()
             {
                 Collections = _stacFileSystemReaderService.GetCollections().Select(c => {
-                    Relink(c);
+                    c.Links.Add(GetSelfLink(c));
+                    c.Links.Add(GetRootLink(c));
                     return c;
                 }).ToList()
             };

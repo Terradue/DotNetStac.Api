@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using NJsonSchema;
 using Stac.Api.Extensions.Transactions;
 using Stac.Api.Models;
+using Stac.Api.WebApi.Controllers.Collections;
+using Stac.Api.WebApi.Controllers.OgcApiFeatures;
 using Stac.Api.WebApi.Implementations.FileSystem.Collections;
 using Stac.Api.WebApi.Implementations.FileSystem.OgcApiFeatures;
 using Stac.Common;
@@ -12,13 +14,13 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Extensions
     public class FileSystemTransactionController : FileSystemBaseController, Controllers.Extensions.Transaction.ITransactionController
     {
         private readonly StacFileSystemTransactionService _stacFileSystemTransactionService;
-        private readonly FileSystemOgcApiFeaturesController _fileSystemOgcApiFeaturesController;
-        private readonly FileSystemCollectionsController _fileSystemCollectionsController;
+        private readonly IOgcApiFeaturesController _fileSystemOgcApiFeaturesController;
+        private readonly ICollectionsController _fileSystemCollectionsController;
 
         public FileSystemTransactionController(IHttpContextAccessor httpContextAccessor,
                                                StacFileSystemResolver fileSystem,
-                                               FileSystemOgcApiFeaturesController fileSystemOgcApiFeaturesController,
-                                               FileSystemCollectionsController fileSystemCollectionsController,
+                                               IOgcApiFeaturesController fileSystemOgcApiFeaturesController,
+                                               ICollectionsController fileSystemCollectionsController,
                                                LinkGenerator linkGenerator) : base(httpContextAccessor, linkGenerator, fileSystem)
         {
             _stacFileSystemTransactionService = new StacFileSystemTransactionService(fileSystem);
@@ -45,7 +47,6 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Extensions
 
         public async Task<ActionResult<StacItem>> PostFeatureAsync(PostStacItemOrCollection body, string collectionId, CancellationToken cancellationToken = default)
         {
-            StacCollection stacCollection = _stacFileSystemReaderService.GetCollectionById(collectionId);
             body.ValidateInputForTransaction();
             if (!body.IsCollection)
             {
@@ -85,16 +86,23 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Extensions
 
         public async Task<ActionResult<StacItem>> PostFeatureAsync(StacItem body, string collectionId, CancellationToken cancellationToken = default)
         {
+            StacItem item = null;
             try
             {
-                var item = _stacFileSystemReaderService.GetStacItemById(collectionId, body.Id);
+                item = _stacFileSystemReaderService.GetStacItemById(collectionId, body.Id);
                 if (item != null)
                 {
                     return new ConflictResult();
                 }
             }
             catch { }
-            return await _stacFileSystemTransactionService.CreateStacItemAsync(body, collectionId, cancellationToken);
+            item = await _stacFileSystemTransactionService.CreateStacItemAsync(body, collectionId, cancellationToken);
+            item.Links.Add(GetSelfLink(item));
+            item.Links.Add(GetRootLink(item));
+            item.Links.Add(GetCollectionLink(item));
+            return new CreatedResult(
+                        GetSelfUrl(item),
+                        item);
         }
 
         public async Task<ActionResult<StacItem>> UpdateFeatureAsync(string if_Match, StacItem body, string collectionId, string featureId, CancellationToken cancellationToken = default)

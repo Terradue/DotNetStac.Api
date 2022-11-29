@@ -34,10 +34,10 @@ namespace Stac.Api.Models
         {
             lock (_lock)
             {
-                List<string> conformsTo = this.GetProperty<List<string>>(_conformsToFieldName);
+                Collection<string> conformsTo = this.GetProperty<Collection<string>>(_conformsToFieldName);
                 if (conformsTo == null)
                 {
-                    conformsTo = new List<string>();
+                    conformsTo = new Collection<string>();
                 }
                 if (e.OldItems != null)
                 {
@@ -53,7 +53,7 @@ namespace Stac.Api.Models
                         conformsTo.Add(newConformance);
                     }
                 }
-                this.SetProperty(_conformsToFieldName, conformsTo.ToArray());
+                this.SetProperty(_conformsToFieldName, conformsTo);
             }
         }
 

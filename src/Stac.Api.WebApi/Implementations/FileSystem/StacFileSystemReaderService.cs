@@ -37,13 +37,30 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
 
         public StacItem GetStacItemById(string collectionId, string featureId)
         {
-            return StacConvert.Deserialize<StacItem>(_fileSystemResolver.FileSystem.File.ReadAllText(_fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{collectionId}/{featureId}.json"));
+            return StacConvert.Deserialize<StacItem>(_fileSystemResolver.FileSystem.File.ReadAllText(_fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{collectionId}/items/{featureId}.json"));
         }
 
         internal string GetStacItemEtagById(string collectionId, string featureId)
         {
-            var featureJson = _fileSystemResolver.FileSystem.File.ReadAllText(_fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{collectionId}/{featureId}.json");
+            var featureJson = _fileSystemResolver.FileSystem.File.ReadAllText(_fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{collectionId}/items/{featureId}.json");
             return _hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(featureJson)).ToString();
+        }
+
+        public StacCatalog GetCatalog()
+        {
+            return StacConvert.Deserialize<StacCatalog>(_fileSystemResolver.FileSystem.File.ReadAllText(_fileSystemResolver.GetRootDirectory().FullName + "/catalog.json"));
+        }
+
+        internal IEnumerable<StacItem> GetStacItemsByCollectionId(string collectionId)
+        {
+            var itemFiles = _fileSystemResolver.GetDirectory(
+                Path.Combine(StacFileSystemResolver.COLLECTIONS_DIR, collectionId, "items"))
+                .GetFiles("*.json");
+            foreach (var itemFile in itemFiles)
+            {
+                var collection = _fileSystemResolver.FileSystem.File.ReadAllText(itemFile.FullName);
+                yield return StacConvert.Deserialize<StacItem>(collection);
+            }
         }
     }
 }

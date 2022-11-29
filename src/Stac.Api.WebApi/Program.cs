@@ -6,6 +6,7 @@ using Stac.Api.CodeGen;
 using Stac.Api.WebApi.Extensions;
 using Microsoft.Extensions.Configuration;
 using NSwag.AspNetCore;
+using Hellang.Middleware.ProblemDetails;
 
 // Create the default web application builder
 var builder = WebApplication.CreateBuilder(args);
@@ -18,9 +19,13 @@ var configuration = configBuilder.Build();
 // Configure the Todo repository and associated services
 builder.Services.AddStacWebApi();
 builder.Services.AddFileSystemControllers(builder =>
-                    builder.UseFileSystemRoot(Path.Combine(Path.GetTempPath(), "StacApi"), true)
-                );
+        builder.UseFileSystemRoot(Path.Combine(Path.GetTempPath(), "StacApi"), true));
+        
 builder.Services.AddCodeGenOptions(configuration.GetSection("CodeGen"));
+
+builder.Services.AddProblemDetails(config =>
+                StacWebApiExtensions.ConfigureProblemDetails(config, configuration, builder.Environment));
+
 
 // Configure OpenAPI documentation for the Todo API
 builder.Services.AddEndpointsApiExplorer();
@@ -46,6 +51,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
+app.UseProblemDetails();
+
 // Add Swagger endpoint for OpenAPI
 app.UseOpenApi(app.Services.GetService<IOptions<CodeGenOptions>>().Value);
 app.UseSwaggerUi3(c =>
@@ -67,7 +74,6 @@ app.UseCors();
 app.UseEndpoints(endpoints =>
     {
         endpoints.MapControllers();
-
     });
 
 // Run the application
