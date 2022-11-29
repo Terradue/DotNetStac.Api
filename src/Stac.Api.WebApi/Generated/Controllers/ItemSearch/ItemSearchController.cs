@@ -95,7 +95,7 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
 
         /// <returns>A feature collection.</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearchAsync(string bbox, IntersectsQueryString intersectsQueryString, string datetime, int limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearchAsync(string bbox, GeoJSON.Net.Geometry.IGeometryObject intersectsQueryString, string datetime, int limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// Search STAC items with full-featured filtering.
@@ -182,7 +182,7 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
         /// <br/>Only Item objects in one of the provided collections will be searched</param>
         /// <returns>A feature collection.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("search")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearch([Microsoft.AspNetCore.Mvc.FromQuery] string bbox, [Microsoft.AspNetCore.Mvc.FromQuery] IntersectsQueryString intersectsQueryString, [Microsoft.AspNetCore.Mvc.FromQuery] string datetime, [Microsoft.AspNetCore.Mvc.FromQuery] int? limit, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> ids, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearch([Microsoft.AspNetCore.Mvc.FromQuery] string bbox, [Microsoft.AspNetCore.Mvc.FromQuery] GeoJSON.Net.Geometry.IGeometryObject intersectsQueryString, [Microsoft.AspNetCore.Mvc.FromQuery] string datetime, [Microsoft.AspNetCore.Mvc.FromQuery] int? limit, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> ids, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken)
         {
 
             return _implementation.GetItemSearchAsync(bbox, intersectsQueryString, datetime, limit ?? 10, ids, collections, cancellationToken);

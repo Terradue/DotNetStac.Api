@@ -112,7 +112,7 @@ namespace Stac.Api.Clients.ItemSearch
         /// <br/>Only Item objects in one of the provided collections will be searched</param>
         /// <returns>A feature collection.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, IntersectsQueryString intersectsQueryString, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections)
+        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, GeoJSON.Net.Geometry.IGeometryObject intersectsQueryString, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections)
         {
             return GetItemSearchAsync(bbox, intersectsQueryString, datetime, limit, ids, collections, System.Threading.CancellationToken.None);
         }
@@ -181,7 +181,7 @@ namespace Stac.Api.Clients.ItemSearch
         /// <br/>Only Item objects in one of the provided collections will be searched</param>
         /// <returns>A feature collection.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, IntersectsQueryString intersectsQueryString, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, GeoJSON.Net.Geometry.IGeometryObject intersectsQueryString, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append("search?");
@@ -252,12 +252,12 @@ namespace Stac.Api.Clients.ItemSearch
                         }
                         else
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<StacFeatureCollection>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<StacFeatureCollection>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                     }
                     finally
@@ -339,12 +339,12 @@ namespace Stac.Api.Clients.ItemSearch
                         }
                         else
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<StacFeatureCollection>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<StacFeatureCollection>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                     }
                     finally
