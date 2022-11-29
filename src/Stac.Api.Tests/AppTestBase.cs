@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
@@ -18,6 +19,14 @@ namespace Stac.Api.Tests
             Fixture = fixture;
             // Route output from the fixture's logs to xunit's output
             Fixture.SetOutputHelper(OutputHelper);
+        }
+
+        public static IEnumerable<object[]> TestCatalogs
+        {
+            get
+            {
+                return new TestCatalogsProvider();
+            }
         }
 
 

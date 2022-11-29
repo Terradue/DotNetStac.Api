@@ -1,5 +1,6 @@
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Stac.Api.Attributes;
 using Stac.Api.Interfaces;
 
@@ -21,6 +22,17 @@ namespace Stac.Api.WebApi
                 conformanceClasses.Add(ccAttr.ConformanceClass);
             }
             return conformanceClasses;
+        }
+
+        public IReadOnlyCollection<StacLink> GetLandingPageLinks(LinkGenerator linkGenerator, IHttpContextAccessor httpContextAccessor)
+        {
+            System.Attribute[] lpaAttrs = System.Attribute.GetCustomAttributes(this.GetType()).Where(a => a is LandingPageActionAttribute).ToArray();
+            List<StacLink> landingPageActionLinks = new List<StacLink>();
+            foreach (LandingPageActionAttribute lpaAttr in lpaAttrs)
+            {
+                landingPageActionLinks.Add(lpaAttr.GetStacLink(linkGenerator, httpContextAccessor, this.GetType().Name.Replace("Controller", "")));
+            }
+            return landingPageActionLinks;
         }
     }
 }

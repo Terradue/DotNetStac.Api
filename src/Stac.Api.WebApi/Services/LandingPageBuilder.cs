@@ -12,22 +12,59 @@ namespace Stac.Api.WebApi.Services
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public LandingPageBuilder(IServiceProvider serviceProvider)
+        public LinkGenerator LinkGenerator { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
+
+        public LandingPageBuilder(IServiceProvider serviceProvider,
+                                  LinkGenerator linkGenerator,
+                                  IHttpContextAccessor httpContextAccessor)
         {
             _serviceProvider = serviceProvider;
+            LinkGenerator = linkGenerator;
+            HttpContextAccessor = httpContextAccessor;
         }
 
-        public LandingPage Build(StacCatalog rootCatalog, LinkGenerator linkGenerator)
+        public LandingPage Build(StacCatalog rootCatalog)
         {
             var landingPage = new LandingPage(rootCatalog);
 
             AddConformanceClasses(landingPage);
+
+            AddLinks(landingPage);
 
             // landingPage.Links.Add(StacLink.CreateSelfLink(linkGenerator.GetAppBaseUrl(), "application/json"));
             // landingPage.Links.Add(StacLink.CreateRootLink(linkGenerator.GetAppBaseUrl(), "application/json"));
             // landingPage.Links.Add(new StacLink(new Uri(linkGenerator.GetAppBaseUrl(), "/swagger/v1/swagger.json"), "service-desc", null, "application/vnd.oai.openapi+json;version=3.0"));
             // landingPage.Links.Add(new StacLink(new Uri(linkGenerator.GetAppBaseUrl(), "/swagger"), "service-doc", null, "text/html"));
             // landingPage.Links.Add(new StacLink(new Uri(linkGenerator.GetAppBaseUrl(), "/collections"), "data", null, "application/json"));
+
+            return landingPage;
+        }
+
+        private LandingPage AddLinks(LandingPage landingPage)
+        {
+            AddBaseLinks(landingPage);
+            AddEnpointLinks(landingPage);
+            return landingPage;
+        }
+
+        private LandingPage AddEnpointLinks(LandingPage landingPage)
+        {
+            var stacapiControllers = GetAllStacApiControllers();
+            foreach (var controller in stacapiControllers)
+            {
+                var links = controller.GetLandingPageLinks(LinkGenerator, HttpContextAccessor);
+                landingPage.Links.AddRange(links);
+            }
+            return landingPage;
+        }
+
+        private LandingPage AddBaseLinks(LandingPage landingPage)
+        {
+            landingPage.Links.Add(StacLink.CreateSelfLink(new Uri(LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "GetLandingPage", "Core")),
+                                     "application/json"));
+            landingPage.Links.Add(StacLink.CreateRootLink(new Uri(LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "GetLandingPage", "Core")),
+                                     "application/json"));
 
             return landingPage;
         }
@@ -54,6 +91,7 @@ namespace Stac.Api.WebApi.Services
                 .Where(c => c != null);
             return controllers.Select(c => c.ControllerTypeInfo)
                 .Where(t => typeof(IStacApiController).IsAssignableFrom(t))
+                .Distinct()
                 .Select(t => (IStacApiController)ActivatorUtilities.CreateInstance(_serviceProvider, t))
                 .ToList();
         }

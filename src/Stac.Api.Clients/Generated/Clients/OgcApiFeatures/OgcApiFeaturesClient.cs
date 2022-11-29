@@ -5,6 +5,7 @@
 //----------------------
 
 using Stac;
+using Stac.Common;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.OgcApiFeatures;
 
@@ -27,9 +28,8 @@ namespace Stac.Api.Clients.OgcApiFeatures
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public OgcApiFeaturesClient(string baseUrl, System.Net.Http.HttpClient httpClient)
+        public OgcApiFeaturesClient(System.Net.Http.HttpClient httpClient)
         {
-            BaseUrl = baseUrl;
             _httpClient = httpClient;
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
         }
@@ -78,7 +78,7 @@ namespace Stac.Api.Clients.OgcApiFeatures
         public virtual async System.Threading.Tasks.Task<ConformanceClasses> GetConformanceDeclarationAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/conformance");
+            urlBuilder_.Append("conformance");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -307,7 +307,7 @@ namespace Stac.Api.Clients.OgcApiFeatures
                 throw new System.ArgumentNullException("collectionId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/{collectionId}/items?");
+            urlBuilder_.Append("collections/{collectionId}/items?");
             urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
             if (limit != null)
             {
@@ -439,7 +439,7 @@ namespace Stac.Api.Clients.OgcApiFeatures
                 throw new System.ArgumentNullException("featureId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/{collectionId}/items/{featureId}");
+            urlBuilder_.Append("collections/{collectionId}/items/{featureId}");
             urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{featureId}", System.Uri.EscapeDataString(ConvertToString(featureId, System.Globalization.CultureInfo.InvariantCulture)));
 

@@ -19,7 +19,7 @@ namespace Stac.Api.Tests
             await using var application = new CollectionsStacApiApplication();
 
             var client = application.CreateClient();
-            CollectionsClient collectionsClient = new CollectionsClient("https://localhost", client);
+            CollectionsClient collectionsClient = new CollectionsClient(client);
 
             var collections = await collectionsClient.GetCollectionsAsync();
 

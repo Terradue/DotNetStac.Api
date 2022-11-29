@@ -42,7 +42,7 @@ namespace Stac.Api.Tests
         {
             builder.ConfigureAppConfiguration(configBuilder =>
             {
-                // Configure the test fixture to write the SQLite database
+                // Configure the test fixture to write the filesystem catalog
                 // to a temporary directory, rather than in App_Data.
                 var dataDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 

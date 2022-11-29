@@ -90,6 +90,18 @@ namespace Stac.Api.Tests
             return File.ReadAllText(path);
         }
 
+        protected string GetTestCatalogsRootPath()
+        {
+            var path = Path.Combine(AssemblyDirectory, @"../../..", "Resources/TestCatalogs");
+
+            if (!Directory.Exists(path))
+            {
+                throw new DirectoryNotFoundException("Directory not found at " + path);
+            }
+
+            return path;
+        }
+
         public bool ValidateJson(string jsonstr)
         {
             return stacValidator.ValidateJson(jsonstr);

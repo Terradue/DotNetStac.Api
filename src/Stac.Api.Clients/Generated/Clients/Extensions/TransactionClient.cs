@@ -5,9 +5,9 @@
 //----------------------
 
 using Stac;
+using Stac.Common;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.Extensions.Transaction;
-using Stac.Common;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -28,9 +28,8 @@ namespace Stac.Api.Clients.Extensions
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public TransactionClient(string baseUrl, System.Net.Http.HttpClient httpClient)
+        public TransactionClient(System.Net.Http.HttpClient httpClient)
         {
-            BaseUrl = baseUrl;
             _httpClient = httpClient;
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
         }
@@ -56,7 +55,7 @@ namespace Stac.Api.Clients.Extensions
         /// <param name="collectionId">local identifier of a collection</param>
         /// <returns>Status of the create request.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<StacItem> PostFeatureAsync(StacFeatureCollection body, string collectionId)
+        public virtual System.Threading.Tasks.Task<StacItem> PostFeatureAsync(PostStacItemOrCollection body, string collectionId)
         {
             return PostFeatureAsync(body, collectionId, System.Threading.CancellationToken.None);
         }
@@ -68,13 +67,13 @@ namespace Stac.Api.Clients.Extensions
         /// <param name="collectionId">local identifier of a collection</param>
         /// <returns>Status of the create request.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<StacItem> PostFeatureAsync(StacFeatureCollection body, string collectionId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<StacItem> PostFeatureAsync(PostStacItemOrCollection body, string collectionId, System.Threading.CancellationToken cancellationToken)
         {
             if (collectionId == null)
                 throw new System.ArgumentNullException("collectionId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/{collectionId}/items");
+            urlBuilder_.Append("collections/{collectionId}/items");
             urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -175,86 +174,6 @@ namespace Stac.Api.Clients.Extensions
             }
         }
 
-        /// <param name="collectionId">local identifier of a collection</param>
-        /// <param name="featureId">local identifier of a feature</param>
-        /// <returns>Adds a ETag header to the response specified in STAC API - Features</returns>
-        /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task GetFeatureAsync(string collectionId, string featureId)
-        {
-            return GetFeatureAsync(collectionId, featureId, System.Threading.CancellationToken.None);
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <param name="collectionId">local identifier of a collection</param>
-        /// <param name="featureId">local identifier of a feature</param>
-        /// <returns>Adds a ETag header to the response specified in STAC API - Features</returns>
-        /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task GetFeatureAsync(string collectionId, string featureId, System.Threading.CancellationToken cancellationToken)
-        {
-            if (collectionId == null)
-                throw new System.ArgumentNullException("collectionId");
-
-            if (featureId == null)
-                throw new System.ArgumentNullException("featureId");
-
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/{collectionId}/items/{featureId}");
-            urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
-            urlBuilder_.Replace("{featureId}", System.Uri.EscapeDataString(ConvertToString(featureId, System.Globalization.CultureInfo.InvariantCulture)));
-
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            return;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StacApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
         /// <summary>
         /// update an existing feature by Id with a complete item definition
         /// </summary>
@@ -288,7 +207,7 @@ namespace Stac.Api.Clients.Extensions
                 throw new System.ArgumentNullException("featureId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/{collectionId}/items/{featureId}");
+            urlBuilder_.Append("collections/{collectionId}/items/{featureId}");
             urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{featureId}", System.Uri.EscapeDataString(ConvertToString(featureId, System.Globalization.CultureInfo.InvariantCulture)));
 
@@ -441,7 +360,7 @@ namespace Stac.Api.Clients.Extensions
                 throw new System.ArgumentNullException("featureId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/{collectionId}/items/{featureId}");
+            urlBuilder_.Append("collections/{collectionId}/items/{featureId}");
             urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{featureId}", System.Uri.EscapeDataString(ConvertToString(featureId, System.Globalization.CultureInfo.InvariantCulture)));
 
@@ -583,7 +502,7 @@ namespace Stac.Api.Clients.Extensions
                 throw new System.ArgumentNullException("featureId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/{collectionId}/items/{featureId}");
+            urlBuilder_.Append("collections/{collectionId}/items/{featureId}");
             urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{featureId}", System.Uri.EscapeDataString(ConvertToString(featureId, System.Globalization.CultureInfo.InvariantCulture)));
 

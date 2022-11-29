@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -6,10 +7,22 @@ using Stac.Api.WebApi.Implementations;
 using Stac.Api.WebApi.Implementations.FileSystem;
 using Stac.Api.WebApi.Implementations.FileSystem.Core;
 
-namespace Stac.Api.Tests
+namespace Stac.Api.Tests.Core
 {
     internal class CoreStacApiApplication : WebApplicationFactory<CoreController>
     {
+        private string _datadir;
+
+        public CoreStacApiApplication(string datadir)
+        {
+            _datadir = datadir;
+        }
+
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
+        {
+            // Notice there is no `--` prefix in "config"
+            builder.UseSetting("catalogRootPath", _datadir);
+        }
 
         protected override IHost CreateHost(IHostBuilder builder)
         {

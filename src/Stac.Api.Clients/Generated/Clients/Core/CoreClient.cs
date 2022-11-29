@@ -5,6 +5,7 @@
 //----------------------
 
 using Stac;
+using Stac.Common;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.Core;
 
@@ -27,9 +28,8 @@ namespace Stac.Api.Clients.Core
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public CoreClient(string baseUrl, System.Net.Http.HttpClient httpClient)
+        public CoreClient(System.Net.Http.HttpClient httpClient)
         {
-            BaseUrl = baseUrl;
             _httpClient = httpClient;
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
         }
@@ -74,7 +74,7 @@ namespace Stac.Api.Clients.Core
         public virtual async System.Threading.Tasks.Task<LandingPage> GetLandingPageAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/");
+            urlBuilder_.Append("");
 
             var client_ = _httpClient;
             var disposeClient_ = false;

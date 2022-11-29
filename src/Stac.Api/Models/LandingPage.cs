@@ -6,6 +6,7 @@ using System.Net.Mime;
 using Newtonsoft.Json;
 using Semver;
 using Stac.Api.Converters;
+using Stac.Converters;
 
 namespace Stac.Api.Models
 {
@@ -26,7 +27,7 @@ namespace Stac.Api.Models
         public LandingPage(StacCatalog stacCatalog)
         {
             this.stacCatalog = stacCatalog;
-            this.ConformanceClasses = new ObservableCollection<string>();
+            this.ConformanceClasses = new ObservableCollection<string>(this.GetProperty<Collection<string>>(_conformsToFieldName) ?? new Collection<string>());
             (ConformanceClasses as ObservableCollection<string>).CollectionChanged += ConformsToCollectionChanged;
         }
 
@@ -108,6 +109,7 @@ namespace Stac.Api.Models
 
         public IStacObject StacObjectContainer => stacCatalog.StacObjectContainer;
 
+        [JsonConverter(typeof(CollectionConverter<string>))]
         public ICollection<string> ConformanceClasses
         {
             get; internal set;

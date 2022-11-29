@@ -14,12 +14,14 @@ var builder = WebApplication.CreateBuilder(args);
 var configBuilder = new ConfigurationBuilder();
 
 configBuilder.AddJsonFile("codegensettings.json", optional: true, reloadOnChange: true);
+configBuilder.AddCommandLine(args);
 var configuration = configBuilder.Build();
 
 // Configure the Todo repository and associated services
 builder.Services.AddStacWebApi();
+string catalogRootPath = configuration.GetValue<string>("catalogRootPath") ?? Path.Combine(Path.GetTempPath(), "StacApi");
 builder.Services.AddFileSystemControllers(builder =>
-        builder.UseFileSystemRoot(Path.Combine(Path.GetTempPath(), "StacApi"), true));
+        builder.UseFileSystemRoot(catalogRootPath, true));
         
 builder.Services.AddCodeGenOptions(configuration.GetSection("CodeGen"));
 
@@ -39,7 +41,6 @@ builder.Services.AddCors(options =>
                     .AllowAnyHeader();
                 });
     });
-
 
 // Create the app
 var app = builder.Build();

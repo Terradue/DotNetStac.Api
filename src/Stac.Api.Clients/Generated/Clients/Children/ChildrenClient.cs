@@ -5,6 +5,7 @@
 //----------------------
 
 using Stac;
+using Stac.Common;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.Children;
 
@@ -27,9 +28,8 @@ namespace Stac.Api.Clients.Children
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public ChildrenClient(string baseUrl, System.Net.Http.HttpClient httpClient)
+        public ChildrenClient(System.Net.Http.HttpClient httpClient)
         {
-            BaseUrl = baseUrl;
             _httpClient = httpClient;
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
         }
@@ -68,7 +68,7 @@ namespace Stac.Api.Clients.Children
         public virtual async System.Threading.Tasks.Task<StacChildren> GetChildrenAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/children");
+            urlBuilder_.Append("children");
 
             var client_ = _httpClient;
             var disposeClient_ = false;

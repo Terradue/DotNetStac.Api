@@ -5,6 +5,7 @@
 //----------------------
 
 using Stac;
+using Stac.Common;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.ItemSearch;
 
@@ -27,9 +28,8 @@ namespace Stac.Api.Clients.ItemSearch
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public ItemSearchClient(string baseUrl, System.Net.Http.HttpClient httpClient)
+        public ItemSearchClient(System.Net.Http.HttpClient httpClient)
         {
-            BaseUrl = baseUrl;
             _httpClient = httpClient;
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
         }
@@ -184,7 +184,7 @@ namespace Stac.Api.Clients.ItemSearch
         public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, IntersectsQueryString intersectsQueryString, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/search?");
+            urlBuilder_.Append("search?");
             if (bbox != null)
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("bbox") + "=").Append(System.Uri.EscapeDataString(ConvertToString(bbox, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
@@ -293,7 +293,7 @@ namespace Stac.Api.Clients.ItemSearch
         public virtual async System.Threading.Tasks.Task<StacFeatureCollection> PostItemSearchAsync(SearchBody body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/search");
+            urlBuilder_.Append("search");
 
             var client_ = _httpClient;
             var disposeClient_ = false;

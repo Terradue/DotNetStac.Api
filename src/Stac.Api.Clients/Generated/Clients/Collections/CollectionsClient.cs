@@ -5,6 +5,7 @@
 //----------------------
 
 using Stac;
+using Stac.Common;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.Collections;
 
@@ -27,9 +28,8 @@ namespace Stac.Api.Clients.Collections
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public CollectionsClient(string baseUrl, System.Net.Http.HttpClient httpClient)
+        public CollectionsClient(System.Net.Http.HttpClient httpClient)
         {
-            BaseUrl = baseUrl;
             _httpClient = httpClient;
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
         }
@@ -96,7 +96,7 @@ namespace Stac.Api.Clients.Collections
         public virtual async System.Threading.Tasks.Task<StacCollections> GetCollectionsAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections");
+            urlBuilder_.Append("collections");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -213,7 +213,7 @@ namespace Stac.Api.Clients.Collections
                 throw new System.ArgumentNullException("collectionId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/{collectionId}");
+            urlBuilder_.Append("collections/{collectionId}");
             urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;

@@ -32,7 +32,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Core
                 rootCatalog.Properties.Add("error", e.Message);
             }
 
-            LandingPage landingPage = _landingPageBuilder.Build(rootCatalog, LinkGenerator);
+            LandingPage landingPage = _landingPageBuilder.Build(rootCatalog);
 
             // lp.ConformanceClasses.Add("https://api.stacspec.org/v1.0.0-rc.1/core");
             // lp.Links.Add(StacLink.CreateSelfLink(AppBaseUrl, "application/json"));
