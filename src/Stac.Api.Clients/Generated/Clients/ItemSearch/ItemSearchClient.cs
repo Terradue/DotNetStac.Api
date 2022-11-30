@@ -84,7 +84,7 @@ namespace Stac.Api.Clients.ItemSearch
         /// <br/>WGS 84 (from 160.6°E to 170°W and from 55.95°S to 25.89°S) would be
         /// <br/>represented in JSON as `[160.6, -55.95, -170, -25.89]` and in a query as
         /// <br/>`bbox=160.6,-55.95,-170,-25.89`.</param>
-        /// <param name="intersectsQueryString">The optional intersects parameter filters the result Items in the same was as bbox, only with
+        /// <param name="intersects">The optional intersects parameter filters the result Items in the same was as bbox, only with
         /// <br/>a GeoJSON Geometry rather than a bbox.</param>
         /// <param name="datetime">Either a date-time or an interval, open or closed. Date and time expressions
         /// <br/>adhere to RFC 3339. Open intervals are expressed using double-dots.
@@ -112,9 +112,9 @@ namespace Stac.Api.Clients.ItemSearch
         /// <br/>Only Item objects in one of the provided collections will be searched</param>
         /// <returns>A feature collection.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, GeoJSON.Net.Geometry.IGeometryObject intersectsQueryString, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections)
+        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, GeoJSON.Net.Geometry.IGeometryObject intersects, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections)
         {
-            return GetItemSearchAsync(bbox, intersectsQueryString, datetime, limit, ids, collections, System.Threading.CancellationToken.None);
+            return GetItemSearchAsync(bbox, intersects, datetime, limit, ids, collections, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -153,7 +153,7 @@ namespace Stac.Api.Clients.ItemSearch
         /// <br/>WGS 84 (from 160.6°E to 170°W and from 55.95°S to 25.89°S) would be
         /// <br/>represented in JSON as `[160.6, -55.95, -170, -25.89]` and in a query as
         /// <br/>`bbox=160.6,-55.95,-170,-25.89`.</param>
-        /// <param name="intersectsQueryString">The optional intersects parameter filters the result Items in the same was as bbox, only with
+        /// <param name="intersects">The optional intersects parameter filters the result Items in the same was as bbox, only with
         /// <br/>a GeoJSON Geometry rather than a bbox.</param>
         /// <param name="datetime">Either a date-time or an interval, open or closed. Date and time expressions
         /// <br/>adhere to RFC 3339. Open intervals are expressed using double-dots.
@@ -181,7 +181,7 @@ namespace Stac.Api.Clients.ItemSearch
         /// <br/>Only Item objects in one of the provided collections will be searched</param>
         /// <returns>A feature collection.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, GeoJSON.Net.Geometry.IGeometryObject intersectsQueryString, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, GeoJSON.Net.Geometry.IGeometryObject intersects, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append("search?");
@@ -189,9 +189,9 @@ namespace Stac.Api.Clients.ItemSearch
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("bbox") + "=").Append(System.Uri.EscapeDataString(ConvertToString(bbox, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
-            if (intersectsQueryString != null)
+            if (intersects != null)
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("IntersectsQueryString") + "=").Append(System.Uri.EscapeDataString(ConvertToString(intersectsQueryString, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("intersects") + "=").Append(System.Uri.EscapeDataString(ConvertToString(intersects, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             if (datetime != null)
             {
