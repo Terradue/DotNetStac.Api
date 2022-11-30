@@ -20,9 +20,9 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Features
             _landingPageBuilder = landingPageBuilder;
         }
 
-        public async Task<ActionResult<ConformanceClasses>> GetConformanceDeclarationAsync(CancellationToken cancellationToken = default)
+        public async Task<ActionResult<ConformanceDeclaration>> GetConformanceDeclarationAsync(CancellationToken cancellationToken = default)
         {
-            return new ConformanceClasses()
+            return new ConformanceDeclaration()
             {
                 ConformsTo = new List<string>(){
                     "https://api.stacspec.org/v1.0.0-rc.1/ogcapi-features",

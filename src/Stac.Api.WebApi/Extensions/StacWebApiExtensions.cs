@@ -9,7 +9,6 @@ using Stac.Api.WebApi.Controllers.ItemSearch;
 using Stac.Api.WebApi.Controllers.Features;
 using Stac.Api.WebApi.Implementations;
 using Stac.Api.WebApi.Implementations.FileSystem;
-using Stac.Api.WebApi.Implementations.FileSystem.Children;
 using Stac.Api.WebApi.Implementations.FileSystem.Collections;
 using Stac.Api.WebApi.Implementations.FileSystem.Core;
 using Stac.Api.WebApi.Implementations.FileSystem.Extensions;
@@ -32,7 +31,7 @@ namespace Stac.Api.WebApi.Extensions
         public static IServiceCollection AddFileSystemControllers(this IServiceCollection services, Action<IStacWebApiBuilder> configure)
         {
             services.AddSingleton<ICoreController, FileSystemCoreController>();
-            services.AddSingleton<IChildrenController, FileSystemChildrenController>();
+            // services.AddSingleton<IChildrenController, FileSystemChildrenController>();
             services.AddSingleton<ICollectionsController, FileSystemCollectionsController>();
             services.AddSingleton<IFeaturesController, FileSystemFeaturesController>();
             services.AddSingleton<IItemSearchController, FileSystemItemSearchController>();
