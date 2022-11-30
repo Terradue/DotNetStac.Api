@@ -70,7 +70,7 @@ namespace Stac.Api.CodeGen
                             case "responses":
                                 return GetResponse(allSegments, openApi);
                             case "parameters":
-                                return openApi.Components.Parameters.FirstOrDefault(p => p.Key == allSegments[2]).Value;
+                                return GetParameter(allSegments, openApi);
                             case "examples":
                                 return openApi.Components.Examples.FirstOrDefault(e => e.Key == allSegments[2]).Value;
                         }
@@ -95,6 +95,18 @@ namespace Stac.Api.CodeGen
                 response.Schema.Title = allSegments[2];
             }
             return response;
+        }
+
+        private static IJsonReference GetParameter(List<string> allSegments, OpenApiDocument openApi)
+        {
+            var parameter = openApi.Components.Parameters.FirstOrDefault(r => r.Key == allSegments[2]).Value;
+            // This is a workaround for the fact that the OpenApiDocument does not have a reference to the parent document
+            // and loose the name of the reponse when the reference is resolved.
+            if (parameter.Schema != null && !parameter.Schema.HasTypeNameTitle)
+            {
+                parameter.Schema.Title = allSegments[2];
+            }
+            return parameter;
         }
 
         private static IJsonReference GetSchema(List<string> allSegments, OpenApiDocument openApi)

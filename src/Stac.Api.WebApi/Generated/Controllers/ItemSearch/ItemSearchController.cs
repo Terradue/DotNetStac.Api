@@ -211,7 +211,7 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
         public string Datetime { get; set; }
 
         [Newtonsoft.Json.JsonProperty("intersects", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public GeoJSON.Net.Geometry.IGeometryObject2 Intersects { get; set; }
+        public GeoJSON.Net.Geometry.IGeometryObject Intersects { get; set; }
 
         [Newtonsoft.Json.JsonProperty("collections", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public CollectionsArray Collections { get; set; }

@@ -1,7 +1,6 @@
 using Hellang.Middleware.ProblemDetails;
 using Stac.Api.CodeGen;
 using Stac.Api.Interfaces;
-using Stac.Api.WebApi.Controllers.Children;
 using Stac.Api.WebApi.Controllers.Collections;
 using Stac.Api.WebApi.Controllers.Core;
 using Stac.Api.WebApi.Controllers.Extensions.Filter;

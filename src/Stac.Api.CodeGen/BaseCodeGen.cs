@@ -25,14 +25,18 @@ namespace Stac.Api.CodeGen
                 {
                     foreach (var op in path.Values)
                     {
-                        // op.Responses.Remove("400");
-                        // op.Responses.Remove("404");
-                        // op.Responses.Remove("500");
                         foreach (var response in op.Responses.Values)
                         {
                             if (response.ActualResponse.Schema.ActualSchema.Title == null)
                             {
                                 response.ActualResponse.Schema.ActualSchema.Title = response.ActualResponse.Schema.Title;
+                            }
+                        }
+                        foreach (var parameter in op.Parameters)
+                        {
+                            if (parameter.ActualParameter.Schema.ActualSchema.Title == null)
+                            {
+                                parameter.ActualParameter.Schema.ActualSchema.Title = parameter.ActualParameter.Schema.Title;
                             }
                         }
                     }

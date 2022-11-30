@@ -41,8 +41,10 @@ namespace Stac.Api.CodeGen
                 typeName = spec.TypeNamesMapping[typeName];
             if ( reservedTypeNames.Contains(typeName) )
             {
-                typeName = typeName + "2";
+                typeName = generator.Generate(schema, "Anonymous", reservedTypeNames);
             }
+            if (spec.TypeNamesMapping.ContainsKey(typeName))
+                typeName = spec.TypeNamesMapping[typeName];
             return typeName;
         }
     }
