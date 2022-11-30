@@ -8,10 +8,10 @@ namespace Stac.Api.CodeGen
 {
     internal class BaseCodeGen
     {
-        protected JsonReferenceResolver GetResolver(OpenApiDocument arg, IEnumerable<string> excludedDefinitions)
+        protected JsonReferenceResolver GetResolver(OpenApiDocument arg, IEnumerable<string> excludedDefinitions, IEnumerable<UrlMapping> urlmappings)
         {
             var schemaResolver = new OpenApiSchemaResolver(arg, new JsonSchemaGeneratorSettings());
-            return new StacReferenceResolver(schemaResolver, excludedDefinitions);
+            return new StacReferenceResolver(schemaResolver, excludedDefinitions, urlmappings);
         }
 
         protected void FilterDocument(OpenApiDocument document)
@@ -69,17 +69,17 @@ namespace Stac.Api.CodeGen
             catch { }
 
             // Set intersects parameter as string (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/item-search/openapi.yaml#L207)
-            try
-            {
-                OpenApiParameter intersectsParam = document.Paths["/search"]?["get"]?.Parameters.Cast<OpenApiParameter>().FirstOrDefault(p => ((OpenApiParameter)p.Reference).Name == "intersects");
-                if (intersectsParam != null)
-                {
-                    var intersectsSchema = intersectsParam.Reference as OpenApiParameter;
-                    intersectsSchema.Name = "IntersectsQueryString";
-                    intersectsSchema.Schema.Type = JsonObjectType.Object;
-                }
-            }
-            catch { }
+            // try
+            // {
+            //     OpenApiParameter intersectsParam = document.Paths["/search"]?["get"]?.Parameters.Cast<OpenApiParameter>().FirstOrDefault(p => ((OpenApiParameter)p.Reference).Name == "intersects");
+            //     if (intersectsParam != null)
+            //     {
+            //         var intersectsSchema = intersectsParam.Reference as OpenApiParameter;
+            //         intersectsSchema.Name = "IntersectsQueryString";
+            //         intersectsSchema.Schema.Type = JsonObjectType.Object;
+            //     }
+            // }
+            // catch { }
 
             // Set JsonSchema as return Type for Queryables (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/fragments/filter/openapi.yaml#L167)
             try

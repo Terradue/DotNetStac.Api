@@ -16,6 +16,8 @@ namespace Stac.Api.CodeGen
 
         public IDictionary<string, OpenApiSpecification> Specifications { get; set; }
 
+        public IEnumerable<UrlMapping> UrlMappings { get; set; }
+
         internal CSharpClientGeneratorSettings GenerateClientGeneratorSettings(string key)
         {
             CSharpClientGeneratorSettings settings = JsonConvert.DeserializeObject<CSharpClientGeneratorSettings>(JsonConvert.SerializeObject(CSharpClientGeneratorSettings));
@@ -39,5 +41,12 @@ namespace Stac.Api.CodeGen
             settings.CSharpGeneratorSettings.TypeNameGenerator = new CustomTypeNameGenerator(spec);
             return settings;
         }
+    }
+
+    public class UrlMapping
+    {
+        public string Url { get; set; }
+
+        public string UrlChange { get; set; }
     }
 }

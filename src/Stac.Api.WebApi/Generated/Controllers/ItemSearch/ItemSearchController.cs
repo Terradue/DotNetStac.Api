@@ -62,7 +62,7 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
         /// <br/>represented in JSON as `[160.6, -55.95, -170, -25.89]` and in a query as
         /// <br/>`bbox=160.6,-55.95,-170,-25.89`.</param>
 
-        /// <param name="intersectsQueryString">The optional intersects parameter filters the result Items in the same was as bbox, only with
+        /// <param name="intersects">The optional intersects parameter filters the result Items in the same was as bbox, only with
         /// <br/>a GeoJSON Geometry rather than a bbox.</param>
 
         /// <param name="datetime">Either a date-time or an interval, open or closed. Date and time expressions
@@ -95,7 +95,7 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
 
         /// <returns>A feature collection.</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearchAsync(string bbox, GeoJSON.Net.Geometry.IGeometryObject intersectsQueryString, string datetime, int limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearchAsync(string bbox, GeoJSON.Net.Geometry.IGeometryObject intersects, string datetime, int limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// Search STAC items with full-featured filtering.
@@ -154,7 +154,7 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
         /// <br/>WGS 84 (from 160.6°E to 170°W and from 55.95°S to 25.89°S) would be
         /// <br/>represented in JSON as `[160.6, -55.95, -170, -25.89]` and in a query as
         /// <br/>`bbox=160.6,-55.95,-170,-25.89`.</param>
-        /// <param name="intersectsQueryString">The optional intersects parameter filters the result Items in the same was as bbox, only with
+        /// <param name="intersects">The optional intersects parameter filters the result Items in the same was as bbox, only with
         /// <br/>a GeoJSON Geometry rather than a bbox.</param>
         /// <param name="datetime">Either a date-time or an interval, open or closed. Date and time expressions
         /// <br/>adhere to RFC 3339. Open intervals are expressed using double-dots.
@@ -182,10 +182,10 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
         /// <br/>Only Item objects in one of the provided collections will be searched</param>
         /// <returns>A feature collection.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("search")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearch([Microsoft.AspNetCore.Mvc.FromQuery] string bbox, [Microsoft.AspNetCore.Mvc.FromQuery] GeoJSON.Net.Geometry.IGeometryObject intersectsQueryString, [Microsoft.AspNetCore.Mvc.FromQuery] string datetime, [Microsoft.AspNetCore.Mvc.FromQuery] int? limit, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> ids, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearch([Microsoft.AspNetCore.Mvc.FromQuery] string bbox, [Microsoft.AspNetCore.Mvc.FromQuery] GeoJSON.Net.Geometry.IGeometryObject intersects, [Microsoft.AspNetCore.Mvc.FromQuery] string datetime, [Microsoft.AspNetCore.Mvc.FromQuery] int? limit, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> ids, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken)
         {
 
-            return _implementation.GetItemSearchAsync(bbox, intersectsQueryString, datetime, limit ?? 10, ids, collections, cancellationToken);
+            return _implementation.GetItemSearchAsync(bbox, intersects, datetime, limit ?? 10, ids, collections, cancellationToken);
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
         public string Datetime { get; set; }
 
         [Newtonsoft.Json.JsonProperty("intersects", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public GeoJSON.Net.Geometry.IGeometryObject Intersects { get; set; }
+        public GeoJSON.Net.Geometry.IGeometryObject2 Intersects { get; set; }
 
         [Newtonsoft.Json.JsonProperty("collections", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public CollectionsArray Collections { get; set; }

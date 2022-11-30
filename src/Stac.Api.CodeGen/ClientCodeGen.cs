@@ -37,7 +37,7 @@ namespace Stac.Api.CodeGen
                     content = await File.ReadAllTextAsync(spec.Value.File);
                     documentPath = spec.Value.File;
                 }
-                OpenApiDocument document = await OpenApiYamlDocument.FromYamlAsync(content, documentPath, SchemaType.OpenApi3, doc => GetResolver(doc, spec.Value.ExcludedSchemas));
+                OpenApiDocument document = await OpenApiYamlDocument.FromYamlAsync(content, documentPath, SchemaType.OpenApi3, doc => GetResolver(doc, spec.Value.ExcludedSchemas, options.Value.UrlMappings));
                 // JsonSchemaReferenceUtilities.UpdateSchemaReferencePaths(document, true, new DefaultContractResolver());
                 string code = await GenerateCode(document, options.Value.GenerateClientGeneratorSettings(spec.Key), spec.Value.ExcludedOperations);
                 string path = Path.Join(generatedCodeBasePath, spec.Value.ClientOutputFilePath);

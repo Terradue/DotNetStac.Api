@@ -23,10 +23,12 @@ namespace Stac.Api.CodeGen
         private readonly JsonSchemaAppender _schemaAppender;
         private readonly Dictionary<string, IJsonReference> _resolvedObjects = new Dictionary<string, IJsonReference>();
         private readonly IEnumerable<string> _excludedDefinitions;
+        private readonly IEnumerable<UrlMapping> _urlmappings;
 
-        public StacReferenceResolver(JsonSchemaAppender schemaAppender, IEnumerable<string> excludedDefinitions) : base(schemaAppender)
+        public StacReferenceResolver(JsonSchemaAppender schemaAppender, IEnumerable<string> excludedDefinitions, IEnumerable<UrlMapping> urlmappings) : base(schemaAppender)
         {
             _excludedDefinitions = excludedDefinitions;
+            _urlmappings = urlmappings;
             _schemaAppender = schemaAppender;
         }
 
@@ -119,7 +121,16 @@ namespace Stac.Api.CodeGen
 
         public override async Task<IJsonReference> ResolveUrlReferenceAsync(string url, CancellationToken cancellationToken = default)
         {
+            var urlChange = _urlmappings.FirstOrDefault(u => u.Url == url);
+            if (urlChange != null)
+            {
+                url = urlChange.UrlChange;
+            }
             var data = await DynamicApis.HttpGetAsync(url, cancellationToken).ConfigureAwait(false);
+            foreach ( var urlMap in _urlmappings)
+            {
+                data = data.Replace(urlMap.Url, urlMap.UrlChange);
+            }
             var deserializer = new DeserializerBuilder().Build();
             var yamlObject = deserializer.Deserialize(new StringReader(data));
             var serializer = new SerializerBuilder()
