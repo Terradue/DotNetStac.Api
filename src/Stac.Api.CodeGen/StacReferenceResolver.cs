@@ -64,9 +64,9 @@ namespace Stac.Api.CodeGen
                         switch (allSegments[1])
                         {
                             case "schemas":
-                                return openApi.Components.Schemas.FirstOrDefault(s => s.Key == allSegments[2]).Value;
+                                return GetSchema(allSegments, openApi);
                             case "responses":
-                                return openApi.Components.Responses.FirstOrDefault(r => r.Key == allSegments[2]).Value;
+                                return GetResponse(allSegments, openApi);
                             case "parameters":
                                 return openApi.Components.Parameters.FirstOrDefault(p => p.Key == allSegments[2]).Value;
                             case "examples":
@@ -81,6 +81,30 @@ namespace Stac.Api.CodeGen
 
             var refe = base.ResolveDocumentReference(rootObject, jsonPath, targetType, contractResolver);
             return refe;
+        }
+
+        private static IJsonReference GetResponse(List<string> allSegments, OpenApiDocument openApi)
+        {
+            var response = openApi.Components.Responses.FirstOrDefault(r => r.Key == allSegments[2]).Value;
+            // This is a workaround for the fact that the OpenApiDocument does not have a reference to the parent document
+            // and loose the name of the reponse when the reference is resolved.
+            if (response.Schema != null && !response.Schema.HasTypeNameTitle)
+            {
+                response.Schema.Title = allSegments[2];
+            }
+            return response;
+        }
+
+        private static IJsonReference GetSchema(List<string> allSegments, OpenApiDocument openApi)
+        {
+            var response = openApi.Components.Schemas.FirstOrDefault(r => r.Key == allSegments[2]).Value;
+            // This is a workaround for the fact that the OpenApiDocument does not have a reference to the parent document
+            // and loose the name of the reponse when the reference is resolved.
+            // if (response != null && !response.HasTypeNameTitle)
+            // {
+            //     response.Title = allSegments[2];
+            // }
+            return response;
         }
 
         private IJsonReference GetSimpleObjectSchema()

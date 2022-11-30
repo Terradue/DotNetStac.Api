@@ -16,6 +16,30 @@ namespace Stac.Api.CodeGen
 
         protected void FilterDocument(OpenApiDocument document)
         {
+
+            // Remove all the error responses schema from API operations
+            // Otherwise the response type is a generic Response object
+            try
+            {
+                foreach (var path in document.Paths.Values)
+                {
+                    foreach (var op in path.Values)
+                    {
+                        // op.Responses.Remove("400");
+                        // op.Responses.Remove("404");
+                        // op.Responses.Remove("500");
+                        foreach (var response in op.Responses.Values)
+                        {
+                            if (response.ActualResponse.Schema.ActualSchema.Title == null)
+                            {
+                                response.ActualResponse.Schema.ActualSchema.Title = response.ActualResponse.Schema.Title;
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+
             // Fix unsupported array for bbox (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/item-search/openapi.yaml#L179)
             // Replace by a simple string
             if (document.Components.Parameters.ContainsKey("bbox"))
@@ -44,33 +68,6 @@ namespace Stac.Api.CodeGen
             }
             catch { }
 
-            // Set fields parameter as query string (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/fragments/fields/openapi.yaml#L9)
-            // try
-            // {
-            //     OpenApiParameter fieldsParam = document.Paths["/search"]?["get"]?.Parameters.Cast<OpenApiParameter>().FirstOrDefault(p => ((OpenApiParameter)p.Reference).Name == "fields");
-            //     if (fieldsParam != null)
-            //     {
-            //         var fieldsSchema = fieldsParam.Reference as OpenApiParameter;
-            //         fieldsSchema.Name = "FieldsQueryString";
-            //         fieldsSchema.Schema.Type = JsonObjectType.Object;
-            //         fieldsSchema.Schema.Items.Add
-            //     }
-            // }
-            // catch { }
-
-            // Set sortby parameter as query string (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/fragments/fields/openapi.yaml#L9)
-            // try
-            // {
-            //     OpenApiParameter fieldsParam = document.Paths["/search"]?["get"]?.Parameters.Cast<OpenApiParameter>().FirstOrDefault(p => ((OpenApiParameter)p.Reference).Name == "sortby");
-            //     if (fieldsParam != null)
-            //     {
-            //         var fieldsSchema = fieldsParam.Reference as OpenApiParameter;
-            //         fieldsSchema.Name = "SortByQueryString";
-            //         fieldsSchema.Schema.Type = JsonObjectType.Object;
-            //     }
-            // }
-            // catch { }
-
             // Set intersects parameter as string (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/item-search/openapi.yaml#L207)
             try
             {
@@ -83,19 +80,6 @@ namespace Stac.Api.CodeGen
                 }
             }
             catch { }
-
-            // Remove first reference of the search response (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/item-search/openapi.yaml#L52)
-            // This is a Stac Feature Collection already implemented
-            // try
-            // {
-            //     JsonSchema responseSchema = document.Paths["/search"]?["get"]?.Responses["200"].Content["application/geo+json"].Schema;
-            //     if (responseSchema != null)
-            //     {
-            //         var schemaRef = responseSchema.AllOf.FirstOrDefault(r => r.Reference.Description.Contains("A GeoJSON FeatureCollection"));
-            //         responseSchema.AllOf.Remove(schemaRef);
-            //     }
-            // }
-            // catch { }
 
             // Set JsonSchema as return Type for Queryables (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/fragments/filter/openapi.yaml#L167)
             try
@@ -132,7 +116,7 @@ namespace Stac.Api.CodeGen
 
                 if (childrenOperation.Tags.Contains("Children"))
                 {
-                   childrenOperation.Responses["200"] = childrenResponse;
+                    childrenOperation.Responses["200"] = childrenResponse;
                 }
             }
             catch { }
