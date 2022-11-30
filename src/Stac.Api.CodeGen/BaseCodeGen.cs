@@ -86,16 +86,16 @@ namespace Stac.Api.CodeGen
 
             // Remove first reference of the search response (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/item-search/openapi.yaml#L52)
             // This is a Stac Feature Collection already implemented
-            try
-            {
-                JsonSchema responseSchema = document.Paths["/search"]?["get"]?.Responses["200"].Content["application/geo+json"].Schema;
-                if (responseSchema != null)
-                {
-                    var schemaRef = responseSchema.AllOf.FirstOrDefault(r => r.Reference.Description.Contains("A GeoJSON FeatureCollection"));
-                    responseSchema.AllOf.Remove(schemaRef);
-                }
-            }
-            catch { }
+            // try
+            // {
+            //     JsonSchema responseSchema = document.Paths["/search"]?["get"]?.Responses["200"].Content["application/geo+json"].Schema;
+            //     if (responseSchema != null)
+            //     {
+            //         var schemaRef = responseSchema.AllOf.FirstOrDefault(r => r.Reference.Description.Contains("A GeoJSON FeatureCollection"));
+            //         responseSchema.AllOf.Remove(schemaRef);
+            //     }
+            // }
+            // catch { }
 
             // Set JsonSchema as return Type for Queryables (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/fragments/filter/openapi.yaml#L167)
             try

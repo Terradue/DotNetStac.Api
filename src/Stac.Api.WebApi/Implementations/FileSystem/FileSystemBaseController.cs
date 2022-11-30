@@ -93,7 +93,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
                 case StacCollection collection:
                     return LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "DescribeCollection", "Collections", new {collectionId = collection.Id});
                 case StacItem item:
-                    return LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "GetFeature", "OgcApiFeatures", new {collectionId = item.Collection, featureId = item.Id});
+                    return LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "GetFeature", "Features", new {collectionId = item.Collection, featureId = item.Id});
                 default:
                     throw new ArgumentOutOfRangeException(nameof(stacObject), stacObject, null);
             }

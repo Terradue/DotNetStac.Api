@@ -140,12 +140,12 @@ namespace Stac.Api.Clients.Collections
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Response>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -184,7 +184,7 @@ namespace Stac.Api.Clients.Collections
         /// <br/>* An optional extent that can be used to provide an indication of the spatial and temporal extent of the collection - typically derived from the data;
         /// <br/>* An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<StacCollection> DescribeCollectionAsync(string collectionId)
+        public virtual System.Threading.Tasks.Task<Response2> DescribeCollectionAsync(string collectionId)
         {
             return DescribeCollectionAsync(collectionId, System.Threading.CancellationToken.None);
         }
@@ -207,7 +207,7 @@ namespace Stac.Api.Clients.Collections
         /// <br/>* An optional extent that can be used to provide an indication of the spatial and temporal extent of the collection - typically derived from the data;
         /// <br/>* An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<StacCollection> DescribeCollectionAsync(string collectionId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Response2> DescribeCollectionAsync(string collectionId, System.Threading.CancellationToken cancellationToken)
         {
             if (collectionId == null)
                 throw new System.ArgumentNullException("collectionId");
@@ -248,7 +248,7 @@ namespace Stac.Api.Clients.Collections
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<StacCollection>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response2>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -264,12 +264,12 @@ namespace Stac.Api.Clients.Collections
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Response>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {

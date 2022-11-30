@@ -4,9 +4,9 @@ using NJsonSchema;
 using Stac.Api.Extensions.Transactions;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.Collections;
-using Stac.Api.WebApi.Controllers.OgcApiFeatures;
+using Stac.Api.WebApi.Controllers.Features;
 using Stac.Api.WebApi.Implementations.FileSystem.Collections;
-using Stac.Api.WebApi.Implementations.FileSystem.OgcApiFeatures;
+using Stac.Api.WebApi.Implementations.FileSystem.Features;
 using Stac.Common;
 
 namespace Stac.Api.WebApi.Implementations.FileSystem.Extensions
@@ -14,17 +14,17 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Extensions
     public class FileSystemTransactionController : FileSystemBaseController, Controllers.Extensions.Transaction.ITransactionController
     {
         private readonly StacFileSystemTransactionService _stacFileSystemTransactionService;
-        private readonly IOgcApiFeaturesController _fileSystemOgcApiFeaturesController;
+        private readonly IFeaturesController _fileSystemFeaturesController;
         private readonly ICollectionsController _fileSystemCollectionsController;
 
         public FileSystemTransactionController(IHttpContextAccessor httpContextAccessor,
                                                StacFileSystemResolver fileSystem,
-                                               IOgcApiFeaturesController fileSystemOgcApiFeaturesController,
+                                               IFeaturesController fileSystemFeaturesController,
                                                ICollectionsController fileSystemCollectionsController,
                                                LinkGenerator linkGenerator) : base(httpContextAccessor, linkGenerator, fileSystem)
         {
             _stacFileSystemTransactionService = new StacFileSystemTransactionService(fileSystem);
-            _fileSystemOgcApiFeaturesController = fileSystemOgcApiFeaturesController;
+            _fileSystemFeaturesController = fileSystemFeaturesController;
             _fileSystemCollectionsController = fileSystemCollectionsController;
         }
 
@@ -40,7 +40,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Extensions
         {
             CheckExists(collectionId, featureId);
             CheckEtag(if_Match, collectionId, featureId);
-            var item = await _fileSystemOgcApiFeaturesController.GetFeatureAsync(collectionId, featureId);
+            var item = await _fileSystemFeaturesController.GetFeatureAsync(collectionId, featureId);
             var newItem = item.Value.Patch(body);
             return await UpdateFeatureAsync(if_Match, newItem, collectionId, featureId, cancellationToken);
         }

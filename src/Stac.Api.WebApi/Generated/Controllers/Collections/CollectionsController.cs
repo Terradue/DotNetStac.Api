@@ -66,7 +66,7 @@ namespace Stac.Api.WebApi.Controllers.Collections
         /// <br/>* An optional extent that can be used to provide an indication of the spatial and temporal extent of the collection - typically derived from the data;
         /// <br/>* An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacCollection>> DescribeCollectionAsync(string collectionId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<Response>> DescribeCollectionAsync(string collectionId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -123,7 +123,7 @@ namespace Stac.Api.WebApi.Controllers.Collections
         /// <br/>* An optional extent that can be used to provide an indication of the spatial and temporal extent of the collection - typically derived from the data;
         /// <br/>* An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("collections/{collectionId}")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacCollection>> DescribeCollection([Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string collectionId, System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<Response>> DescribeCollection([Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string collectionId, System.Threading.CancellationToken cancellationToken)
         {
 
             return _implementation.DescribeCollectionAsync(collectionId, cancellationToken);
@@ -140,7 +140,7 @@ namespace Stac.Api.WebApi.Controllers.Collections
 
         [Newtonsoft.Json.JsonProperty("collections", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
-        public System.Collections.Generic.List<StacCollection> Collections { get; set; } = new System.Collections.Generic.List<StacCollection>();
+        public System.Collections.Generic.List<Response> Collections { get; set; } = new System.Collections.Generic.List<Response>();
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
 
@@ -154,7 +154,90 @@ namespace Stac.Api.WebApi.Controllers.Collections
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Links : System.Collections.ObjectModel.Collection<StacApiLink>
+    public partial class Response
+    {
+        [Newtonsoft.Json.JsonProperty("stac_version", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public string Stac_version { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("stac_extensions", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Stac_extensions Stac_extensions { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public string Type { get; set; }
+
+        /// <summary>
+        /// identifier of the collection used, for example, in URIs
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public string Id { get; set; }
+
+        /// <summary>
+        /// human readable title of the collection
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Title { get; set; }
+
+        /// <summary>
+        /// Detailed multi-line description to fully explain the catalog or collection.
+        /// <br/>[CommonMark 0.29](http://commonmark.org/) syntax MAY be used for rich text representation.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public string Description { get; set; }
+
+        /// <summary>
+        /// List of keywords describing the collection.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("keywords", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.List<string> Keywords { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("license", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public string License { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("extent", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public Extent Extent { get; set; } = new Extent();
+
+        [Newtonsoft.Json.JsonProperty("providers", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Providers Providers { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("links", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public Links Links { get; set; } = new Links();
+
+        /// <summary>
+        /// Summaries are either a unique set of all available values *or*
+        /// <br/>statistics. Statistics by default only specify the range (minimum
+        /// <br/>and maximum values), but can optionally be accompanied by additional
+        /// <br/>statistical values. The range can specify the potential range of
+        /// <br/>values, but it is recommended to be as precise as possible. The set
+        /// <br/>of values must contain at least one element and it is strongly
+        /// <br/>recommended to list all values. It is recommended to list as many
+        /// <br/>properties as reasonable so that consumers get a full overview of
+        /// <br/>the Collection. Properties that are covered by the Collection
+        /// <br/>specification (e.g. `providers` and `license`) may not be repeated
+        /// <br/>in the summaries.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("summaries", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.List<object>> Summaries { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties; }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Links : System.Collections.ObjectModel.Collection<Link>
     {
 
     }

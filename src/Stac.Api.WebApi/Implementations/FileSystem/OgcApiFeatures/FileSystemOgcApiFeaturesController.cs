@@ -1,18 +1,18 @@
 using System.IO.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Stac.Api.Models;
-using Stac.Api.WebApi.Controllers.OgcApiFeatures;
+using Stac.Api.WebApi.Controllers.Features;
 using Stac.Api.WebApi.Implementations.Shared.Geometry;
 using Stac.Api.WebApi.Implementations.Shared.Temporal;
 using Stac.Api.WebApi.Services;
 
-namespace Stac.Api.WebApi.Implementations.FileSystem.OgcApiFeatures
+namespace Stac.Api.WebApi.Implementations.FileSystem.Features
 {
-    public class FileSystemOgcApiFeaturesController : FileSystemBaseController, IOgcApiFeaturesController
+    public class FileSystemFeaturesController : FileSystemBaseController, IFeaturesController
     {
         private readonly ILandingPageBuilder _landingPageBuilder;
 
-        public FileSystemOgcApiFeaturesController(IHttpContextAccessor httpContextAccessor,
+        public FileSystemFeaturesController(IHttpContextAccessor httpContextAccessor,
                                                   LinkGenerator linkGenerator,
                                                   ILandingPageBuilder landingPageBuilder,
                                                   StacFileSystemResolver fileSystem) : base(httpContextAccessor, linkGenerator, fileSystem)

@@ -7,7 +7,7 @@
 using Stac;
 using Stac.Common;
 using Stac.Api.Models;
-using Stac.Api.WebApi.Controllers.OgcApiFeatures;
+using Stac.Api.WebApi.Controllers.Features;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -18,17 +18,17 @@ using Stac.Api.WebApi.Controllers.OgcApiFeatures;
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 
-namespace Stac.Api.Clients.OgcApiFeatures
+namespace Stac.Api.Clients.Features
 {
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class OgcApiFeaturesClient : Stac.Api.Clients.StacApiClient
+    public partial class FeaturesClient : Stac.Api.Clients.StacApiClient
     {
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public OgcApiFeaturesClient(System.Net.Http.HttpClient httpClient)
+        public FeaturesClient(System.Net.Http.HttpClient httpClient)
         {
             _httpClient = httpClient;
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
@@ -59,7 +59,7 @@ namespace Stac.Api.Clients.OgcApiFeatures
         /// <br/>API / server, the server declares the conformance
         /// <br/>classes it implements and conforms to.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ConformanceClasses> GetConformanceDeclarationAsync()
+        public virtual System.Threading.Tasks.Task<Response> GetConformanceDeclarationAsync()
         {
             return GetConformanceDeclarationAsync(System.Threading.CancellationToken.None);
         }
@@ -75,7 +75,7 @@ namespace Stac.Api.Clients.OgcApiFeatures
         /// <br/>API / server, the server declares the conformance
         /// <br/>classes it implements and conforms to.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ConformanceClasses> GetConformanceDeclarationAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Response> GetConformanceDeclarationAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append("conformance");
@@ -112,7 +112,7 @@ namespace Stac.Api.Clients.OgcApiFeatures
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ConformanceClasses>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -122,12 +122,12 @@ namespace Stac.Api.Clients.OgcApiFeatures
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response2>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Response2>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -365,12 +365,12 @@ namespace Stac.Api.Clients.OgcApiFeatures
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response2>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("A query parameter has an invalid value.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Response2>("A query parameter has an invalid value.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -381,12 +381,12 @@ namespace Stac.Api.Clients.OgcApiFeatures
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response2>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Response2>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -416,7 +416,7 @@ namespace Stac.Api.Clients.OgcApiFeatures
         /// <returns>fetch the feature with id `featureId` in the feature collection
         /// <br/>with id `collectionId`</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<StacItem> GetFeatureAsync(string collectionId, string featureId)
+        public virtual System.Threading.Tasks.Task<Response3> GetFeatureAsync(string collectionId, string featureId)
         {
             return GetFeatureAsync(collectionId, featureId, System.Threading.CancellationToken.None);
         }
@@ -430,7 +430,7 @@ namespace Stac.Api.Clients.OgcApiFeatures
         /// <returns>fetch the feature with id `featureId` in the feature collection
         /// <br/>with id `collectionId`</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<StacItem> GetFeatureAsync(string collectionId, string featureId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Response3> GetFeatureAsync(string collectionId, string featureId, System.Threading.CancellationToken cancellationToken)
         {
             if (collectionId == null)
                 throw new System.ArgumentNullException("collectionId");
@@ -475,7 +475,7 @@ namespace Stac.Api.Clients.OgcApiFeatures
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<StacItem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response3>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -491,12 +491,12 @@ namespace Stac.Api.Clients.OgcApiFeatures
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response2>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Response2>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
