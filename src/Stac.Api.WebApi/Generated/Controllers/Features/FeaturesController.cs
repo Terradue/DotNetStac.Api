@@ -36,7 +36,7 @@ namespace Stac.Api.WebApi.Controllers.Features
         /// <br/>API / server, the server declares the conformance
         /// <br/>classes it implements and conforms to.</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ConformanceClasses>> GetConformanceDeclarationAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ConformanceDeclaration>> GetConformanceDeclarationAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// fetch features
@@ -129,7 +129,7 @@ namespace Stac.Api.WebApi.Controllers.Features
         /// <returns>fetch the feature with id `featureId` in the feature collection
         /// <br/>with id `collectionId`</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ConformanceClasses>> GetFeatureAsync(string collectionId, string featureId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacItem>> GetFeatureAsync(string collectionId, string featureId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -154,7 +154,7 @@ namespace Stac.Api.WebApi.Controllers.Features
         /// <br/>API / server, the server declares the conformance
         /// <br/>classes it implements and conforms to.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("conformance")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ConformanceClasses>> GetConformanceDeclaration(System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ConformanceDeclaration>> GetConformanceDeclaration(System.Threading.CancellationToken cancellationToken)
         {
 
             return _implementation.GetConformanceDeclarationAsync(cancellationToken);
@@ -247,7 +247,7 @@ namespace Stac.Api.WebApi.Controllers.Features
         /// <returns>fetch the feature with id `featureId` in the feature collection
         /// <br/>with id `collectionId`</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("collections/{collectionId}/items/{featureId}")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ConformanceClasses>> GetFeature([Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string collectionId, [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string featureId, System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacItem>> GetFeature([Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string collectionId, [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string featureId, System.Threading.CancellationToken cancellationToken)
         {
 
             return _implementation.GetFeatureAsync(collectionId, featureId, cancellationToken);
@@ -255,49 +255,15 @@ namespace Stac.Api.WebApi.Controllers.Features
 
     }
 
-    /// <summary>
-    /// A GeoJSON Feature augmented with foreign members that contain values relevant to a STAC entity
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ConformanceClasses
+    public partial class ConformanceDeclaration
     {
-        [Newtonsoft.Json.JsonProperty("stac_version", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Stac_version { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("stac_extensions", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Stac_extensions Stac_extensions { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("bbox", Required = Newtonsoft.Json.Required.Always)]
+        /// <summary>
+        /// A list of all conformance classes implemented by the server. In addition to the STAC-specific conformance classes, all OGC-related conformance classes listed at `GET /conformances` must be listed here. This entry should mirror what `GET /conformances` returns, if implemented.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("conformsTo", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
-        [System.ComponentModel.DataAnnotations.MinLength(4)]
-        [System.ComponentModel.DataAnnotations.MaxLength(6)]
-        public Bbox Bbox { get; set; } = new Bbox();
-
-        [Newtonsoft.Json.JsonProperty("geometry", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public Geometry Geometry { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Type Type { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("links", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public Links Links { get; set; } = new Links();
-
-        [Newtonsoft.Json.JsonProperty("properties", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public Properties Properties { get; set; } = new Properties();
-
-        [Newtonsoft.Json.JsonProperty("assets", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public Assets Assets { get; set; } = new Assets();
+        public System.Collections.Generic.List<string> ConformsTo { get; set; } = new System.Collections.Generic.List<string>();
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
 
@@ -307,225 +273,6 @@ namespace Stac.Api.WebApi.Controllers.Features
             get { return _additionalProperties; }
             set { _additionalProperties = value; }
         }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Collections2
-    {
-        [Newtonsoft.Json.JsonProperty("stac_version", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Stac_version { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("stac_extensions", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Stac_extensions Stac_extensions { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Type { get; set; }
-
-        /// <summary>
-        /// identifier of the collection used, for example, in URIs
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Id { get; set; }
-
-        /// <summary>
-        /// human readable title of the collection
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Title { get; set; }
-
-        /// <summary>
-        /// Detailed multi-line description to fully explain the catalog or collection.
-        /// <br/>[CommonMark 0.29](http://commonmark.org/) syntax MAY be used for rich text representation.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Description { get; set; }
-
-        /// <summary>
-        /// List of keywords describing the collection.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("keywords", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<string> Keywords { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("license", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string License { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("extent", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public Extent Extent { get; set; } = new Extent();
-
-        [Newtonsoft.Json.JsonProperty("providers", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Providers Providers { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("links", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public Links Links { get; set; } = new Links();
-
-        /// <summary>
-        /// Summaries are either a unique set of all available values *or*
-        /// <br/>statistics. Statistics by default only specify the range (minimum
-        /// <br/>and maximum values), but can optionally be accompanied by additional
-        /// <br/>statistical values. The range can specify the potential range of
-        /// <br/>values, but it is recommended to be as precise as possible. The set
-        /// <br/>of values must contain at least one element and it is strongly
-        /// <br/>recommended to list all values. It is recommended to list as many
-        /// <br/>properties as reasonable so that consumers get a full overview of
-        /// <br/>the Collection. Properties that are covered by the Collection
-        /// <br/>specification (e.g. `providers` and `license`) may not be repeated
-        /// <br/>in the summaries.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("summaries", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.List<object>> Summaries { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Geometry2
-    {
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Geometry2Type Type { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("coordinates", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        [System.ComponentModel.DataAnnotations.MinLength(2)]
-        public System.Collections.Generic.List<double> Coordinates { get; set; } = new System.Collections.Generic.List<double>();
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    /// <summary>
-    /// The GeoJSON type
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Type
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"Feature")]
-        Feature = 0,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Type2
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"FeatureCollection")]
-        FeatureCollection = 0,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Features
-    {
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public FeaturesType Type { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("geometry", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public Geometry Geometry { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("properties", Required = Newtonsoft.Json.Required.AllowNull)]
-        public object Properties { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous3
-    {
-        /// <summary>
-        /// Link to the asset object
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("href", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Href { get; set; }
-
-        /// <summary>
-        /// Displayed title
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Title { get; set; }
-
-        /// <summary>
-        /// Multi-line description to explain the asset.
-        /// <br/>
-        /// <br/>[CommonMark 0.29](http://commonmark.org/) syntax MAY be used for rich text representation.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Description { get; set; }
-
-        /// <summary>
-        /// Media type of the asset
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Type { get; set; }
-
-        /// <summary>
-        /// Purposes of the asset
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("roles", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<string> Roles { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum FeaturesType
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"Feature")]
-        Feature = 0,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Geometry2Type
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"Point")]
-        Point = 0,
 
     }
 
