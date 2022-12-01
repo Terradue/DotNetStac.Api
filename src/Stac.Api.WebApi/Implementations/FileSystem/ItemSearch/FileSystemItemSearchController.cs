@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using GeoJSON.Net.Geometry;
 using Microsoft.AspNetCore.Mvc;
+using Stac.Api.Clients.ItemSearch;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.ItemSearch;
 

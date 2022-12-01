@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Stac.Api\Stac.Api.csproj" />
+    <ProjectReference Include="..\Stac.Api.Clients\Stac.Api.Clients.csproj" />
     <ProjectReference Include="..\Stac.Api.CodeGen\Stac.Api.CodeGen.csproj" />
   </ItemGroup>
 

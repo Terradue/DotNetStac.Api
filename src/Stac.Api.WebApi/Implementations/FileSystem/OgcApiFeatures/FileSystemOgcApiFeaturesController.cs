@@ -1,5 +1,5 @@
-using System.IO.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Stac.Api.Clients.Features;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.Features;
 using Stac.Api.WebApi.Implementations.Shared.Geometry;

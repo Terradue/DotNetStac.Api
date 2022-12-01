@@ -7,12 +7,13 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.*" />
+    <PackageReference Include="NJsonSchema" Version="10.8.*" />
     <PackageReference Include="DotNetStac" Version="1.6.*" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.*" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Stac.Api.WebApi\Stac.Api.WebApi.csproj" />
+    <ProjectReference Include="..\Stac.Api\Stac.Api.csproj" />
   </ItemGroup>
 
 </Project>

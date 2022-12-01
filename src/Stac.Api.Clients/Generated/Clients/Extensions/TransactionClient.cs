@@ -7,7 +7,6 @@
 using Stac;
 using Stac.Common;
 using Stac.Api.Models;
-using Stac.Api.WebApi.Controllers.Extensions.Transaction;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -127,12 +126,12 @@ namespace Stac.Api.Clients.Extensions
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("The request was malformed or semantically invalid", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("The request was malformed or semantically invalid", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -143,21 +142,21 @@ namespace Stac.Api.Clients.Extensions
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                     }
                     finally
@@ -272,12 +271,12 @@ namespace Stac.Api.Clients.Extensions
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("The request was malformed or semantically invalid", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("The request was malformed or semantically invalid", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -288,31 +287,31 @@ namespace Stac.Api.Clients.Extensions
                         else
                         if (status_ == 412)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("Some condition specified by the request could not be met in the server", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("Some condition specified by the request could not be met in the server", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                     }
                     finally
@@ -424,12 +423,12 @@ namespace Stac.Api.Clients.Extensions
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("The request was malformed or semantically invalid", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("The request was malformed or semantically invalid", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -440,21 +439,21 @@ namespace Stac.Api.Clients.Extensions
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                     }
                     finally
@@ -556,12 +555,12 @@ namespace Stac.Api.Clients.Extensions
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("The request was malformed or semantically invalid", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("The request was malformed or semantically invalid", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -572,21 +571,21 @@ namespace Stac.Api.Clients.Extensions
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("A server error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.WebApi.Controllers.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                     }
                     finally

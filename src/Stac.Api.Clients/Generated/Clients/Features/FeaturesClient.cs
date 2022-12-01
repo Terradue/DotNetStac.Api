@@ -666,7 +666,6 @@ namespace Stac.Api.Clients.Features
     }
 
 
-
 }
 
 #pragma warning restore 1591

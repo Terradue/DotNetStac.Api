@@ -1,5 +1,6 @@
 using System.IO.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Stac.Api.Clients.Collections;
 using Stac.Api.WebApi.Controllers.Collections;
 
 namespace Stac.Api.WebApi.Implementations.FileSystem.Collections

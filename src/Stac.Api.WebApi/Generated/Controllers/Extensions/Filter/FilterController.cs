@@ -7,6 +7,9 @@
 using Stac;
 using Stac.Common;
 using Stac.Api.Models;
+using Stac.Api.Clients.Collections;
+using Stac.Api.Clients.Core;
+using Stac.Api.Clients.Extensions.Filter;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -81,45 +84,7 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Filter
 
     }
 
-    /// <summary>
-    /// The CQL2 filter encoding that the 'filter' value uses.
-    /// <br/>
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum FilterLang
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"cql2-text")]
-        Cql2Text = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"cql2-json")]
-        Cql2Json = 1,
-
-    }
-
-    /// <summary>
-    /// Information about the exception: an error code plus an optional description.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Exception
-    {
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Code { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Description { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
+    
 
 
 }

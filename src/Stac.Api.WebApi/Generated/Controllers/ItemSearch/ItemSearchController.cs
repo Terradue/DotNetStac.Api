@@ -7,6 +7,12 @@
 using Stac;
 using Stac.Common;
 using Stac.Api.Models;
+using Stac.Api.Clients.Collections;
+using Stac.Api.Clients.Core;
+using Stac.Api.Clients.Extensions.Filter;
+using Stac.Api.Clients.Extensions;
+using Stac.Api.Clients.Features;
+using Stac.Api.Clients.ItemSearch;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -201,107 +207,7 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
 
     }
 
-    /// <summary>
-    /// The search criteria
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class SearchBody : BboxFilter
-    {
-        [Newtonsoft.Json.JsonProperty("datetime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Datetime { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("intersects", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public GeoJSON.Net.Geometry.IGeometryObject Intersects { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("collections", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public CollectionsArray Collections { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("ids", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Ids Ids { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("limit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.Range(1, 10000)]
-        public int Limit { get; set; }
-
-    }
-
-    /// <summary>
-    /// Only return items that intersect the provided bounding box.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class BboxFilter
-    {
-        [Newtonsoft.Json.JsonProperty("bbox", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.MinLength(4)]
-        [System.ComponentModel.DataAnnotations.MaxLength(6)]
-        public Bbox Bbox { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    /// <summary>
-    /// Array of Collection IDs to include in the search for items.
-    /// <br/>Only Item objects in one of the provided collections will be searched.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CollectionsArray : System.Collections.ObjectModel.Collection<string>
-    {
-
-    }
-
-    /// <summary>
-    /// Array of Item ids to return.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Ids : System.Collections.ObjectModel.Collection<string>
-    {
-
-    }
-
-    /// <summary>
-    /// Only features that have a geometry that intersects the bounding box are
-    /// <br/>selected. The bounding box is provided as four or six numbers,
-    /// <br/>depending on whether the coordinate reference system includes a
-    /// <br/>vertical axis (elevation or depth):
-    /// <br/>
-    /// <br/>* Lower left corner, coordinate axis 1
-    /// <br/>* Lower left corner, coordinate axis 2  
-    /// <br/>* Lower left corner, coordinate axis 3 (optional) 
-    /// <br/>* Upper right corner, coordinate axis 1 
-    /// <br/>* Upper right corner, coordinate axis 2 
-    /// <br/>* Upper right corner, coordinate axis 3 (optional)
-    /// <br/>
-    /// <br/>The coordinate reference system of the values is WGS84
-    /// <br/>longitude/latitude (http://www.opengis.net/def/crs/OGC/1.3/CRS84).
-    /// <br/>
-    /// <br/>For WGS84 longitude/latitude the values are in most cases the sequence
-    /// <br/>of minimum longitude, minimum latitude, maximum longitude and maximum
-    /// <br/>latitude. However, in cases where the box spans the antimeridian the
-    /// <br/>first value (west-most box edge) is larger than the third value
-    /// <br/>(east-most box edge).
-    /// <br/>
-    /// <br/>If a feature has multiple spatial geometry properties, it is the
-    /// <br/>decision of the server whether only a single spatial geometry property
-    /// <br/>is used to determine the extent or all relevant geometries.
-    /// <br/>
-    /// <br/>Example: The bounding box of the New Zealand Exclusive Economic Zone in
-    /// <br/>WGS 84 (from 160.6°E to 170°W and from 55.95°S to 25.89°S) would be
-    /// <br/>represented in JSON as `[160.6, -55.95, -170, -25.89]` and in a query as
-    /// <br/>`bbox=160.6,-55.95,-170,-25.89`.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Bbox : System.Collections.ObjectModel.Collection<double>
-    {
-
-    }
+    
 
 
 }

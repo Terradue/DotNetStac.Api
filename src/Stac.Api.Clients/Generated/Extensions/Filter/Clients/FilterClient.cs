@@ -7,7 +7,6 @@
 using Stac;
 using Stac.Common;
 using Stac.Api.Models;
-using Stac.Api.WebApi.Controllers.Extensions.Filter;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -111,12 +110,12 @@ namespace Stac.Api.Clients.Extensions.Filter
                         }
                         else
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Exception>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Exception>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                     }
                     finally
@@ -201,12 +200,12 @@ namespace Stac.Api.Clients.Extensions.Filter
                         }
                         else
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Exception>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Exception>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                     }
                     finally
@@ -326,7 +325,21 @@ namespace Stac.Api.Clients.Extensions.Filter
         }
     }
 
-    
+    /// <summary>
+    /// The CQL2 filter encoding that the 'filter' value uses.
+    /// <br/>
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FilterLang
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"cql2-text")]
+        Cql2Text = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"cql2-json")]
+        Cql2Json = 1,
+
+    }
 
 
 }

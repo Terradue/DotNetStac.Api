@@ -7,6 +7,11 @@
 using Stac;
 using Stac.Common;
 using Stac.Api.Models;
+using Stac.Api.Clients.Collections;
+using Stac.Api.Clients.Core;
+using Stac.Api.Clients.Extensions.Filter;
+using Stac.Api.Clients.Extensions;
+using Stac.Api.Clients.Features;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -255,26 +260,7 @@ namespace Stac.Api.WebApi.Controllers.Features
 
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ConformanceDeclaration
-    {
-        /// <summary>
-        /// A list of all conformance classes implemented by the server. In addition to the STAC-specific conformance classes, all OGC-related conformance classes listed at `GET /conformances` must be listed here. This entry should mirror what `GET /conformances` returns, if implemented.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("conformsTo", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public System.Collections.Generic.List<string> ConformsTo { get; set; } = new System.Collections.Generic.List<string>();
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
+    
 
 
 }
