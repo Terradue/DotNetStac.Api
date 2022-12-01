@@ -8,25 +8,28 @@ using Stac.Api.Models;
 
 namespace Stac.Api.WebApi.Services
 {
-    public class LandingPageBuilder : ILandingPageBuilder
+    public class DefaultLandingPageProvider : ILandingPageProvider
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IStacApiEndpointManager _stacApiEndpointManager;
+        private readonly IRootCatalogProvider _rootCatalogProvider;
 
         public LinkGenerator LinkGenerator { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
 
-        public LandingPageBuilder(IServiceProvider serviceProvider,
-                                  LinkGenerator linkGenerator,
-                                  IHttpContextAccessor httpContextAccessor)
+        public DefaultLandingPageProvider(IStacApiEndpointManager stacApiEndpointManager,
+                                          IRootCatalogProvider rootCatalogProvider,
+                                          LinkGenerator linkGenerator,
+                                          IHttpContextAccessor httpContextAccessor)
         {
-            _serviceProvider = serviceProvider;
+            _stacApiEndpointManager = stacApiEndpointManager;
+            _rootCatalogProvider = rootCatalogProvider;
             LinkGenerator = linkGenerator;
             HttpContextAccessor = httpContextAccessor;
         }
 
-        public LandingPage Build(StacCatalog rootCatalog)
+        public LandingPage GetLandingPage()
         {
-            var landingPage = new LandingPage(rootCatalog);
+            var landingPage = new LandingPage(_rootCatalogProvider.GetRootCatalog());
 
             AddConformanceClasses(landingPage);
 
@@ -44,7 +47,7 @@ namespace Stac.Api.WebApi.Services
 
         private LandingPage AddEnpointLinks(LandingPage landingPage)
         {
-            var stacapiControllers = GetAllStacApiControllers();
+            var stacapiControllers = _stacApiEndpointManager.GetRegisteredStacApiControllers();
             foreach (var controller in stacapiControllers)
             {
                 var links = controller.GetLandingPageLinks(LinkGenerator, HttpContextAccessor);
@@ -65,29 +68,9 @@ namespace Stac.Api.WebApi.Services
 
         public LandingPage AddConformanceClasses(LandingPage landingPage)
         {
-            var stacapiControllers = GetAllStacApiControllers();
-            foreach (var controller in stacapiControllers)
-            {
-                var conformanceClasses = controller.GetConformanceClasses();
-                landingPage.ConformanceClasses.AddRange(conformanceClasses);
-            }
-            return landingPage;
+            var conformanceClasses = _stacApiEndpointManager.GetConformanceClasses();
+            landingPage.ConformanceClasses.AddRange(conformanceClasses);
         }
 
-        private IEnumerable<IStacApiController> GetAllStacApiControllers()
-        {
-            var endpointSources = _serviceProvider.GetServices<EndpointDataSource>();
-            var endpoints = endpointSources
-                .SelectMany(es => es.Endpoints)
-                .OfType<RouteEndpoint>();
-            var controllers = endpoints
-                .Select(e => e.Metadata.GetMetadata<ControllerActionDescriptor>())
-                .Where(c => c != null);
-            return controllers.Select(c => c.ControllerTypeInfo)
-                .Where(t => typeof(IStacApiController).IsAssignableFrom(t))
-                .Distinct()
-                .Select(t => (IStacApiController)ActivatorUtilities.CreateInstance(_serviceProvider, t))
-                .ToList();
-        }
     }
 }

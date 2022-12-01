@@ -30,7 +30,7 @@ namespace Stac.Api.WebApi.Extensions
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<ILandingPageBuilder, LandingPageBuilder>();
+            services.AddSingleton<ILandingPageProvider, LandingPageBuilder>();
             services.AddSingleton<IStacApiEndpointManager, StacApiEndpointManager>();
             return services;
         }
