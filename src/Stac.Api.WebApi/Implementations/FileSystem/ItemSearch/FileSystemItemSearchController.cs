@@ -15,7 +15,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.ItemSearch
         {
         }
 
-        public Task<ActionResult<StacFeatureCollection>> GetItemSearchAsync(string bbox, IGeometryObject intersectsQueryString, string datetime, int limit, IEnumerable<string> ids, IEnumerable<string> collections, CancellationToken cancellationToken = default)
+        public Task<ActionResult<StacFeatureCollection>> GetItemSearchAsync(string bbox, IGeometryObject intersects, string datetime, int limit, IEnumerable<string> ids, IEnumerable<string> collections, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

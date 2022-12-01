@@ -15,6 +15,9 @@ using Stac.Api.WebApi.Implementations.FileSystem.Extensions;
 using Stac.Api.WebApi.Implementations.FileSystem.ItemSearch;
 using Stac.Api.WebApi.Implementations.FileSystem.Features;
 using Stac.Api.WebApi.Services;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json;
+using GeoJSON.Net.Converters;
 
 namespace Stac.Api.WebApi.Extensions
 {
@@ -22,7 +25,13 @@ namespace Stac.Api.WebApi.Extensions
     {
         public static IServiceCollection AddStacWebApi(this IServiceCollection services)
         {
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                    options.SerializerSettings.Converters.Add(new GeometryConverter());
+                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ILandingPageBuilder, LandingPageBuilder>();
             return services;

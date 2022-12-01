@@ -7,6 +7,7 @@ using Stac.Api.WebApi.Extensions;
 using Microsoft.Extensions.Configuration;
 using NSwag.AspNetCore;
 using Hellang.Middleware.ProblemDetails;
+using Stac.Api.WebApi.Implementations.Shared.Exceptions;
 
 // Create the default web application builder
 var builder = WebApplication.CreateBuilder(args);
@@ -22,25 +23,22 @@ builder.Services.AddStacWebApi();
 string catalogRootPath = configuration.GetValue<string>("catalogRootPath") ?? Path.Combine(Path.GetTempPath(), "StacApi");
 builder.Services.AddFileSystemControllers(builder =>
         builder.UseFileSystemRoot(catalogRootPath, true));
-        
-builder.Services.AddCodeGenOptions(configuration.GetSection("CodeGen"));
 
-builder.Services.AddProblemDetails(config =>
-                StacWebApiExtensions.ConfigureProblemDetails(config, configuration, builder.Environment));
+builder.Services.AddCodeGenOptions(configuration.GetSection("CodeGen"));
 
 
 // Configure OpenAPI documentation for the Todo API
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("All",
-                builder =>
-                {
-                    builder.AllowAnyOrigin()
-                    .AllowAnyHeader();
-                });
-    });
+{
+    options.AddPolicy("All",
+            builder =>
+            {
+                builder.AllowAnyOrigin()
+                .AllowAnyHeader();
+            });
+});
 
 // Create the app
 var app = builder.Build();
@@ -51,8 +49,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
     app.UseHttpsRedirection();
 }
-
-app.UseProblemDetails();
 
 // Add Swagger endpoint for OpenAPI
 app.UseOpenApi(app.Services.GetService<IOptions<CodeGenOptions>>().Value);
@@ -71,11 +67,14 @@ app.UseReDoc(c =>
 app.UseRouting();
 app.UseCors();
 
+// global error handler
+app.UseMiddleware<ErrorHandlerMiddleware>();
+
 // Add the HTTP endpoints
 app.UseEndpoints(endpoints =>
-    {
-        endpoints.MapControllers();
-    });
+{
+    endpoints.MapControllers();
+});
 
 // Run the application
 app.Run();
@@ -84,3 +83,4 @@ public partial class Program
 {
     // Expose the Program class for use with WebApplicationFactory<T>
 }
+

@@ -20,10 +20,9 @@ namespace Stac.Api.Attributes
         public string MediaType { get; }
         public string Method { get; set; }
 
-
-        public StacLink GetStacLink(LinkGenerator linkGenerator, IHttpContextAccessor httpContextAccessor, string controllerName)
+        public StacLink GetStacLink(LinkGenerator linkGenerator, IHttpContextAccessor httpContextAccessor, string controllerName, object values)
         {
-            StacLink link = new StacLink(new Uri(linkGenerator.GetUriByAction(httpContextAccessor.HttpContext, Action, controllerName)), Relationship, null, MediaType);
+            StacLink link = new StacLink(new Uri(linkGenerator.GetUriByAction(httpContextAccessor.HttpContext, Action, controllerName, values)), Relationship, null, MediaType);
             if (!string.IsNullOrEmpty(Method))
             {
                 link.AdditionalProperties = new Dictionary<string, object>();

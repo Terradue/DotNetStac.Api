@@ -9,7 +9,7 @@ namespace Stac.Api.WebApi.Controllers.Features
 {
     [EnableCors("All")]
     [ConformanceClass("https://api.stacspec.org/v1.0.0-rc.2/ogcapi-features")]
-    [LandingPageAction("GetConformanceClasses", "conformance", "application/json")]
+    [LandingPageAction("GetConformanceDeclaration", "conformance", "application/json")]
     public partial class FeaturesController: Stac.Api.WebApi.StacApiController
     {
     }

@@ -11,5 +11,7 @@ namespace Stac.Api.Interfaces
     {
         IReadOnlyCollection<string> GetConformanceClasses();
         IReadOnlyCollection<StacLink> GetLandingPageLinks(LinkGenerator linkGenerator, IHttpContextAccessor httpContextAccessor);
+
+        object GetActionParameters(string actionName);
     }
 }

@@ -32,12 +32,6 @@ namespace Stac.Api.WebApi.Services
 
             AddLinks(landingPage);
 
-            // landingPage.Links.Add(StacLink.CreateSelfLink(linkGenerator.GetAppBaseUrl(), "application/json"));
-            // landingPage.Links.Add(StacLink.CreateRootLink(linkGenerator.GetAppBaseUrl(), "application/json"));
-            // landingPage.Links.Add(new StacLink(new Uri(linkGenerator.GetAppBaseUrl(), "/swagger/v1/swagger.json"), "service-desc", null, "application/vnd.oai.openapi+json;version=3.0"));
-            // landingPage.Links.Add(new StacLink(new Uri(linkGenerator.GetAppBaseUrl(), "/swagger"), "service-doc", null, "text/html"));
-            // landingPage.Links.Add(new StacLink(new Uri(linkGenerator.GetAppBaseUrl(), "/collections"), "data", null, "application/json"));
-
             return landingPage;
         }
 
