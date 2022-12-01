@@ -20,7 +20,7 @@ namespace Stac.Api.CodeGen
         public string Generate(JsonSchema schema, string typeNameHint, IEnumerable<string> reservedTypeNames)
         {
             string typeName = typeNameHint;
-            if (string.IsNullOrEmpty(typeName))
+            if (string.IsNullOrEmpty(typeName) || typeNameHint == "Response")
             {
                 typeName = schema.Title;
             }
