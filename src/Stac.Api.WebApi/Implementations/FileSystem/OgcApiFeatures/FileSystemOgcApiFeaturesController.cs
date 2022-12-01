@@ -39,7 +39,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Features
         {
             var item = _stacFileSystemReaderService.GetStacItemById(collectionId, featureId);
             item.Links.Add(GetSelfLink(item));
-            item.Links.Add(GetRootLink(item));
+            item.Links.Add(GetRootLink());
             item.Links.Add(GetCollectionLink(item));
             return new OkObjectResult(item);
         }

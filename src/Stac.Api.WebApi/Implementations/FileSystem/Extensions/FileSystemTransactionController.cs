@@ -98,7 +98,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Extensions
             catch { }
             item = await _stacFileSystemTransactionService.CreateStacItemAsync(body, collectionId, cancellationToken);
             item.Links.Add(GetSelfLink(item));
-            item.Links.Add(GetRootLink(item));
+            item.Links.Add(GetRootLink());
             item.Links.Add(GetCollectionLink(item));
             return new CreatedResult(
                         GetSelfUrl(item),

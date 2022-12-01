@@ -22,7 +22,12 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
 
         public IEnumerable<StacCollection> GetCollections()
         {
-            var collectionFiles = _fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).GetFiles("*.json");
+            IEnumerable<IFileInfo> collectionFiles = new List<IFileInfo>();
+            try
+            {
+                _fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).GetFiles("*.json");
+            }
+            catch { }
             foreach (var collectionFile in collectionFiles)
             {
                 var collection = _fileSystemResolver.FileSystem.File.ReadAllText(collectionFile.FullName);

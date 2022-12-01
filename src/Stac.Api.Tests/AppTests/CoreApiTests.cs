@@ -7,14 +7,14 @@ using Stac.Api.Clients.Core;
 using System;
 using System.Linq;
 
-namespace Stac.Api.Tests.Core
+namespace Stac.Api.Tests.AppTests
 {
-    [Collection(StacApiAppCollection.Name)]
+    [Collection(StacApiAppCollectionFixture.Name)]
     public class CoreApiTests : AppTestBase
     {
         public CoreApiTests(StacApiAppFixture fixture, ITestOutputHelper outputHelper) : base(fixture, outputHelper)
         {
-
+            
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace Stac.Api.Tests.Core
         [Theory, MemberData("TestCatalogs", DisableDiscoveryEnumeration = true)]
         public async Task GetLandingPageAsync(string key, string datadir)
         {
-            await using var application = new CoreStacApiApplication(datadir);
+            await using var application = new StacApiApplication(datadir);
 
             var client = application.CreateClient();
             CoreClient coreClient = new CoreClient(client);
@@ -43,7 +43,6 @@ namespace Stac.Api.Tests.Core
 
             ValidateJson(landingPageJson);
 
-            // Assert.Empty(todos);
         }
 
         private void ValidateLandingPage(LandingPage landingPage)

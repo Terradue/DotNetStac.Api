@@ -41,15 +41,15 @@ namespace Stac.Api.WebApi.Implementations.Shared.Exceptions
                         break;
                 }
 
-                var result = JsonConvert.SerializeObject(GetStacApiException(error, env.IsDevelopment()));
+                var result = JsonConvert.SerializeObject(GetExceptionInfo(error, response.StatusCode, env.IsDevelopment()));
                 await response.WriteAsync(result);
             }
         }
 
-        private static ExceptionInfo GetStacApiException(Exception error, bool details)
+        private static ExceptionInfo GetExceptionInfo(Exception error, int statusCode, bool details)
         {
             ExceptionInfo exceptionInfo = new ExceptionInfo();
-            exceptionInfo.Code = StatusCodes.Status500InternalServerError.ToString();
+            exceptionInfo.Code = statusCode.ToString();
             exceptionInfo.Description = error.Message;
             if (details)
             {

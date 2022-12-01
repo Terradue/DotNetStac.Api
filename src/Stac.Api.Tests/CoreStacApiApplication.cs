@@ -7,13 +7,13 @@ using Stac.Api.WebApi.Implementations;
 using Stac.Api.WebApi.Implementations.FileSystem;
 using Stac.Api.WebApi.Implementations.FileSystem.Core;
 
-namespace Stac.Api.Tests.Core
+namespace Stac.Api.Tests
 {
-    internal class CoreStacApiApplication : WebApplicationFactory<CoreController>
+    internal class StacApiApplication : WebApplicationFactory<CoreController>
     {
         private string _datadir;
 
-        public CoreStacApiApplication(string datadir)
+        public StacApiApplication(string datadir)
         {
             _datadir = datadir;
         }

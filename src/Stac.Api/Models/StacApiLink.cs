@@ -7,6 +7,18 @@ namespace Stac.Api.Models
 {
     public partial class StacApiLink : StacLink
     {
+        public StacApiLink(){}
+
+        public StacApiLink(Uri uri, string relationshipType, string title, string mediaType, StacApiLinkMethod method = StacApiLinkMethod.GET) : base(uri, relationshipType, title, mediaType)
+        {
+            Method = method;
+        }
+
+        public StacApiLink(StacLink link, StacApiLinkMethod method = StacApiLinkMethod.GET) : base(link.Uri, link.RelationshipType, link.Title, link.Type)
+        {
+            Method = method;
+        }
+
         /// <summary>
         /// Specifies the HTTP method that the resource expects
         /// </summary>
@@ -40,7 +52,7 @@ namespace Stac.Api.Models
         /// <br/>`{"next": "token"}` will become `&amp;next=token`.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("merge", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool Merge { get; set; } = false;
+        public bool? Merge { get; set; }
 
     }
 

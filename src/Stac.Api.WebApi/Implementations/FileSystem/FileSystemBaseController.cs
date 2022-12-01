@@ -1,4 +1,5 @@
 using System.Reflection;
+using Stac.Api.Models;
 
 namespace Stac.Api.WebApi.Implementations.FileSystem
 {
@@ -52,9 +53,9 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
             throw new NotImplementedException();
         }
 
-        protected StacLink GetSelfLink(IStacObject stacObject)
+        protected StacApiLink GetSelfLink(IStacObject stacObject)
         {
-            return new StacLink(
+            return new StacApiLink(
                 new Uri (GetSelfUrl(stacObject)),
                 "self",
                 stacObject.Title,
@@ -62,10 +63,10 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
             );
         }
 
-        protected StacLink GetRootLink(IStacObject stacObject)
+        protected StacApiLink GetRootLink()
         {
             StacCatalog rootCatalog = _stacFileSystemReaderService.GetCatalog();
-            return new StacLink(
+            return new StacApiLink(
                 new Uri (GetSelfUrl(rootCatalog)),
                 "root",
                 rootCatalog.Title,
@@ -73,10 +74,10 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
             );
         }
 
-        protected StacLink GetCollectionLink(StacItem stacItem)
+        protected StacApiLink GetCollectionLink(StacItem stacItem)
         {
             StacCollection collection = _stacFileSystemReaderService.GetCollectionById(stacItem.Collection);
-            return new StacLink(
+            return new StacApiLink(
                 new Uri (GetSelfUrl(collection)),
                 "collection",
                 collection.Title,

@@ -5,7 +5,7 @@ using Stac.Api.Clients.Collections;
 
 namespace Stac.Api.Tests
 {
-    [Collection(StacApiAppCollection.Name)]
+    [Collection(StacApiAppCollectionFixture.Name)]
     public class CollectionsApiTests : AppTestBase
     {
         public CollectionsApiTests(StacApiAppFixture fixture, ITestOutputHelper outputHelper) : base(fixture, outputHelper)
