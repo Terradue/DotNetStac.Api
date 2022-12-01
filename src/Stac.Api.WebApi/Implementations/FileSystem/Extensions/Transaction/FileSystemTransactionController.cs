@@ -5,11 +5,9 @@ using Stac.Api.Extensions.Transactions;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.Collections;
 using Stac.Api.WebApi.Controllers.Features;
-using Stac.Api.WebApi.Implementations.FileSystem.Collections;
-using Stac.Api.WebApi.Implementations.FileSystem.Features;
 using Stac.Common;
 
-namespace Stac.Api.WebApi.Implementations.FileSystem.Extensions
+namespace Stac.Api.WebApi.Implementations.FileSystem.Extensions.Transaction
 {
     public class FileSystemTransactionController : FileSystemBaseController, Controllers.Extensions.Transaction.ITransactionController
     {

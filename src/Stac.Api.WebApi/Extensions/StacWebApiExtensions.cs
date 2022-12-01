@@ -1,23 +1,20 @@
 using Hellang.Middleware.ProblemDetails;
 using Stac.Api.CodeGen;
-using Stac.Api.Interfaces;
 using Stac.Api.WebApi.Controllers.Collections;
 using Stac.Api.WebApi.Controllers.Core;
 using Stac.Api.WebApi.Controllers.Extensions.Filter;
 using Stac.Api.WebApi.Controllers.Extensions.Transaction;
 using Stac.Api.WebApi.Controllers.ItemSearch;
 using Stac.Api.WebApi.Controllers.Features;
-using Stac.Api.WebApi.Implementations;
-using Stac.Api.WebApi.Implementations.FileSystem;
 using Stac.Api.WebApi.Implementations.FileSystem.Collections;
 using Stac.Api.WebApi.Implementations.FileSystem.Core;
 using Stac.Api.WebApi.Implementations.FileSystem.Extensions;
 using Stac.Api.WebApi.Implementations.FileSystem.ItemSearch;
-using Stac.Api.WebApi.Implementations.FileSystem.Features;
 using Stac.Api.WebApi.Services;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
 using GeoJSON.Net.Converters;
+using Stac.Api.WebApi.Implementations.FileSystem.Extensions.Transaction;
 
 namespace Stac.Api.WebApi.Extensions
 {
@@ -34,6 +31,7 @@ namespace Stac.Api.WebApi.Extensions
                 });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ILandingPageBuilder, LandingPageBuilder>();
+            services.AddSingleton<IStacApiEndpointManager, StacApiEndpointManager>();
             return services;
         }
 

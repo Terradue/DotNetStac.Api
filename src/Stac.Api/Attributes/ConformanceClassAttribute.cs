@@ -11,5 +11,7 @@ namespace Stac.Api.Attributes
         }
 
         public string ConformanceClass { get; }
+
+        public bool IsOgcApi { get; set; } = false;
     }
 }

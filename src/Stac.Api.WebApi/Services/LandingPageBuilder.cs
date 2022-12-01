@@ -68,7 +68,7 @@ namespace Stac.Api.WebApi.Services
             var stacapiControllers = GetAllStacApiControllers();
             foreach (var controller in stacapiControllers)
             {
-                var conformanceClasses =controller.GetConformanceClasses();
+                var conformanceClasses = controller.GetConformanceClasses();
                 landingPage.ConformanceClasses.AddRange(conformanceClasses);
             }
             return landingPage;

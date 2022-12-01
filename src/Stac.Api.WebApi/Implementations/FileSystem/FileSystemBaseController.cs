@@ -9,7 +9,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
 
         private readonly StacFileSystemResolver _stacFileSystem;
         protected readonly StacFileSystemReaderService _stacFileSystemReaderService;
-        
+
         public Uri AppBaseUrl => new Uri($"{HttpContextAccessor.HttpContext.Request.Scheme}://{HttpContextAccessor.HttpContext.Request.Host}{HttpContextAccessor.HttpContext.Request.PathBase}");
 
         public LinkGenerator LinkGenerator { get; }
@@ -35,13 +35,20 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
 
         protected void CheckExists(string collectionId, string featureId)
         {
-            _stacFileSystemReaderService.GetStacItemById(collectionId, featureId);
+            try
+            {
+                _stacFileSystemReaderService.GetStacItemById(collectionId, featureId);
+            }
+            catch (IOException e)
+            {
+                throw new StacApiException(e.Message, StatusCodes.Status404NotFound, null, null, e);
+            }
         }
 
         protected void CheckEtag(string if_Match, string collectionId, string featureId)
         {
             var checksum = _stacFileSystemReaderService.GetStacItemEtagById(collectionId, featureId);
-            
+
             if (checksum != if_Match)
             {
                 throw new StacApiException($"Feature {featureId} in collection {collectionId} has changed", 412, null, null, null);
@@ -56,7 +63,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
         protected StacApiLink GetSelfLink(IStacObject stacObject)
         {
             return new StacApiLink(
-                new Uri (GetSelfUrl(stacObject)),
+                new Uri(GetSelfUrl(stacObject)),
                 "self",
                 stacObject.Title,
                 stacObject.MediaType.ToString()
@@ -67,7 +74,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
         {
             StacCatalog rootCatalog = _stacFileSystemReaderService.GetCatalog();
             return new StacApiLink(
-                new Uri (GetSelfUrl(rootCatalog)),
+                new Uri(GetSelfUrl(rootCatalog)),
                 "root",
                 rootCatalog.Title,
                 rootCatalog.MediaType.ToString()
@@ -78,7 +85,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
         {
             StacCollection collection = _stacFileSystemReaderService.GetCollectionById(stacItem.Collection);
             return new StacApiLink(
-                new Uri (GetSelfUrl(collection)),
+                new Uri(GetSelfUrl(collection)),
                 "collection",
                 collection.Title,
                 collection.MediaType.ToString()
@@ -90,15 +97,15 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
             switch (stacObject)
             {
                 case StacCatalog catalog:
-                    return LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "GetLandingPage", "Core", new {});
+                    return LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "GetLandingPage", "Core", new { });
                 case StacCollection collection:
-                    return LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "DescribeCollection", "Collections", new {collectionId = collection.Id});
+                    return LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "DescribeCollection", "Collections", new { collectionId = collection.Id });
                 case StacItem item:
-                    return LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "GetFeature", "Features", new {collectionId = item.Collection, featureId = item.Id});
+                    return LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "GetFeature", "Features", new { collectionId = item.Collection, featureId = item.Id });
                 default:
                     throw new ArgumentOutOfRangeException(nameof(stacObject), stacObject, null);
             }
-            
+
         }
     }
 }

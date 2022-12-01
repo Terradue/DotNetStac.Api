@@ -31,9 +31,16 @@ namespace Stac.Api.WebApi.Implementations.Shared.Exceptions
 
                 switch (error)
                 {
-                    case KeyNotFoundException e:
+                    case StacApiException e:
                         // not found error
-                        response.StatusCode = (int)HttpStatusCode.NotFound;
+                        response.StatusCode = e.StatusCode;
+                        if ( e.Headers != null )
+                        {
+                            foreach (var header in e.Headers)
+                            {
+                                response.Headers.Add(header.Key, new Microsoft.Extensions.Primitives.StringValues(header.Value.ToArray()));
+                            }
+                        }
                         break;
                     default:
                         // unhandled error

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Stac.Api.Clients.Collections;
 using Stac.Api.Clients.Features;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.Features;
@@ -6,37 +7,32 @@ using Stac.Api.WebApi.Implementations.Shared.Geometry;
 using Stac.Api.WebApi.Implementations.Shared.Temporal;
 using Stac.Api.WebApi.Services;
 
-namespace Stac.Api.WebApi.Implementations.FileSystem.Features
+namespace Stac.Api.WebApi.Implementations.FileSystem.Collections
 {
     public class FileSystemFeaturesController : FileSystemBaseController, IFeaturesController
     {
-        private readonly ILandingPageBuilder _landingPageBuilder;
+        private readonly IStacApiEndpointManager _stacApiEndpointManager;
 
         public FileSystemFeaturesController(IHttpContextAccessor httpContextAccessor,
-                                                  LinkGenerator linkGenerator,
-                                                  ILandingPageBuilder landingPageBuilder,
-                                                  StacFileSystemResolver fileSystem) : base(httpContextAccessor, linkGenerator, fileSystem)
+                                               LinkGenerator linkGenerator,
+                                               IStacApiEndpointManager stacApiEndpointManager,
+                                               StacFileSystemResolver fileSystem) : base(httpContextAccessor, linkGenerator, fileSystem)
         {
-            _landingPageBuilder = landingPageBuilder;
+            _stacApiEndpointManager = stacApiEndpointManager;
         }
 
         public async Task<ActionResult<ConformanceDeclaration>> GetConformanceDeclarationAsync(CancellationToken cancellationToken = default)
         {
+            var cc = _stacApiEndpointManager.GetConformanceClasses(true);
             return new ConformanceDeclaration()
             {
-                ConformsTo = new List<string>(){
-                    "https://api.stacspec.org/v1.0.0-rc.1/ogcapi-features",
-                    "https://api.stacspec.org/v1.0.0-rc.1/core",
-                    "https://api.stacspec.org/v1.0.0-rc.1/collections",
-                    "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
-                    "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
-                    "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30"
-                }
+                ConformsTo = new List<string>(cc)
             };
         }
 
         public async Task<ActionResult<StacItem>> GetFeatureAsync(string collectionId, string featureId, CancellationToken cancellationToken = default)
         {
+            CheckExists(collectionId, featureId);
             var item = _stacFileSystemReaderService.GetStacItemById(collectionId, featureId);
             item.Links.Add(GetSelfLink(item));
             item.Links.Add(GetRootLink());
@@ -59,5 +55,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Features
 
             return fc;
         }
+
+
     }
 }
