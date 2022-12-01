@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Stac.Collection;
 
@@ -70,9 +71,10 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
             }
             catch { }
             StacCollection collection = StacCollection.Create(
-                collectionId, null,
+                collectionId, collectionId.Titleize(),
                 _fileSystemReaderService.GetStacItemsByCollectionId(collectionId)
-                    .ToDictionary(i => new Uri($"items/{i.Id}.json", UriKind.Relative), i => i));
+                    .ToDictionary(i => new Uri($"items/{i.Id}.json", UriKind.Relative), i => i),
+                    "various");
 
             if (existingCollection != null){
                 collection.Title = existingCollection.Title;

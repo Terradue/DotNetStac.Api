@@ -20,6 +20,8 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Collections
             try
             {
                 StacCollection collection = _stacFileSystemReaderService.GetCollectionById(collectionId);
+                collection.Links.Add(GetSelfLink(collection));
+                collection.Links.Add(GetRootLink());
                 return collection;
             }
             catch (IOException)
@@ -27,6 +29,8 @@ namespace Stac.Api.WebApi.Implementations.FileSystem.Collections
                 return new NotFoundResult();
             }
         }
+
+        
 
         public async Task<ActionResult<StacCollections>> GetCollectionsAsync(CancellationToken cancellationToken = default)
         {

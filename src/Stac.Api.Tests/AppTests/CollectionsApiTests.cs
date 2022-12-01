@@ -33,11 +33,20 @@ namespace Stac.Api.Tests.AppTests
 
             var collections = await collectionsClient.GetCollectionsAsync();
 
+            Assert.Equal(1, collections.Collections.Count);
+            Assert.Equal("test", collections.Collections.First().Id);
+
             ValidateCollections(collections);
 
-            var CollectionsJson = JsonConvert.SerializeObject(collections);
-
-            ValidateJson(CollectionsJson);
+            foreach (var collection in collections.Collections)
+            {
+                string collectionJson = JsonConvert.SerializeObject(collection);
+                ValidateJson(collectionJson);
+                var collection2 = await collectionsClient.DescribeCollectionAsync(collection.Id);
+                var collection2Json = JsonConvert.SerializeObject(collection2);
+                JsonAssert.AreEqual(collectionJson, collection2Json);
+                ValidateJson(collection2Json);
+            }
 
         }
 

@@ -25,7 +25,7 @@ namespace Stac.Api.WebApi.Implementations.FileSystem
             IEnumerable<IFileInfo> collectionFiles = new List<IFileInfo>();
             try
             {
-                _fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).GetFiles("*.json");
+                collectionFiles = _fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).GetFiles("*.json");
             }
             catch { }
             foreach (var collectionFile in collectionFiles)
