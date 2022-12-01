@@ -26,9 +26,8 @@ namespace Stac.Api.CodeGen
             var spec = Specifications[key];
             settings.ClassName = spec.ClientClassName;
             settings.CSharpGeneratorSettings.Namespace = spec.ClientNamespace;
-            settings.CSharpGeneratorSettings.ExcludedTypeNames = spec.ExcludedTypeNames.Concat(spec.ExcludedClientTypeNames).ToArray();
+            settings.CSharpGeneratorSettings.ExcludedTypeNames = spec.ExcludedTypeNames.ToArray();
             settings.CSharpGeneratorSettings.TypeNameGenerator = new CustomTypeNameGenerator(spec);
-            settings.AdditionalNamespaceUsages = settings.AdditionalNamespaceUsages.Concat(new string[] { spec.ControllerNamespace }).ToArray();
             return settings;
         }
 
@@ -40,6 +39,8 @@ namespace Stac.Api.CodeGen
             settings.CSharpGeneratorSettings.Namespace = spec.ControllerNamespace;
             settings.CSharpGeneratorSettings.ExcludedTypeNames = spec.ExcludedTypeNames.ToArray();
             settings.CSharpGeneratorSettings.TypeNameGenerator = new CustomTypeNameGenerator(spec);
+            settings.GenerateDtoTypes = false;
+            settings.AdditionalNamespaceUsages = settings.AdditionalNamespaceUsages.Concat(new string[] { spec.ClientNamespace }).ToArray();
             return settings;
         }
     }
