@@ -1,20 +1,13 @@
 using Hellang.Middleware.ProblemDetails;
 using Stac.Api.CodeGen;
-using Stac.Api.WebApi.Controllers.Collections;
-using Stac.Api.WebApi.Controllers.Core;
-using Stac.Api.WebApi.Controllers.Extensions.Filter;
-using Stac.Api.WebApi.Controllers.Extensions.Transaction;
-using Stac.Api.WebApi.Controllers.ItemSearch;
-using Stac.Api.WebApi.Controllers.Features;
-using Stac.Api.WebApi.Implementations.FileSystem.Collections;
-using Stac.Api.WebApi.Implementations.FileSystem.Core;
-using Stac.Api.WebApi.Implementations.FileSystem.Extensions;
-using Stac.Api.WebApi.Implementations.FileSystem.ItemSearch;
 using Stac.Api.WebApi.Services;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
 using GeoJSON.Net.Converters;
-using Stac.Api.WebApi.Implementations.FileSystem.Extensions.Transaction;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace Stac.Api.WebApi.Extensions
 {
@@ -30,23 +23,8 @@ namespace Stac.Api.WebApi.Extensions
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<ILandingPageProvider, LandingPageBuilder>();
+            services.AddSingleton<ILandingPageProvider, DefaultLandingPageProvider>();
             services.AddSingleton<IStacApiEndpointManager, StacApiEndpointManager>();
-            return services;
-        }
-
-        public static IServiceCollection AddFileSystemControllers(this IServiceCollection services, Action<IStacWebApiBuilder> configure)
-        {
-            services.AddSingleton<ICoreController, FileSystemCoreController>();
-            // services.AddSingleton<IChildrenController, FileSystemChildrenController>();
-            services.AddSingleton<ICollectionsController, FileSystemCollectionsController>();
-            services.AddSingleton<IFeaturesController, FileSystemFeaturesController>();
-            services.AddSingleton<IItemSearchController, FileSystemItemSearchController>();
-            services.AddSingleton<IFilterController, FileSystemFilterController>();
-            services.AddSingleton<ITransactionController, FileSystemTransactionController>();
-            // Let's Configure
-            var builder = new StacWebApiBuilder(services);
-            configure(builder);
             return services;
         }
 

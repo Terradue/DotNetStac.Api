@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Stac.Api.WebApi.Extensions
 {
     public interface IStacWebApiBuilder

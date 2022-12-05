@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -16,6 +16,7 @@
     <PackageReference Include="System.IO.Abstractions" Version="17.0.*" />
     <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="5.4.0" />
     <PackageReference Include="NetTopologySuite.IO.GeoJSON" Version="3.0.0" />
+    <PackageReference Include="Terradue.Stars" Version="2.8.*" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,9 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../../systems/Stars/src/Stars.Interface/Terradue.Stars.Interface.csproj" />
+    <!-- <ProjectReference Include="../../../../systems/Stars/src/Stars.Interface/Terradue.Stars.Interface.csproj" />
     <ProjectReference Include="../../../../systems/Stars/src/Stars.Services/Terradue.Stars.Services.csproj" />
-    <ProjectReference Include="../../../../systems/Stars/src/Stars.Geometry/Terradue.Stars.Geometry.csproj" />
+    <ProjectReference Include="../../../../systems/Stars/src/Stars.Geometry/Terradue.Stars.Geometry.csproj" /> -->
   </ItemGroup>
 
   <ItemGroup>

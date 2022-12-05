@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Stac.Api.Clients.Collections;
 
 namespace Stac.Api.WebApi.Services
@@ -8,6 +9,9 @@ namespace Stac.Api.WebApi.Services
 
         void Link(StacCollections collections, HttpContext httpContext);
 
+        void Link(StacItem item, HttpContext httpContext);
+
         void Link<T>(T linksCollectionObject, IStacLinkValuesProvider<T> stacLinkValuesProvider, HttpContext httpContext) where T : ILinksCollectionObject;
+        
     }
 }

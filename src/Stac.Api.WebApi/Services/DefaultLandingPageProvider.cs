@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Routing;
 using Stac.Api.Interfaces;
 using Stac.Api.Models;
 
@@ -27,7 +29,7 @@ namespace Stac.Api.WebApi.Services
             HttpContextAccessor = httpContextAccessor;
         }
 
-        public LandingPage GetLandingPage()
+        public Task<LandingPage> GetLandingPageAsync(CancellationToken cancellationToken)
         {
             var landingPage = new LandingPage(_rootCatalogProvider.GetRootCatalog());
 
@@ -35,7 +37,7 @@ namespace Stac.Api.WebApi.Services
 
             AddLinks(landingPage);
 
-            return landingPage;
+            return Task.FromResult(landingPage);
         }
 
         private LandingPage AddLinks(LandingPage landingPage)
@@ -70,6 +72,7 @@ namespace Stac.Api.WebApi.Services
         {
             var conformanceClasses = _stacApiEndpointManager.GetConformanceClasses();
             landingPage.ConformanceClasses.AddRange(conformanceClasses);
+            return landingPage;
         }
 
     }

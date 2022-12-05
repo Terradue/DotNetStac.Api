@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
 using Stac.Api.Clients.Collections;
 using Stac.Api.Services.Pagination;
@@ -17,13 +19,13 @@ namespace Stac.Api.WebApi.Services
         public int Page { get; }
         public int StartIndex { get; }
 
-        public static QueryStringPaginationParameters GetPaginatorParameters(HttpContextAccessor httpContextAccessor)
+        public static QueryStringPaginationParameters GetPaginatorParameters(HttpContext httpContext)
         {
-            StringValues limitsv = httpContextAccessor.HttpContext.Request.Query["limit"];
+            StringValues limitsv = httpContext.Request.Query["limit"];
             int limit = limitsv.Count > 0 ? int.Parse(limitsv[0]) : 10;
-            StringValues pagesv = httpContextAccessor.HttpContext.Request.Query["page"];
+            StringValues pagesv = httpContext.Request.Query["page"];
             int page = pagesv.Count > 0 ? int.Parse(pagesv[0]) : 1;
-            StringValues startsv = httpContextAccessor.HttpContext.Request.Query["startIndex"];
+            StringValues startsv = httpContext.Request.Query["startIndex"];
             int startIndex = startsv.Count > 0 ? int.Parse(startsv[0]) : 0;
             return new QueryStringPaginationParameters(limit, page, startIndex);
         }

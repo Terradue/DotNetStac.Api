@@ -38,9 +38,9 @@ namespace Stac.Api.Tests
             }
         }
 
-        protected string GetJson(string folder, [CallerMemberName] string name = null)
+        protected string GetJson(string folder, [CallerMemberName] string name = null, string typeName = null)
         {
-            var type = GetType().Name;
+            var type = typeName ?? GetType().Name;
             var path = Path.Combine(AssemblyDirectory, @"../../..", "Resources", folder, type + "_" + name + ".json");
 
             if (!File.Exists(path))

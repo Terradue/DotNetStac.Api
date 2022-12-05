@@ -1,10 +1,12 @@
+using Microsoft.AspNetCore.Routing;
+
 namespace Stac.Api.WebApi.Services
 {
-    internal class LinkValues : ILinkValues
+    public class LinkValues : ILinkValues
     {
-        public LinkValues(string v, RouteValueDictionary routeValues, Dictionary<string, object> queryValues, IDictionary<string, object> headerValues, IDictionary<string, object> bodyValues)
+        public LinkValues(string relationshipType, RouteValueDictionary routeValues, Dictionary<string, object> queryValues, IDictionary<string, object> headerValues, IDictionary<string, object> bodyValues)
         {
-            V = v;
+            RelationshipType = relationshipType;
             RouteValues = routeValues;
             QueryValues = queryValues;
             HeaderValues = headerValues;
@@ -15,10 +17,10 @@ namespace Stac.Api.WebApi.Services
 
         public RouteValueDictionary RouteValues { get; }
         
-        IDictionary<string, object> QueryValues { get; }
+        public IDictionary<string, object> QueryValues { get; }
 
-        IDictionary<string, object> HeaderValues { get; }
+        public IDictionary<string, object> HeaderValues { get; }
 
-        IDictionary<string, object> BodyValues { get; }
+        public IDictionary<string, object> BodyValues { get; }
     }
 }

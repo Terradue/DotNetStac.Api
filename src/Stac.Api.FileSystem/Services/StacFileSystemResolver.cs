@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.IO.Abstractions;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Stac.Api.WebApi.Implementations.FileSystem
+namespace Stac.Api.FileSystem.Services
 {
     public class StacFileSystemResolver
     {

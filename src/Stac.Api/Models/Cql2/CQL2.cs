@@ -70,7 +70,7 @@ namespace Stac.Api.Models.Cql2
     }
 
     [JsonConverter(typeof(ComparisonPredicateConverter))]
-    public abstract class ComparisonPredicate : BooleanExpression
+    public class ComparisonPredicate : BooleanExpression
     {
         public BinaryComparisonPredicate Binary() => this as BinaryComparisonPredicate;
         public IsLikePredicate IsLike() => this as IsLikePredicate;

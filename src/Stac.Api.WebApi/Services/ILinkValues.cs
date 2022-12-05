@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Routing;
+
 namespace Stac.Api.WebApi.Services
 {
     public interface ILinkValues
@@ -11,4 +13,5 @@ namespace Stac.Api.WebApi.Services
         IDictionary<string, object> HeaderValues { get; }
 
         IDictionary<string, object> BodyValues { get; }
+    }
 }

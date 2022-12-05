@@ -1,11 +1,8 @@
 using System;
 using Xunit;
 using System.Threading.Tasks;
-using Stac.Api.Clients;
 using Xunit.Abstractions;
-using Stac.Api.Models;
 using Newtonsoft.Json;
-using Stac.Api.Models.Fragments.Filter;
 using Newtonsoft.Json.Linq;
 using Stac.Api.Models.Cql2;
 using Stac.Api.Converters;

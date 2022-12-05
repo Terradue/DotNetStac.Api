@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Stac.Api
@@ -8,6 +9,7 @@ namespace Stac.Api
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class StacApiException : System.Exception
     {
+
         public int StatusCode { get; private set; }
 
         public string Response { get; private set; }
@@ -20,6 +22,11 @@ namespace Stac.Api
             StatusCode = statusCode;
             Response = response;
             Headers = headers;
+        }
+
+        public StacApiException(string message, int statusCode) : base(message)
+        {
+            StatusCode = statusCode;
         }
 
         public override string ToString()

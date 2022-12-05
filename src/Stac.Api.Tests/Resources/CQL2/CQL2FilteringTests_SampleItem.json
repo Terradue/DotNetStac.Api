@@ -1,0 +1,37 @@
+{
+    "type": "Feature",
+    "stac_version": "1.0.0",
+    "stac_extensions": [
+      "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+      "https://stac-extensions.github.io/view/v1.0.0/schema.json",
+      "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+    ],
+    "id": "S2A_60HWB_20201111_0_L2A",
+    "bbox": [ 176.9997779369264, -39.83783732066656, 178.14624317719924, -38.842842449352425],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [[[176.9997779369264, -39.83783732066656],[176.99978104582647,-38.84846679951431],
+              [178.14624317719924, -38.842842449352425],[177.8514661209684,-39.83471270154608],
+              [176.9997779369264, -39.83783732066656]]]
+    },
+    "collection": "sentinel-s2-l2a-cogs",
+    "properties": {
+      "datetime": "2020-11-11T22:16:58Z",
+      "platform": "sentinel-2a",
+      "constellation": "sentinel-2",
+      "instruments": ["msi"],
+      "gsd": 10,
+      "view:off_nadir": 0,
+      "proj:epsg": 32760,
+      "sentinel:utm_zone": 60,
+      "sentinel:latitude_band": "H",
+      "sentinel:grid_square": "WB",
+      "sentinel:sequence": "0",
+      "sentinel:product_id": "S2A_MSIL2A_20201111T221611_N0214_R129_T60HWB_20201111T235959",
+      "sentinel:data_coverage": 78.49,
+      "eo:cloud_cover": 5,
+      "sentinel:valid_cloud_cover": true,
+      "created": "2020-11-12T02:08:31.563Z",
+      "updated": "2020-11-12T02:08:31.563Z"
+    }
+  }

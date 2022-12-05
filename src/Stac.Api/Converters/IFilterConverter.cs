@@ -1,10 +1,7 @@
 using System;
 using GeoJSON.Net.Converters;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Stac.Api.Models;
-using Stac.Api.Models.Cql2;
-using Stac.Api.Models.Fragments.Filter;
+using Stac.Api.Interfaces;
 
 namespace Stac.Api.Converters
 {
@@ -14,7 +11,7 @@ namespace Stac.Api.Converters
 
         public override bool CanConvert(Type objectType)
         {
-            return typeof(IFilter).IsAssignableFromType(objectType);
+            return typeof(IStacFilter).IsAssignableFromType(objectType);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

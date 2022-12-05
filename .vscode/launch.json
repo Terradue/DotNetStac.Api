@@ -2,11 +2,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (web)",
+            "name": "Launch Stac WebApi (file system)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Stac.Api.WebApi/bin/Debug/net6.0/Stac.Api.WebApi.dll",
+            "program": "${workspaceFolder}/src/Stac.Api.FileSystem/bin/Debug/net6.0/Stac.Api.FileSystem.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,

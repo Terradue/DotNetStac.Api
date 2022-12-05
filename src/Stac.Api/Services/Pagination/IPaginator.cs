@@ -7,10 +7,10 @@ namespace Stac.Api.Services.Pagination
 {
     public interface IPaginator<T>
     {
-        bool HasNextPage { get; set; }
-        object CurrentLimit { get; }
+        bool HasNextPage { get; }
+        int CurrentLimit { get; }
         int CurrentPage { get; }
-        object StartIndex { get; }
+        int StartIndex { get; }
         int TotalPages { get; }
 
         void SetPaging(IPaginationParameters paginationParameters);

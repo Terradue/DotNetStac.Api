@@ -1,6 +1,8 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Stac.Api.WebApi.Extensions
 {
-    internal class StacWebApiBuilder: IStacWebApiBuilder
+    public class StacWebApiBuilder: IStacWebApiBuilder
     {
         private IServiceCollection _services;
 

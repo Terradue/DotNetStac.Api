@@ -30,6 +30,7 @@
     <ProjectReference Include="..\Stac.Api.WebApi\Stac.Api.WebApi.csproj" />
     <ProjectReference Include="..\Stac.Api.Clients\Stac.Api.Clients.csproj" />
     <ProjectReference Include="..\Stac.Api\Stac.Api.csproj" />
+    <ProjectReference Include="..\Stac.Api.FileSystem\Stac.Api.FileSystem.csproj" />
   </ItemGroup>
 
 </Project>
