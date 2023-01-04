@@ -6,11 +6,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using GeoJSON.Net.Geometry;
 using NetTopologySuite.Geometries;
 using Stac.Api.Interfaces;
 using Stac.Api.Models.Cql2;
 using Stac.Api.Services.Filtering;
 using Stac.Api.Services.Queryable;
+using Stars.Geometry.NTS;
 
 namespace Stac.Api.Models.Cql2
 {
@@ -217,15 +219,35 @@ namespace Stac.Api.Models.Cql2
         private static Expression CQL2ToSpatialToExpression<TSource>(SpatialPredicate spatialPredicate, ParameterExpression itemParameter, ParameterExpression providerParameter) where TSource : IStacObject
         {
             // We pass the parameter to the CQL2ToExpression method to get the scalar expression value
-            var main = CQL2ToExpression<TSource>(spatialPredicate.Args[0], itemParameter, providerParameter);
-            var geometry = CQL2ToExpression<TSource>(spatialPredicate.Args[1], itemParameter, providerParameter);
-
-            var methodInfo = typeof(ItemFiltersExtensions).GetMethod("SpatialFilter", new Type[] { typeof(IStacObject), typeof(Geometry) });
-            var spatialExpression = Expression.Call(null, methodInfo, itemParameter, geometry);
+            var left = CQL2ToExpression<TSource>(spatialPredicate.Args[0], itemParameter, providerParameter);
+            var right = CQL2ToExpression<TSource>(spatialPredicate.Args[1], itemParameter, providerParameter);
+            MethodInfo methodInfo = GetSpatialMethod(spatialPredicate.Op);
+            var spatialExpression = Expression.Call(providerParameter, methodInfo, left, right);
 
             return spatialExpression;
         }
 
+        private static MethodInfo GetSpatialMethod(SpatialPredicateOp op)
+        {
+            switch (op)
+            {
+                case SpatialPredicateOp.S_contains:
+                    return typeof(IStacQueryProvider).GetMethod("SpatialContains", new Type[] { typeof(Geometry), typeof(Geometry) });
+                case SpatialPredicateOp.S_crosses:
+                    return typeof(IStacQueryProvider).GetMethod("SpatialCrosses", new Type[] { typeof(Geometry), typeof(Geometry) });
+                case SpatialPredicateOp.S_disjoint:
+                    return typeof(IStacQueryProvider).GetMethod("SpatialDisjoint", new Type[] { typeof(Geometry), typeof(Geometry) });
+                case SpatialPredicateOp.S_equals:
+                    return typeof(IStacQueryProvider).GetMethod("SpatialEquals", new Type[] { typeof(Geometry), typeof(Geometry) });
+                case SpatialPredicateOp.S_intersects:
+                    return typeof(IStacQueryProvider).GetMethod("SpatialIntersects", new Type[] { typeof(Geometry), typeof(Geometry) });
+                case SpatialPredicateOp.S_overlaps:
+                    return typeof(IStacQueryProvider).GetMethod("SpatialOverlaps", new Type[] { typeof(Geometry), typeof(Geometry) });
+                case SpatialPredicateOp.S_touches:
+                    return typeof(IStacQueryProvider).GetMethod("SpatialTouches", new Type[] { typeof(Geometry), typeof(Geometry) });
+            }
+            throw new NotImplementedException(op.GetType().ToString());
+        }
 
         public static Expression CQL2ToExpression<TSource>(IScalarExpression scalarExpression, ParameterExpression item, ParameterExpression providerParameter) where TSource : IStacObject
         {
@@ -280,8 +302,7 @@ namespace Stac.Api.Models.Cql2
             PropertyRef propertyRef = charExpression.Property();
             if (propertyRef != null)
             {
-                var methods = typeof(StacQueryProvider).GetMethods();
-                var method = methods.Where(m => m.Name == "GetStacObjectProperty").Single().MakeGenericMethod(typeof(TSource));
+                var method = typeof(IStacQueryProvider).GetMethod("GetStacObjectProperty").MakeGenericMethod(typeof(TSource));
                 return Expression.Call(providerParameter,
                                        method,
                                        item, Expression.Constant(propertyRef.Property));
@@ -294,6 +315,38 @@ namespace Stac.Api.Models.Cql2
             }
 
             throw new NotImplementedException(charExpression.GetType().Name);
+        }
+
+        public static Expression CQL2ToExpression<TSource>(IGeomExpression geomExpression, ParameterExpression item, ParameterExpression providerParameter) where TSource : IStacObject
+        {
+            if (geomExpression is ISpatialLiteral spatialLiteral)
+            {
+                return CQL2ToExpression<TSource>(spatialLiteral, item, providerParameter);
+            }
+
+            if (geomExpression is PropertyRef propertyRef)
+            {
+                var method = typeof(StacQueryProvider).GetMethod("GetStacObjectGeometry").MakeGenericMethod(typeof(TSource));
+                return Expression.Call(providerParameter,
+                                       method,
+                                       item, Expression.Constant(propertyRef.Property));
+            }
+
+            throw new NotImplementedException(geomExpression.GetType().Name);
+        }
+
+        public static Expression CQL2ToExpression<TSource>(ISpatialLiteral spatialLiteral, ParameterExpression item, ParameterExpression providerParameter) where TSource : IStacObject
+        {
+            if (spatialLiteral is GeometryLiteral geometryLiteral)
+            {
+                return Expression.Constant(geometryLiteral.GeometryObject.ToNTSGeometry(), typeof(Geometry));
+            }
+            if (spatialLiteral is EnvelopeLiteral envelopeLiteral)
+            {
+                return Expression.Constant(new Envelope(envelopeLiteral.Bbox[0], envelopeLiteral.Bbox[2], envelopeLiteral.Bbox[1], envelopeLiteral.Bbox[3]), typeof(Geometry));
+            }
+
+            throw new NotImplementedException(spatialLiteral.GetType().Name);
         }
 
     }

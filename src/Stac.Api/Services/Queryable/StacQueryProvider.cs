@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using GeoJSON.Net.Geometry;
+using NetTopologySuite.Geometries;
 using Newtonsoft.Json.Schema;
 using Stac.Api.Interfaces;
 
@@ -54,9 +56,16 @@ namespace Stac.Api.Services.Queryable
             return StacItemQueryablesOptions;
         }
 
-        public IComparable GetStacObjectProperty<TSource>(TSource s, string property) where TSource : IStacObject
+        public virtual IComparable GetStacObjectProperty<TSource>(TSource s, string property) where TSource : IStacObject
         {
-            throw new NotImplementedException();
+            return s.GetProperty<IComparable>(property);
+        }
+
+        public abstract Geometry GetStacObjectGeometry<TSource>(TSource s, string property = "geometry") where TSource : IStacObject;
+
+        public virtual bool SpatialIntersects(Geometry geometry1 , Geometry geometry2)
+        {
+            return geometry1.Intersects(geometry2);
         }
     }
 }

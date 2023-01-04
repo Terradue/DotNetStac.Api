@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using GeoJSON.Net.Geometry;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.Geometries;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
@@ -60,6 +62,16 @@ namespace Stac.Api.Tests
         public override Expression GetFirstExpression()
         {
             return _seed.AsQueryable().Expression;
+        }
+
+        public override Geometry GetStacObjectGeometry<TSource>(TSource s, string property = "geometry")
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool SpatialIntersects(Geometry geometry1, Geometry geometry2)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using NetTopologySuite.Geometries;
 
 namespace Stac.Api.Services.Filtering
 {

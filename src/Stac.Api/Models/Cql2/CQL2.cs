@@ -573,8 +573,10 @@ namespace Stac.Api.Models.Cql2
             set { _additionalProperties = value; }
         }
 
-        public Itenso.TimePeriod.ITimeInterval TimeInterval {
-            get {
+        public Itenso.TimePeriod.ITimeInterval TimeInterval
+        {
+            get
+            {
                 return new Itenso.TimePeriod.TimeInterval(Interval[0].DateTime, Interval[1].DateTime);
             }
         }
