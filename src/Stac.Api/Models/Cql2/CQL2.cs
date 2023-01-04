@@ -133,6 +133,8 @@ namespace Stac.Api.Models.Cql2
 
         public string Str { get; set; }
 
+        public IComparable Value => Str;
+
         public override string ToString()
         {
             return Str;
@@ -151,6 +153,8 @@ namespace Stac.Api.Models.Cql2
         }
 
         public abstract DateTimeOffset DateTime { get; }
+
+        public IComparable Value => DateTime;
     }
 
     [JsonConverter(typeof(ITemporalLiteralConverter))]
@@ -209,7 +213,13 @@ namespace Stac.Api.Models.Cql2
     [JsonConverter(typeof(INumericExpressionConverter))]
     public interface INumericExpression : IIsNullOperand
     {
-        double? Value { get; }
+    }
+
+    public static class INumericExpressionExtensions
+    {
+        public static Number AsNumber(this INumericExpression expr) => expr as Number;
+        public static PropertyRef Property(this INumericExpression expr) => expr as PropertyRef;
+        public static FunctionRef Function(this INumericExpression expr) => expr as FunctionRef;
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -359,6 +369,7 @@ namespace Stac.Api.Models.Cql2
 
         public bool Bool { get; set; }
 
+        public IComparable Value => Bool;
     }
 
     [JsonConverter(typeof(NumberConverter))]
@@ -371,7 +382,8 @@ namespace Stac.Api.Models.Cql2
 
         public double Num { get; set; }
 
-        public double? Value => Num;
+        public IComparable Value => Num;
+
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -381,7 +393,6 @@ namespace Stac.Api.Models.Cql2
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Property { get; set; }
 
-        public double? Value => null;
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -399,7 +410,7 @@ namespace Stac.Api.Models.Cql2
         [System.ComponentModel.DataAnnotations.Required]
         public Function Function { get; set; } = new Function();
 
-        public double? Value => null;
+        public double? Number => null;
     }
 
     public class Function
@@ -424,7 +435,7 @@ namespace Stac.Api.Models.Cql2
 
     public interface IScalarLiteral : IScalarExpression
     {
-
+        IComparable Value { get; }
     }
 
     [JsonConverter(typeof(GeometryStringConverter))]

@@ -24,6 +24,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="MartinCostello.Logging.XUnit" Version="0.3.0" />
+    <PackageReference Include="HttpContextMoq" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>

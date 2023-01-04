@@ -1,14 +1,15 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Schema;
 
-namespace Stac.Api.Services.Filtering
+namespace Stac.Api.Services.Queryable
 {
-    public class QueryablesOptions : JSchema
+    public class StacQueryablesOptions : JSchema
     {
-        public static QueryablesOptions GetBasicStacItemQueryables(HttpContext httpContext)
+        public static StacQueryablesOptions GenerateDefaultOptions<T>(HttpContext httpContext) where T : IStacObject
         {
-            var schema = new QueryablesOptions()
+            var schema = new StacQueryablesOptions()
             {
                 Id = new System.Uri($"{httpContext.Request.Scheme}://{httpContext.Request.Host}/queryables"),
                 Type = JSchemaType.Object,

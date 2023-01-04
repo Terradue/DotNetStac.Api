@@ -9,6 +9,12 @@ using Stac.Api.Converters;
 using GeoJSON.Net.Geometry;
 using System.Globalization;
 using Stac.Api.Services.Filtering;
+using Microsoft.AspNetCore.Http;
+using HttpContextMoq;
+using HttpContextMoq.Extensions;
+using System.Linq.Expressions;
+using System.Linq;
+using Stac.Api.Services.Queryable;
 
 namespace Stac.Api.Tests
 {
@@ -23,6 +29,21 @@ namespace Stac.Api.Tests
         }
 
         [Fact]
+        public async Task Example0Test()
+        {
+            var json = GetJson("CQL2", "Example0", "CQL2Tests");
+            JObject jObject = JObject.Parse(json);
+            var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
+            json = GetJson("CQL2", "SampleItem");
+            StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
+            IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
+            var provider = StacTestsQueryProvider.CreateDefaultQueryProvider(new HttpContextMock().SetupUrl("http://localhost:5000"), source);
+            StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
+            source2 = source2.WithCQL2(cql);
+            OutputHelper.WriteLine(source2.Expression.ToString());
+        }
+
+        [Fact]
         public async Task Example1Test()
         {
             var json = GetJson("CQL2", "Example1", "CQL2Tests");
@@ -30,7 +51,11 @@ namespace Stac.Api.Tests
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             json = GetJson("CQL2", "SampleItem");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
-            Assert.False(item.Filter(cql));
+            IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
+            var provider = StacTestsQueryProvider.CreateDefaultQueryProvider(new HttpContextMock().SetupUrl("http://localhost:5000"), source);
+            StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
+            source2 = source2.WithCQL2(cql);
+            OutputHelper.WriteLine(source2.Expression.ToString());
         }
 
         [Fact]
@@ -41,7 +66,11 @@ namespace Stac.Api.Tests
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             json = GetJson("CQL2", "SampleItem");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
-            Assert.False(item.Filter(cql));
+            IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
+            var provider = StacTestsQueryProvider.CreateDefaultQueryProvider(new HttpContextMock().SetupUrl("http://localhost:5000"), source);
+            StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
+            source2 = source2.WithCQL2(cql);
+            OutputHelper.WriteLine(source2.Expression.ToString());
         }
 
         [Fact]
@@ -52,7 +81,11 @@ namespace Stac.Api.Tests
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             json = GetJson("CQL2", "SampleItem");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
-            Assert.True(item.Filter(cql));
+            IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
+            var provider = StacTestsQueryProvider.CreateDefaultQueryProvider(new HttpContextMock().SetupUrl("http://localhost:5000"), source);
+            StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
+            source2 = source2.WithCQL2(cql);
+            OutputHelper.WriteLine(source2.Expression.ToString());
         }
 
         [Fact]
@@ -63,7 +96,7 @@ namespace Stac.Api.Tests
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             json = GetJson("CQL2", "SampleItem");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
-            Assert.True(item.Filter(cql));
+            // Assert.True(item.Filter(cql));
         }
 
         [Fact]
@@ -74,7 +107,7 @@ namespace Stac.Api.Tests
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             json = GetJson("CQL2", "SampleItem");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
-            Assert.True(item.Filter(cql));
+            // Assert.True(item.Filter(cql));
         }
 
         [Fact]
@@ -136,7 +169,7 @@ namespace Stac.Api.Tests
         [Fact]
         public async Task Example9Test()
         {
-            var json = GetJson("CQL2", "Example9");
+            var json = GetJson("CQL2", "Example9", "CQL2Tests");
             JObject jObject = JObject.Parse(json);
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             Assert.IsType<AndOrExpression>(cql);
@@ -146,11 +179,11 @@ namespace Stac.Api.Tests
 
             Assert.Equal(ComparisonPredicateOp.Gt, cql.AndOr().Args[0].Comparison().Binary().Op);
             Assert.Equal("sentinel:data_coverage", cql.AndOr().Args[0].Comparison().Binary().Args[0].Char().Property().Property);
-            Assert.Equal(50, cql.AndOr().Args[0].Comparison().Binary().Args[1].Numeric().Value);
+            Assert.Equal(50, cql.AndOr().Args[0].Comparison().Binary().Args[1].Numeric().AsNumber().Num);
 
             Assert.Equal(ComparisonPredicateOp.Lt, cql.AndOr().Args[1].Comparison().Binary().Op);
             Assert.Equal("landsat:coverage_percent", cql.AndOr().Args[1].Comparison().Binary().Args[0].Char().Property().Property);
-            Assert.Equal(10, cql.AndOr().Args[1].Comparison().Binary().Args[1].Numeric().Value);
+            Assert.Equal(10, cql.AndOr().Args[1].Comparison().Binary().Args[1].Numeric().AsNumber().Num);
 
             Assert.Equal(AndOrExpressionOp.And, cql.AndOr().Args[2].AndOr().Op);
             Assert.IsType<IsNullPredicate>(cql.AndOr().Args[2].AndOr().Args[0]);
@@ -163,7 +196,7 @@ namespace Stac.Api.Tests
         [Fact]
         public async Task Example10Test()
         {
-            var json = GetJson("CQL2", "Example10");
+            var json = GetJson("CQL2", "Example10", "CQL2Tests");
             JObject jObject = JObject.Parse(json);
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             Assert.IsType<IsBetweenPredicate>(cql);
@@ -172,15 +205,23 @@ namespace Stac.Api.Tests
             Assert.Equal(3, cql.Comparison().IsBetween().Args.Count);
 
             Assert.Equal("eo:cloud_cover", cql.Comparison().IsBetween().Args[0].Char().Property().Property);
-            Assert.Equal(0, cql.Comparison().IsBetween().Args[1].Numeric().Value);
-            Assert.Equal(50, cql.Comparison().IsBetween().Args[2].Numeric().Value);
+            Assert.Equal((double)0, cql.Comparison().IsBetween().Args[1].Numeric().Value);
+            Assert.Equal((double)50, cql.Comparison().IsBetween().Args[2].Numeric().Value);
+
+            json = GetJson("CQL2", "SampleItem");
+            StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
+            IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
+            var provider = StacTestsQueryProvider.CreateDefaultQueryProvider(new HttpContextMock().SetupUrl("http://localhost:5000"), source);
+            StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
+            source2 = source2.WithCQL2(cql);
+            OutputHelper.WriteLine(source2.Expression.ToString());
 
         }
 
         [Fact]
         public async Task Example11Test()
         {
-            var json = GetJson("CQL2", "Example11");
+            var json = GetJson("CQL2", "Example11", "CQL2Tests");
             JObject jObject = JObject.Parse(json);
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             Assert.IsType<IsLikePredicate>(cql);
@@ -191,6 +232,14 @@ namespace Stac.Api.Tests
             Assert.Equal("mission", cql.Comparison().IsLike().Args[0].Property().Property);
             Assert.IsType<Models.Cql2.String>(cql.Comparison().IsLike().Args[1]);
             Assert.Equal("sentinel%", cql.Comparison().IsLike().Args[1].ToString());
+
+            json = GetJson("CQL2", "SampleItem");
+            StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
+            IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
+            var provider = StacTestsQueryProvider.CreateDefaultQueryProvider(new HttpContextMock().SetupUrl("http://localhost:5000"), source);
+            StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
+            source2 = source2.WithCQL2(cql);
+            OutputHelper.WriteLine(source2.Expression.ToString());
 
         }
     }

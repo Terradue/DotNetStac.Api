@@ -63,7 +63,7 @@ namespace Stac.Api.Tests
             Assert.Equal(2, cql.AndOr().Args[1].Comparison().Binary().Args.Count);
             Assert.IsType<PropertyRef>(cql.AndOr().Args[1].Comparison().Binary().Args[0]);
             Assert.Equal("eo:cloud_cover", cql.AndOr().Args[1].Comparison().Binary().Args[0].Char().Property().Property);
-            Assert.Equal(10, cql.AndOr().Args[1].Comparison().Binary().Args[1].Numeric().Value);
+            Assert.Equal(10, cql.AndOr().Args[1].Comparison().Binary().Args[1].Numeric().AsNumber().Num);
 
             Assert.Equal(ComparisonPredicateOp.Ge, cql.AndOr().Args[2].Comparison().Binary().Op);
             Assert.Equal(2, cql.AndOr().Args[2].Comparison().Binary().Args.Count);
@@ -96,13 +96,13 @@ namespace Stac.Api.Tests
             Assert.Equal(2, cql.AndOr().Args[0].Comparison().Binary().Args.Count);
             Assert.IsType<PropertyRef>(cql.AndOr().Args[0].Comparison().Binary().Args[0]);
             Assert.Equal("sentinel:data_coverage", cql.AndOr().Args[0].Comparison().Binary().Args[0].Char().Property().Property);
-            Assert.Equal(50, cql.AndOr().Args[0].Comparison().Binary().Args[1].Numeric().Value);
+            Assert.Equal(50, cql.AndOr().Args[0].Comparison().Binary().Args[1].Numeric().AsNumber().Num);
 
             Assert.Equal(ComparisonPredicateOp.Lt, cql.AndOr().Args[1].Comparison().Binary().Op);
             Assert.Equal(2, cql.AndOr().Args[1].Comparison().Binary().Args.Count);
             Assert.IsType<PropertyRef>(cql.AndOr().Args[1].Comparison().Binary().Args[0]);
             Assert.Equal("eo:cloud_cover", cql.AndOr().Args[1].Comparison().Binary().Args[0].Char().Property().Property);
-            Assert.Equal(10, cql.AndOr().Args[1].Comparison().Binary().Args[1].Numeric().Value);
+            Assert.Equal(10, cql.AndOr().Args[1].Comparison().Binary().Args[1].Numeric().AsNumber().Num);
 
         }
 
@@ -123,13 +123,13 @@ namespace Stac.Api.Tests
             Assert.Equal(2, cql.AndOr().Args[0].Comparison().Binary().Args.Count);
             Assert.IsType<PropertyRef>(cql.AndOr().Args[0].Comparison().Binary().Args[0]);
             Assert.Equal("sentinel:data_coverage", cql.AndOr().Args[0].Comparison().Binary().Args[0].Char().Property().Property);
-            Assert.Equal(50, cql.AndOr().Args[0].Comparison().Binary().Args[1].Numeric().Value);
+            Assert.Equal(50, cql.AndOr().Args[0].Comparison().Binary().Args[1].Numeric().AsNumber().Num);
 
             Assert.Equal(ComparisonPredicateOp.Lt, cql.AndOr().Args[1].Comparison().Binary().Op);
             Assert.Equal(2, cql.AndOr().Args[1].Comparison().Binary().Args.Count);
             Assert.IsType<PropertyRef>(cql.AndOr().Args[1].Comparison().Binary().Args[0]);
             Assert.Equal("eo:cloud_cover", cql.AndOr().Args[1].Comparison().Binary().Args[0].Char().Property().Property);
-            Assert.Equal(10, cql.AndOr().Args[1].Comparison().Binary().Args[1].Numeric().Value);
+            Assert.Equal(10, cql.AndOr().Args[1].Comparison().Binary().Args[1].Numeric().AsNumber().Num);
 
         }
 
@@ -218,11 +218,11 @@ namespace Stac.Api.Tests
 
             Assert.Equal(ComparisonPredicateOp.Gt, cql.AndOr().Args[0].Comparison().Binary().Op);
             Assert.Equal("sentinel:data_coverage", cql.AndOr().Args[0].Comparison().Binary().Args[0].Char().Property().Property);
-            Assert.Equal(50, cql.AndOr().Args[0].Comparison().Binary().Args[1].Numeric().Value);
+            Assert.Equal(50, cql.AndOr().Args[0].Comparison().Binary().Args[1].Numeric().AsNumber().Num);
 
             Assert.Equal(ComparisonPredicateOp.Lt, cql.AndOr().Args[1].Comparison().Binary().Op);
             Assert.Equal("landsat:coverage_percent", cql.AndOr().Args[1].Comparison().Binary().Args[0].Char().Property().Property);
-            Assert.Equal(10, cql.AndOr().Args[1].Comparison().Binary().Args[1].Numeric().Value);
+            Assert.Equal(10, cql.AndOr().Args[1].Comparison().Binary().Args[1].Numeric().AsNumber().Num);
 
             Assert.Equal(AndOrExpressionOp.And, cql.AndOr().Args[2].AndOr().Op);
             Assert.IsType<IsNullPredicate>(cql.AndOr().Args[2].AndOr().Args[0]);

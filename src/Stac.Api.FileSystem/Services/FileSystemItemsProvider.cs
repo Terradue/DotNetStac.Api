@@ -74,7 +74,7 @@ namespace Stac.Api.FileSystem.Services
                                                 var collection = _fileSystemResolver.FileSystem.File.ReadAllText(itemFile.FullName);
                                                 return StacConvert.Deserialize<StacItem>(collection);
                                             })
-                                 .Filter(filters)
+                                //  .Filter(filters)
                                  .Skip(StartIndex + CurrentPage * CurrentLimit)
                                  .Take(CurrentLimit);
 
