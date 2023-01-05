@@ -13,21 +13,22 @@ using Newtonsoft.Json.Schema;
 using Stac.Api.Interfaces;
 using Stac.Api.Services.Filtering;
 using Stac.Api.Services.Queryable;
+using Stars.Geometry.NTS;
 
-namespace Stac.Api.Tests
+namespace Stac.Api.WebApi.Implementations.Default.Services
 {
-    public class StacTestsQueryProvider : StacQueryProvider
+    public class DefaultStacQueryProvider : StacQueryProvider
     {
         private readonly IEnumerable<IStacObject> _seed;
 
-        public StacTestsQueryProvider(StacQueryablesOptions queryablesOptions, IEnumerable<IStacObject> seed) : base(queryablesOptions)
+        private DefaultStacQueryProvider(StacQueryablesOptions queryablesOptions, IEnumerable<IStacObject> seed) : base(queryablesOptions)
         {
             _seed = seed;
         }
 
-        public static StacTestsQueryProvider CreateDefaultQueryProvider(HttpContext httpContext, IEnumerable<IStacObject> seed)
+        public static DefaultStacQueryProvider CreateDefaultQueryProvider(HttpContext httpContext, IEnumerable<IStacObject> seed)
         {
-            return new StacTestsQueryProvider(StacQueryablesOptions.GenerateDefaultOptions<StacItem>(httpContext), seed);
+            return new DefaultStacQueryProvider(StacQueryablesOptions.GenerateDefaultOptions<StacItem>(httpContext), seed);
         }
 
         public override TResult Execute<TResult>(Expression expression)
@@ -42,7 +43,7 @@ namespace Stac.Api.Tests
             
             // Copy the expression tree that was passed in, changing only the first
             // argument of the innermost MethodCallExpression.
-            var treeCopier = new ExpressionTreeModifier(this);
+            var treeCopier = new DefaultExpressionTreeModifier(this);
             var newExpressionTree = treeCopier.Visit(expression);
             
 
@@ -56,7 +57,6 @@ namespace Stac.Api.Tests
                 return (TResult)_seed.AsQueryable().Provider.Execute(newExpressionTree);
             }
 
-            return default(TResult);
         }
 
         public override Expression GetFirstExpression()
@@ -64,14 +64,16 @@ namespace Stac.Api.Tests
             return _seed.AsQueryable().Expression;
         }
 
-        public override Geometry GetStacObjectGeometry<TSource>(TSource s, string property = "geometry")
+        public override Geometry? GetStacObjectGeometry<TSource>(TSource s, string property = "geometry")
         {
-            throw new NotImplementedException();
-        }
-
-        public override bool SpatialIntersects(Geometry geometry1, Geometry geometry2)
-        {
-            throw new NotImplementedException();
+            if ( s is StacItem stacItem)
+            {
+                if (stacItem.Geometry != null)
+                {
+                    return stacItem.Geometry.ToNTSGeometry();
+                }
+            }
+            return GetStacObjectProperty<TSource>(s, property) as Geometry;
         }
     }
 }

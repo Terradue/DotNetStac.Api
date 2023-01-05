@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Stac.Api.WebApi.Implementations.FileSystem;
 
 namespace Stac.Api.WebApi.Extensions
 {

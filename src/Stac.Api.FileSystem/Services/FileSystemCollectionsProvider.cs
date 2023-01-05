@@ -7,16 +7,20 @@ using System.Threading.Tasks;
 using Multiformats.Hash.Algorithms;
 using Stac.Api.Interfaces;
 using Stac.Api.Services.Pagination;
+using Stac.Api.Services.Queryable;
+using Stac.Api.WebApi.Implementations.Default.Services;
 
 namespace Stac.Api.FileSystem.Services
 {
     public class FileSystemCollectionsProvider : ICollectionsProvider, IPaginator<StacCollection>
     {
-        private readonly StacFileSystemResolver _fileSystemResolver;
+        private readonly IStacQueryProvider _queryProvider;
+        private StacFileSystemResolver _fileSystemResolver;
 
-
-        public FileSystemCollectionsProvider(StacFileSystemResolver fileSystemResolver)
+        public FileSystemCollectionsProvider(IStacQueryProvider queryProvider,
+                                             StacFileSystemResolver fileSystemResolver)
         {
+            _queryProvider = queryProvider;
             _fileSystemResolver = fileSystemResolver;
         }
 
@@ -65,7 +69,7 @@ namespace Stac.Api.FileSystem.Services
             IEnumerable<IFileInfo> collectionFiles = new List<IFileInfo>();
             try
             {
-                collectionFiles = _fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).GetFiles("*.json");
+                collectionFiles = _fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).EnumerateFiles("*.json");
             }
             catch { }
 
@@ -80,8 +84,9 @@ namespace Stac.Api.FileSystem.Services
                                             var collection = _fileSystemResolver.FileSystem.File.ReadAllText(collectionFile.FullName);
                                             return StacConvert.Deserialize<StacCollection>(collection);
                                         });
+            var queryables = _queryProvider.CreateQuery<StacCollection>(collections.AsQueryable().Expression);
 
-            return Task.FromResult(collections);
+            return Task.FromResult(queryables as IEnumerable<StacCollection>);
         }
     }
 }

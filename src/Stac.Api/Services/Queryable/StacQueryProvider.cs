@@ -23,9 +23,9 @@ namespace Stac.Api.Services.Queryable
 
         #region IQueryProvider Members
 
-        public IQueryable<TElement> CreateQuery<TElement>(Expression expression)
+        public virtual IQueryable<TElement> CreateQuery<TElement>(Expression expression)
         {
-            if ( typeof(IStacObject).IsAssignableFrom(typeof(TElement)) )
+            if (typeof(IStacObject).IsAssignableFrom(typeof(TElement)))
             {
                 return new StacQueryable<TElement>(this, expression) as IQueryable<TElement>;
             }
@@ -58,12 +58,35 @@ namespace Stac.Api.Services.Queryable
 
         public virtual IComparable GetStacObjectProperty<TSource>(TSource s, string property) where TSource : IStacObject
         {
-            return s.GetProperty<IComparable>(property);
+            IComparable result = null;
+            if (s is StacItem stacItem)
+            {
+                if (property == "id")
+                    result = stacItem.Id;
+                else
+                if (property == "bbox")
+                    result = stacItem.BoundingBoxes.ToString();
+                else
+                if (property == "geometry")
+                    result = stacItem.Geometry.ToString();
+                else
+                if (property == "collection")
+                    result = stacItem.Collection;
+            }
+            else
+            {
+                result = s.GetProperty<IComparable>(property);
+            }
+            if (result == null)
+            {
+                return new NullComparable();
+            }
+            return result;
         }
 
         public abstract Geometry GetStacObjectGeometry<TSource>(TSource s, string property = "geometry") where TSource : IStacObject;
 
-        public virtual bool SpatialIntersects(Geometry geometry1 , Geometry geometry2)
+        public virtual bool SpatialIntersects(Geometry geometry1, Geometry geometry2)
         {
             return geometry1.Intersects(geometry2);
         }

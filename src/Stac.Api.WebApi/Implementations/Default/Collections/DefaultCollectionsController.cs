@@ -38,20 +38,27 @@ namespace Stac.Api.WebApi.Implementations.Default.Collections
 
         public async Task<ActionResult<StacCollections>> GetCollectionsAsync(CancellationToken cancellationToken = default)
         {
+            // Get the collections provider for the context
             ICollectionsProvider collectionsProvider = _dataServicesProvider.GetCollectionsProvider(_httpContextAccessor.HttpContext);
+            // Set the paging parameters if the provider is a paginator
             if (collectionsProvider is IPaginator<StacCollections> paginator)
             {
                 paginator.SetPaging(QueryStringPaginationParameters.GetPaginatorParameters(_httpContextAccessor.HttpContext));
             }
 
+            // Get collections from the provider
+            var collectionsQueryable = await collectionsProvider.GetCollectionsAsync();
+
+            // Create the collection container and link them properly
             StacCollections collections = new StacCollections()
             {
-                Collections = (await collectionsProvider.GetCollectionsAsync()).Select(c =>
+                Collections = collectionsQueryable.Select(c =>
                 {
                     _stacLinker.Link(c, _httpContextAccessor.HttpContext);
                     return c;
                 }).ToList()
             };
+            // Link the collections container
             _stacLinker.Link(collections, _httpContextAccessor.HttpContext);
 
             // Add paging links

@@ -79,7 +79,7 @@ namespace Stac.Api.Models.Cql2
             // This method creates a lambda expression that compares the 2 arguments
             // As we start a lambda expression, we need to create a parameter
             ParameterExpression itemParameter = Expression.Parameter(typeof(TSource), "item");
-            ParameterExpression providerParameter = Expression.Parameter(typeof(StacQueryProvider), "provider");
+            ParameterExpression providerParameter = Expression.Parameter(typeof(IStacQueryProvider), "provider");
 
             Expression body = CQL2ComparisonToExpression<TSource>(binaryComparisonPredicate, itemParameter, providerParameter);
             var lambda = Expression.Lambda<Func<TSource, bool>>(body, itemParameter);
