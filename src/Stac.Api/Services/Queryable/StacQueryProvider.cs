@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GeoJSON.Net.Geometry;
+using Itenso.TimePeriod;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json.Schema;
 using Stac.Api.Interfaces;
@@ -90,5 +91,7 @@ namespace Stac.Api.Services.Queryable
         {
             return geometry1.Intersects(geometry2);
         }
+
+        public abstract ITimePeriod GetStacObjectDateTime<TSource>(TSource i, string v) where TSource : IStacObject;
     }
 }

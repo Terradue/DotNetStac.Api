@@ -13,31 +13,33 @@ namespace Stac.Api.WebApi.Services
     public class DefaultLandingPageProvider : ILandingPageProvider
     {
         private readonly IStacApiEndpointManager _stacApiEndpointManager;
-        private readonly IRootCatalogProvider _rootCatalogProvider;
+        private readonly IDataServicesProvider _dataServicesProvider;
 
         public LinkGenerator LinkGenerator { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
 
         public DefaultLandingPageProvider(IStacApiEndpointManager stacApiEndpointManager,
-                                          IRootCatalogProvider rootCatalogProvider,
+                                          IDataServicesProvider dataServicesProvider,
                                           LinkGenerator linkGenerator,
                                           IHttpContextAccessor httpContextAccessor)
         {
             _stacApiEndpointManager = stacApiEndpointManager;
-            _rootCatalogProvider = rootCatalogProvider;
+            _dataServicesProvider = dataServicesProvider;
             LinkGenerator = linkGenerator;
             HttpContextAccessor = httpContextAccessor;
         }
 
-        public Task<LandingPage> GetLandingPageAsync(CancellationToken cancellationToken)
+        public async Task<LandingPage> GetLandingPageAsync(CancellationToken cancellationToken)
         {
-            var landingPage = new LandingPage(_rootCatalogProvider.GetRootCatalog());
+            var rootCatalogProvider = _dataServicesProvider.GetRootCatalogProvider(HttpContextAccessor.HttpContext);
+
+            var landingPage = new LandingPage(await rootCatalogProvider.GetRootCatalogAsync());
 
             AddConformanceClasses(landingPage);
 
             AddLinks(landingPage);
 
-            return Task.FromResult(landingPage);
+            return landingPage;
         }
 
         private LandingPage AddLinks(LandingPage landingPage)

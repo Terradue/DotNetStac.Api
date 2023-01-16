@@ -14,19 +14,19 @@ namespace Stac.Api.FileSystem.Services
 {
     public class FileSystemCollectionsProvider : ICollectionsProvider, IPaginator<StacCollection>
     {
-        private readonly IStacQueryProvider _queryProvider;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private StacFileSystemResolver _fileSystemResolver;
 
-        public FileSystemCollectionsProvider(IStacQueryProvider queryProvider,
+        public FileSystemCollectionsProvider(IHttpContextAccessor httpContextAccessor,
                                              StacFileSystemResolver fileSystemResolver)
         {
-            _queryProvider = queryProvider;
+            _httpContextAccessor = httpContextAccessor;
             _fileSystemResolver = fileSystemResolver;
         }
 
         public bool HasNextPage { get => TotalPages > CurrentPage; }
 
-        public int CurrentLimit { get; internal set; }
+        public int CurrentLimit { get; internal set; } = 10;
 
         public int CurrentPage { get; internal set; }
 
@@ -75,18 +75,20 @@ namespace Stac.Api.FileSystem.Services
 
             // return all the collections using the pagination parameters
             var collections = collectionFiles
-                                .Skip(StartIndex + CurrentPage * CurrentLimit)
-                                .Take(CurrentLimit)
                                 .Select(collectionFile =>
                                         {
-                                            if ( cancellationToken.IsCancellationRequested )
-                                                    throw new TaskCanceledException();
+                                            if (cancellationToken.IsCancellationRequested)
+                                                throw new TaskCanceledException();
                                             var collection = _fileSystemResolver.FileSystem.File.ReadAllText(collectionFile.FullName);
                                             return StacConvert.Deserialize<StacCollection>(collection);
                                         });
-            var queryables = _queryProvider.CreateQuery<StacCollection>(collections.AsQueryable().Expression);
 
-            return Task.FromResult(queryables as IEnumerable<StacCollection>);
+            // Create a queryable provider
+            var _queryProvider = DefaultStacQueryProvider.CreateDefaultQueryProvider(_httpContextAccessor.HttpContext, collections);
+            var queryable = new StacQueryable<StacCollection>(_queryProvider, collections.AsQueryable<StacCollection>().Expression);
+            var genericQueryable = queryable.Skip(StartIndex + CurrentPage * CurrentLimit).Take(CurrentLimit);
+
+            return Task.FromResult(genericQueryable as IEnumerable<StacCollection>);
         }
     }
 }

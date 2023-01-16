@@ -4,7 +4,7 @@ using Stac.Api.Interfaces;
 
 namespace Stac.Api.FileSystem.Services
 {
-    internal class FileSystemDataServicesProvider : IDataServicesProvider
+    public class FileSystemDataServicesProvider : IDataServicesProvider
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -16,13 +16,13 @@ namespace Stac.Api.FileSystem.Services
         public ICollectionsProvider GetCollectionsProvider(HttpContext httpContext)
         {
             // Generate a new instance of the collection provider
-            return ActivatorUtilities.CreateInstance<ICollectionsProvider>(_serviceProvider);
+            return ActivatorUtilities.CreateInstance<FileSystemCollectionsProvider>(_serviceProvider);
         }
 
         public IItemsBroker GetItemsBroker(string collectionId, HttpContext httpContext)
         {
             // Generate a new instance of the items broker
-            var itemsBroker = ActivatorUtilities.CreateInstance<IItemsBroker>(_serviceProvider);
+            var itemsBroker = ActivatorUtilities.CreateInstance<StacFileSystemItemsBroker>(_serviceProvider);
             itemsBroker.SetCollectionParameter(collectionId);
             return itemsBroker;
         }
@@ -30,9 +30,15 @@ namespace Stac.Api.FileSystem.Services
         public IItemsProvider GetItemsProvider(string collectionId, HttpContext httpContext)
         {
             // Generate a new instance of the items provider
-            var itemsProvider = ActivatorUtilities.CreateInstance<IItemsProvider>(_serviceProvider);
+            var itemsProvider = ActivatorUtilities.CreateInstance<FileSystemItemsProvider>(_serviceProvider);
             itemsProvider.SetCollectionParameter(collectionId);
             return itemsProvider;
+        }
+
+        public IRootCatalogProvider GetRootCatalogProvider(HttpContext httpContext)
+        {
+            // Generate a new instance of the root catalog provider
+            return ActivatorUtilities.CreateInstance<FileSystemRootCatalogProvider>(_serviceProvider);
         }
     }
 }

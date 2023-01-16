@@ -13,7 +13,7 @@ namespace Stac.Api.Services.Queryable
 
         public StacQueryable(IStacQueryProvider provider, Expression expression)
         {
-            this.Provider = provider;
+            this.StacQueryProvider = provider;
             this.Expression = expression;
         }
 
@@ -23,7 +23,9 @@ namespace Stac.Api.Services.Queryable
 
         public Expression Expression { get; private set; }
 
-        public IQueryProvider Provider { get; private set; }
+        public IQueryProvider Provider => this.StacQueryProvider;
+        
+        public IStacQueryProvider StacQueryProvider { get; internal set; }
 
         #endregion
 

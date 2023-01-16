@@ -10,27 +10,21 @@ using Stac.Api.WebApi.Services;
 
 namespace Stac.Api.WebApi.Implementations.Default.Features
 {
-    public class FileSystemFeaturesController : IFeaturesController
+    public class DefaultFeaturesController : IFeaturesController
     {
         private readonly IStacApiEndpointManager _stacApiEndpointManager;
         private readonly IDataServicesProvider dataServicesProvider;
-        private readonly ICollectionsProvider _collectionsProvider;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IStacFilterBuilder _filterBuilder;
         private readonly IStacLinker _stacLinker;
 
-        public FileSystemFeaturesController(IStacApiEndpointManager stacApiEndpointManager,
+        public DefaultFeaturesController(IStacApiEndpointManager stacApiEndpointManager,
                                             IDataServicesProvider dataServicesProvider,
-                                            ICollectionsProvider collectionsProvider,
                                             IHttpContextAccessor httpContextAccessor,
-                                            IStacFilterBuilder filterBuilder,
                                             IStacLinker stacLinker)
         {
             _stacApiEndpointManager = stacApiEndpointManager;
             this.dataServicesProvider = dataServicesProvider;
-            _collectionsProvider = collectionsProvider;
             _httpContextAccessor = httpContextAccessor;
-            _filterBuilder = filterBuilder;
             _stacLinker = stacLinker;
         }
 
@@ -63,14 +57,25 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
             }
 
             IItemsProvider itemsProvider = dataServicesProvider.GetItemsProvider(collectionId, _httpContextAccessor.HttpContext);
-            double[] bboxArray = Array.ConvertAll(bbox.Split(','), double.Parse);
 
             if (itemsProvider is IPaginator<StacItem> paginator)
             {
                 paginator.SetPaging(QueryStringPaginationParameters.GetPaginatorParameters(_httpContextAccessor.HttpContext));
             }
 
-            var items = await itemsProvider.GetItemsAsync(_filterBuilder.CreateFilter(bboxArray, datetime), cancellationToken);
+            double[]? bboxArray = null;
+            if (!string.IsNullOrEmpty(bbox))
+            {
+                bboxArray = Array.ConvertAll(bbox.Split(','), double.Parse);
+            }
+
+            DateTime? datetimeValue = null;
+            if (!string.IsNullOrEmpty(datetime))
+            {
+                datetimeValue = DateTime.Parse(datetime);
+            }
+
+            var items = await itemsProvider.GetItemsAsync(bboxArray, datetimeValue, cancellationToken);
 
             StacFeatureCollection fc = new StacFeatureCollection(items);
 

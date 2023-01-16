@@ -7,9 +7,9 @@ using Stac.Api.WebApi.Controllers.ItemSearch;
 
 namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
 {
-    public class FileSystemItemSearchController : IItemSearchController
+    public class DefaultItemSearchController : IItemSearchController
     {
-        public FileSystemItemSearchController()
+        public DefaultItemSearchController()
         {
         }
 

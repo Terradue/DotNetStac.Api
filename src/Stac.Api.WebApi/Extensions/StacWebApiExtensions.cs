@@ -8,6 +8,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Stac.Api.WebApi.Controllers.Core;
+using Stac.Api.WebApi.Implementations.Default.Core;
+using Stac.Api.WebApi.Implementations.Default.Collections;
+using Stac.Api.WebApi.Controllers.Collections;
+using Stac.Api.WebApi.Controllers.ItemSearch;
+using Stac.Api.WebApi.Implementations.Default.ItemSearch;
+using Stac.Api.WebApi.Controllers.Features;
+using Stac.Api.WebApi.Implementations.Default.Features;
+using Stac.Api.WebApi.Controllers.Extensions.Filter;
+using Stac.Api.WebApi.Implementations.Default.Filter;
+using Stac.Api.WebApi.Controllers.Extensions.Transaction;
+using Stac.Api.WebApi.Implementations.Default.Extensions.Transaction;
 
 namespace Stac.Api.WebApi.Extensions
 {
@@ -25,6 +37,17 @@ namespace Stac.Api.WebApi.Extensions
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ILandingPageProvider, DefaultLandingPageProvider>();
             services.AddSingleton<IStacApiEndpointManager, StacApiEndpointManager>();
+            return services;
+        }
+
+        public static IServiceCollection AddDefaultControllers(this IServiceCollection services)
+        {
+            services.AddSingleton<ICoreController, DefaultCoreController>();
+            services.AddSingleton<ICollectionsController, DefaultCollectionsController>();
+            services.AddSingleton<IItemSearchController, DefaultItemSearchController>();
+            services.AddSingleton<IFeaturesController, DefaultFeaturesController>();
+            services.AddSingleton<IFilterController, DefaultFilterController>();
+            services.AddSingleton<ITransactionController, DefaultTransactionController>();
             return services;
         }
 

@@ -31,7 +31,7 @@ namespace Stac.Api.Tests.AppTests
             var client = application.CreateClient();
             CollectionsClient collectionsClient = new CollectionsClient(client);
 
-            var collections = await collectionsClient.GetCollectionsAsync();
+            StacCollections collections = await collectionsClient.GetCollectionsAsync();
 
             Assert.Equal(1, collections.Collections.Count);
             Assert.Equal("test", collections.Collections.First().Id);

@@ -8,6 +8,7 @@ using Multiformats.Hash.Algorithms;
 using Stac.Api.Interfaces;
 using Stac.Api.Services.Filtering;
 using Stac.Api.Services.Pagination;
+using Stac.Api.Services.Queryable;
 using Stac.Api.WebApi.Implementations.Shared.Geometry;
 
 namespace Stac.Api.FileSystem.Services
@@ -15,14 +16,14 @@ namespace Stac.Api.FileSystem.Services
     public class FileSystemItemsProvider : IItemsProvider, IPaginator<StacItem>
     {
         private readonly StacFileSystemResolver _fileSystemResolver;
-        private readonly IStacFilterBuilder _stacFilterBuilder;
+        private readonly IStacQueryProvider _queryProvider;
         private readonly MultihashAlgorithm _hashAlgorithm = new MD5();
 
         public FileSystemItemsProvider(StacFileSystemResolver fileSystemResolver,
-                                       IStacFilterBuilder stacFilterBuilder)
+                                       IStacQueryProvider queryProvider)
         {
             _fileSystemResolver = fileSystemResolver;
-            _stacFilterBuilder = stacFilterBuilder;
+            _queryProvider = queryProvider;
         }
 
         public bool HasNextPage { get => TotalPages > CurrentPage; }
@@ -61,7 +62,7 @@ namespace Stac.Api.FileSystem.Services
             return _hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(featureJson)).ToString();
         }
 
-        public Task<IEnumerable<StacItem>> GetItemsAsync(IStacFilter filters, CancellationToken cancellationToken)
+        public Task<IEnumerable<StacItem>> GetItemsAsync(double[] bboxArray, DateTime? datetime, CancellationToken cancellationToken)
         {
             var itemFiles = _fileSystemResolver.GetDirectory(
                 Path.Combine(StacFileSystemResolver.COLLECTIONS_DIR, Collection, "items"))
@@ -69,21 +70,27 @@ namespace Stac.Api.FileSystem.Services
 
             var items = itemFiles.Select(itemFile =>
                                             {
-                                                if ( cancellationToken.IsCancellationRequested )
+                                                if (cancellationToken.IsCancellationRequested)
                                                     throw new TaskCanceledException();
                                                 var collection = _fileSystemResolver.FileSystem.File.ReadAllText(itemFile.FullName);
                                                 return StacConvert.Deserialize<StacItem>(collection);
-                                            })
-                                //  .Filter(filters)
-                                 .Skip(StartIndex + CurrentPage * CurrentLimit)
-                                 .Take(CurrentLimit);
+                                            });
 
-            return Task.FromResult(items);
+            StacQueryable<StacItem> queryable = _queryProvider.CreateQuery<StacItem>(items.AsQueryable().Expression) as StacQueryable<StacItem>;
+            queryable = queryable.Filter(bboxArray)
+                                   .Filter(datetime);
+
+            IQueryable<StacItem> genericQueryable = queryable.Skip(StartIndex + CurrentPage * CurrentLimit)
+                                   .Take(CurrentLimit);
+
+            return Task.FromResult(genericQueryable as IEnumerable<StacItem>);
+
         }
 
         public void SetCollectionParameter(string collectionId)
         {
             Collection = collectionId;
         }
+
     }
 }

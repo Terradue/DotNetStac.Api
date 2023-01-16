@@ -8,11 +8,11 @@ using Stac.Api.WebApi.Services;
 
 namespace Stac.Api.WebApi.Implementations.Default.Core
 {
-    public class CollectionBasedCoreController : ICoreController
+    public class DefaultCoreController : ICoreController
     {
         private readonly ILandingPageProvider _landingPageBuilder;
 
-        public CollectionBasedCoreController(IHttpContextAccessor httpContextAccessor,
+        public DefaultCoreController(IHttpContextAccessor httpContextAccessor,
                                              ILandingPageProvider landingPageBuilder,
                                              LinkGenerator linkGenerator)
         {

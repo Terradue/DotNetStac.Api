@@ -20,5 +20,7 @@ namespace Stac.Api.Interfaces
         bool SpatialIntersects(Geometry geometry1 , Geometry geometry2);
 
         Geometry GetStacObjectGeometry<TSource>(TSource s, string property = "geometry") where TSource : IStacObject;
+
+        Itenso.TimePeriod.ITimePeriod GetStacObjectDateTime<TSource>(TSource i, string v) where TSource : IStacObject;
     }
 }

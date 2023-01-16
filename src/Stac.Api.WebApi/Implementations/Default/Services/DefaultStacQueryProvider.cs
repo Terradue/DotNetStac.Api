@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GeoJSON.Net.Geometry;
+using Itenso.TimePeriod;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Geometries;
@@ -62,6 +63,18 @@ namespace Stac.Api.WebApi.Implementations.Default.Services
         public override Expression GetFirstExpression()
         {
             return _seed.AsQueryable().Expression;
+        }
+
+        public override ITimePeriod GetStacObjectDateTime<TSource>(TSource s, string property = "datetime")
+        {
+            if ( s is StacItem stacItem)
+            {
+                if (stacItem.Geometry != null)
+                {
+                    return stacItem.DateTime;
+                }
+            }
+            return new Itenso.TimePeriod.TimeInterval(s.GetProperty<DateTime>(property));
         }
 
         public override Geometry? GetStacObjectGeometry<TSource>(TSource s, string property = "geometry")

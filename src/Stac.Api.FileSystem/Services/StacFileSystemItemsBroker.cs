@@ -10,13 +10,13 @@ using Stac.Collection;
 
 namespace Stac.Api.FileSystem.Services
 {
-    public class StacFileSystemTransactionService : IItemsBroker
+    public class StacFileSystemItemsBroker : IItemsBroker
     {
         private readonly StacFileSystemResolver _fileSystemResolver;
         private readonly IDataServicesProvider _dataServicesProvider;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public StacFileSystemTransactionService(StacFileSystemResolver fileSystemResolver,
+        public StacFileSystemItemsBroker(StacFileSystemResolver fileSystemResolver,
                                                 IDataServicesProvider dataServicesProvider,
                                                 IHttpContextAccessor httpContextAccessor)
         {
@@ -57,7 +57,7 @@ namespace Stac.Api.FileSystem.Services
             var itemsProvider = _dataServicesProvider.GetItemsProvider(Collection, _httpContextAccessor.HttpContext);
             StacCollection collection = StacCollection.Create(
                 Collection, Collection.Titleize(),
-                itemsProvider.GetItemsAsync(null, cancellationToken).GetAwaiter().GetResult()
+                itemsProvider.GetItemsAsync(null, null, cancellationToken).GetAwaiter().GetResult()
                     .ToDictionary(i => new Uri($"items/{i.Id}.json", UriKind.Relative), i =>
                     {
                         if (cancellationToken.IsCancellationRequested)

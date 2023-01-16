@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Stac.Api.FileSystem.Extensions;
+using Stac.Api.FileSystem.Services;
 using Stac.Api.Interfaces;
 using Stac.Api.WebApi.Controllers.Core;
 
 namespace Stac.Api.Tests
 {
-    internal class StacApiApplication : WebApplicationFactory<CoreController>
+    internal class StacApiApplication : WebApplicationFactory<FileSystemDataServicesProvider>
     {
         private string _datadir;
 
