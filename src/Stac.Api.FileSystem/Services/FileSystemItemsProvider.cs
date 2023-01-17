@@ -9,6 +9,7 @@ using Stac.Api.Interfaces;
 using Stac.Api.Services.Filtering;
 using Stac.Api.Services.Pagination;
 using Stac.Api.Services.Queryable;
+using Stac.Api.WebApi.Implementations.Default.Services;
 using Stac.Api.WebApi.Implementations.Shared.Geometry;
 
 namespace Stac.Api.FileSystem.Services
@@ -16,14 +17,13 @@ namespace Stac.Api.FileSystem.Services
     public class FileSystemItemsProvider : IItemsProvider, IPaginator<StacItem>
     {
         private readonly StacFileSystemResolver _fileSystemResolver;
-        private readonly IStacQueryProvider _queryProvider;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly MultihashAlgorithm _hashAlgorithm = new MD5();
 
-        public FileSystemItemsProvider(StacFileSystemResolver fileSystemResolver,
-                                       IStacQueryProvider queryProvider)
+        public FileSystemItemsProvider(StacFileSystemResolver fileSystemResolver, IHttpContextAccessor httpContextAccessor)
         {
             _fileSystemResolver = fileSystemResolver;
-            _queryProvider = queryProvider;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public bool HasNextPage { get => TotalPages > CurrentPage; }
@@ -53,7 +53,14 @@ namespace Stac.Api.FileSystem.Services
 
         public Task<StacItem> GetItemByIdAsync(string featureId, CancellationToken cancellationToken)
         {
-            return Task.FromResult(StacConvert.Deserialize<StacItem>(_fileSystemResolver.FileSystem.File.ReadAllText(_fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{Collection}/items/{featureId}.json")));
+            try
+            {
+                return Task.FromResult(StacConvert.Deserialize<StacItem>(_fileSystemResolver.FileSystem.File.ReadAllText(_fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{Collection}/items/{featureId}.json")));
+            }
+            catch (System.IO.IOException)
+            {
+                return Task.FromResult<StacItem>(null);
+            }
         }
 
         public string GetItemEtag(string featureId)
@@ -75,8 +82,9 @@ namespace Stac.Api.FileSystem.Services
                                                 var collection = _fileSystemResolver.FileSystem.File.ReadAllText(itemFile.FullName);
                                                 return StacConvert.Deserialize<StacItem>(collection);
                                             });
-
-            StacQueryable<StacItem> queryable = _queryProvider.CreateQuery<StacItem>(items.AsQueryable().Expression) as StacQueryable<StacItem>;
+            // Create a queryable provider
+            var queryProvider = DefaultStacQueryProvider.CreateDefaultQueryProvider(_httpContextAccessor.HttpContext, items);
+            var queryable = new StacQueryable<StacItem>(queryProvider, items.AsQueryable<StacItem>().Expression);
             queryable = queryable.Filter(bboxArray)
                                    .Filter(datetime);
 

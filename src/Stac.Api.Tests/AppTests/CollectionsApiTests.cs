@@ -23,11 +23,9 @@ namespace Stac.Api.Tests.AppTests
             var catalog = JsonConvert.DeserializeObject<StacCollections>(json);
         }
 
-        [Theory, MemberData("TestCatalogs", DisableDiscoveryEnumeration = true)]
-        public async Task GetCollectionsAsync(string key, string datadir)
+        [Theory, MemberData(nameof(TestCatalogs), new object[] { nameof(CollectionsApiTests) })]
+        public async Task GetCollectionsAsync(StacApiApplication application)
         {
-            await using var application = new StacApiApplication(datadir);
-
             var client = application.CreateClient();
             CollectionsClient collectionsClient = new CollectionsClient(client);
 
@@ -47,6 +45,21 @@ namespace Stac.Api.Tests.AppTests
                 JsonAssert.AreEqual(collectionJson, collection2Json);
                 ValidateJson(collection2Json);
             }
+
+        }
+
+        [Theory, MemberData(nameof(TestCatalogs), new object[] { nameof(CollectionsApiTests) })]
+        public async Task GetCollectionsByIdAsync(StacApiApplication application)
+        {
+            var client = application.CreateClient();
+            CollectionsClient collectionsClient = new CollectionsClient(client);
+
+            StacCollection testCollection = await collectionsClient.DescribeCollectionAsync("test");
+
+            Assert.Equal("test", testCollection.Id);
+
+            string collectionJson = JsonConvert.SerializeObject(testCollection);
+            ValidateJson(collectionJson);
 
         }
 

@@ -32,7 +32,21 @@ namespace Stac.Api.Converters
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, value);
+            if ( value is PostStacItemOrCollection postStacItemOrCollection)
+            {
+                if (postStacItemOrCollection.StacItem != null)
+                {
+                    serializer.Serialize(writer, postStacItemOrCollection.StacItem);
+                }
+                else if (postStacItemOrCollection.StacFeatureCollection != null)
+                {
+                    serializer.Serialize(writer, postStacItemOrCollection.StacFeatureCollection);
+                }
+            }
+            else
+            {
+                throw new Exception("Unexpected value when converting PostStacItemOrCollection");
+            }
         }
     }
 }

@@ -71,7 +71,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Transaction
             body.ValidateInputForTransaction();
             if (!body.IsCollection)
             {
-                return await PostFeatureAsync(body, collectionId, cancellationToken);
+                return await PostFeatureAsync(body.StacItem, collectionId, cancellationToken);
             }
             else
             {

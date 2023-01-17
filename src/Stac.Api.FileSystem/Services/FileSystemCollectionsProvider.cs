@@ -53,7 +53,14 @@ namespace Stac.Api.FileSystem.Services
 
         public Task<StacCollection> GetCollectionByIdAsync(string collectionId, CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(StacConvert.Deserialize<StacCollection>(_fileSystemResolver.FileSystem.File.ReadAllText(_fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{collectionId}.json")));
+            try
+            {
+                return Task.FromResult(StacConvert.Deserialize<StacCollection>(_fileSystemResolver.FileSystem.File.ReadAllText(_fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{collectionId}.json")));
+            }
+            catch (System.IO.IOException)
+            {
+                return Task.FromResult<StacCollection>(null);
+            }
         }
 
         public void SetPaging(IPaginationParameters paginationParameters)

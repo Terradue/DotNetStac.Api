@@ -102,6 +102,18 @@ namespace Stac.Api.Tests
             return path;
         }
 
+        protected string GetTestCollectionsRootPath()
+        {
+            var path = Path.Combine(AssemblyDirectory, @"../../..", "Resources/TestDatasets");
+
+            if (!Directory.Exists(path))
+            {
+                throw new DirectoryNotFoundException("Directory not found at " + path);
+            }
+
+            return path;
+        }
+
         public bool ValidateJson(string jsonstr)
         {
             return stacValidator.ValidateJson(jsonstr);

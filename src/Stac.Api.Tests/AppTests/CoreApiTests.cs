@@ -14,11 +14,12 @@ namespace Stac.Api.Tests.AppTests
     {
         public CoreApiTests(StacApiAppFixture fixture, ITestOutputHelper outputHelper) : base(fixture, outputHelper)
         {
-            
+
         }
 
         [Fact]
-        public void DeserializeLandingPageAsync(){
+        public void DeserializeLandingPageAsync()
+        {
             LandingPage lp = new LandingPage("sentinel", "Copernicus Sentinel Imagery");
             lp.ConformanceClasses.Add("https://api.stacspec.org/v1.0.0-rc.1/core");
             string json = JsonConvert.SerializeObject(lp);
@@ -27,11 +28,9 @@ namespace Stac.Api.Tests.AppTests
             LandingPage lp2 = JsonConvert.DeserializeObject<LandingPage>(json);
         }
 
-        [Theory, MemberData("TestCatalogs", DisableDiscoveryEnumeration = true)]
-        public async Task GetLandingPageAsync(string key, string datadir)
+        [Theory, MemberData(nameof(TestCatalogs), new object[] { nameof(CoreApiTests) })]
+        public async Task GetLandingPageAsync(StacApiApplication application)
         {
-            await using var application = new StacApiApplication(datadir);
-
             var client = application.CreateClient();
             CoreClient coreClient = new CoreClient(client);
 

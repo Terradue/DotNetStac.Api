@@ -9,7 +9,7 @@ using Stac.Api.WebApi.Controllers.Core;
 
 namespace Stac.Api.Tests
 {
-    internal class StacApiApplication : WebApplicationFactory<FileSystemDataServicesProvider>
+    public class StacApiApplication : WebApplicationFactory<FileSystemDataServicesProvider>
     {
         private string _datadir;
 
