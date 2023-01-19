@@ -6,7 +6,7 @@ using Stac.Api.Services.Pagination;
 
 namespace Stac.Api.WebApi.Services
 {
-    internal class QueryStringPaginationParameters : IPaginationParameters
+    public class QueryStringPaginationParameters : IPaginationParameters
     {
         public QueryStringPaginationParameters(int limit, int page, int startIndex)
         {

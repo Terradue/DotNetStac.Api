@@ -28,7 +28,7 @@ namespace Stac.Api.FileSystem.Services
 
         public bool HasNextPage { get => TotalPages > CurrentPage; }
 
-        public int CurrentLimit { get; internal set; }
+        public int CurrentLimit { get; internal set; } = 10;
 
         public int CurrentPage { get; internal set; }
 

@@ -7,6 +7,7 @@ using Stac.Api.Clients.Collections;
 using System.Linq;
 using Stac.Api.Clients.Extensions;
 using System.IO;
+using Stac.Api.Clients.Features;
 
 namespace Stac.Api.Tests.AppTests
 {
@@ -26,10 +27,12 @@ namespace Stac.Api.Tests.AppTests
         }
 
         [Theory, MemberData(nameof(TestCatalogs), new object[] { nameof(TransactionApiTests) })]
-        public async Task PostFeatureAsync(StacApiApplication application, string collectionPath, string[] itemsPaths)
+        public async Task PostAllCollectionItemsAsync(StacApiApplication application, string collectionPath, string[] itemsPaths)
         {
             var client = application.CreateClient();
             TransactionClient transactionClient = new TransactionClient(client);
+            FeaturesClient featuresClient = new FeaturesClient(client);
+            CollectionsClient collectionsClient = new CollectionsClient(client);
 
             var collectionJson = File.ReadAllText(collectionPath);
             StacCollection collection = StacConvert.Deserialize<StacCollection>(collectionJson);
@@ -39,11 +42,19 @@ namespace Stac.Api.Tests.AppTests
                 var itemJson = File.ReadAllText(itemPath);
                 var post = JsonConvert.DeserializeObject<PostStacItemOrCollection>(itemJson);
                 var result = await transactionClient.PostFeatureAsync(post, collection.Id);
+                var result2 = await featuresClient.GetFeatureAsync(collection.Id, result.Id);
                 var resultJson = JsonConvert.SerializeObject(result);
+                var result2Json = JsonConvert.SerializeObject(result2);
+                JsonAssert.AreEqual(resultJson, result2Json);
+                result.Links.Clear();
+                resultJson = JsonConvert.SerializeObject(result);
                 JsonAssert.AreEqual(itemJson, resultJson);
             }
             
-
+            var collection2 = await collectionsClient.DescribeCollectionAsync(collection.Id);
+            var collection2Json = StacConvert.Serialize(collection2);
+            // When collection edit API ready, uncomment this line
+            //JsonAssert.AreEqual(collectionJson, collection2Json);
         }
     }
 }

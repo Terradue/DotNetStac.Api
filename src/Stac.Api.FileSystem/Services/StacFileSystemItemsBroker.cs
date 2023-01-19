@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Stac.Api.Interfaces;
+using Stac.Api.Services.Pagination;
+using Stac.Api.WebApi.Services;
 using Stac.Collection;
 
 namespace Stac.Api.FileSystem.Services
@@ -55,6 +57,11 @@ namespace Stac.Api.FileSystem.Services
         {
             StacCollection existingCollection = await GetStacCollectionAsync(item.Collection, cancellationToken);
             var itemsProvider = _dataServicesProvider.GetItemsProvider(Collection, _httpContextAccessor.HttpContext);
+            itemsProvider.SetCollectionParameter(item.Collection);
+            if ( itemsProvider is IPaginator<StacItem> paginator)
+            {
+                paginator.SetPaging(new QueryStringPaginationParameters(int.MaxValue, 0, 0));
+            }
             StacCollection collection = StacCollection.Create(
                 Collection, Collection.Titleize(),
                 itemsProvider.GetItemsAsync(null, null, cancellationToken).GetAwaiter().GetResult()

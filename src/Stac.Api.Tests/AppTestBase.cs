@@ -11,10 +11,10 @@ using Xunit.Abstractions;
 
 namespace Stac.Api.Tests
 {
-    public abstract class AppTestBase : TestBase
+    public abstract class AppTestBase : TestBase, IDisposable
     {
         private StacApiAppFixture Fixture;
-        private static TestCatalogsProvider _testCatalogsProvider;
+        protected static TestCatalogsProvider _testCatalogsProvider;
 
         protected AppTestBase(StacApiAppFixture fixture, ITestOutputHelper outputHelper) : base(outputHelper)
         {
@@ -34,18 +34,26 @@ namespace Stac.Api.Tests
             }
         }
 
-        private static TestCatalogsProvider TestCatalogsProvider
+        protected static TestCatalogsProvider TestCatalogsProvider
         {
             get
             {
                 if (_testCatalogsProvider == null)
                 {
                     _testCatalogsProvider = new TestCatalogsProvider();
+                    _testCatalogsProvider.Init();
                 }
                 return _testCatalogsProvider;
             }
         }
 
-
+        public void Dispose()
+        {
+            if ( _testCatalogsProvider != null)
+            {
+                _testCatalogsProvider.Dispose();
+                _testCatalogsProvider = null;
+            }
+        }
     }
 }

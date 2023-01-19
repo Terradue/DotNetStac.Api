@@ -79,7 +79,8 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Transaction
                 if ( body.StacFeatureCollection.Items.Count > 1000 ){
                     return new AcceptedResult();
                 }
-                return (await task).Value.FirstOrDefault();
+                StacItem item =(await task).Value.FirstOrDefault();
+                return new CreatedResult(item.Links.FirstOrDefault(i => i.RelationshipType == "self").Uri, item) ;
             }
         }
 
@@ -94,7 +95,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Transaction
             IItemsBroker itemsBroker = _dataServicesProvider.GetItemsBroker(collectionId, _httpContextAccessor.HttpContext);
             StacItem createdItem = await itemsBroker.CreateItemAsync(body, cancellationToken);
             _stacLinker.Link(createdItem, _httpContextAccessor.HttpContext);
-            return createdItem;
+            return new CreatedResult(createdItem.Links.FirstOrDefault(i => i.RelationshipType == "self").Uri, createdItem);
         }
 
         public async Task<ActionResult<IEnumerable<StacItem>>> PostFeaturesAsync(StacFeatureCollection collection, string collectionId, CancellationToken cancellationToken = default)
