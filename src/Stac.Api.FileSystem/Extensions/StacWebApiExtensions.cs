@@ -16,6 +16,7 @@ using Stac.Api.WebApi.Extensions;
 using Stac.Api.FileSystem.Services;
 using Stac.Api.WebApi.Patterns.CollectionBased;
 using Stac.Api.WebApi.Implementations.Default.Services;
+using Stac.Api.WebApi.Services.Context;
 
 namespace Stac.Api.FileSystem.Extensions
 {
@@ -26,6 +27,8 @@ namespace Stac.Api.FileSystem.Extensions
         {
             // Add the file system data services
             services.AddSingleton<IDataServicesProvider, FileSystemDataServicesProvider>();
+            // Add the Http Stac Api context factory
+            services.AddSingleton<IStacApiContextFactory, HttpStacApiContextFactory>();
             // The filesystem implements a collection based pattern
             services.AddSingleton<IStacLinker, CollectionBasedStacLinker>();
             // Add the default controllers

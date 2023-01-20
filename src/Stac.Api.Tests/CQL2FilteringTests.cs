@@ -16,12 +16,15 @@ using System.Linq.Expressions;
 using System.Linq;
 using Stac.Api.Services.Queryable;
 using Stac.Api.WebApi.Implementations.Default.Services;
+using Stac.Api.Interfaces;
 
 namespace Stac.Api.Tests
 {
     public class CQL2FilteringTests : TestBase
     {
         private readonly JsonSerializerSettings _settings;
+
+        
 
         public CQL2FilteringTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
@@ -38,7 +41,7 @@ namespace Stac.Api.Tests
             json = GetJson("CQL2", "SampleItem");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
             IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
-            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(new HttpContextMock().SetupUrl("http://localhost:5000"), source);
+            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
             StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
             source2 = source2.WithCQL2(cql);
             OutputHelper.WriteLine(source2.Expression.ToString());
@@ -54,7 +57,7 @@ namespace Stac.Api.Tests
             json = GetJson("CQL2", "SampleItem");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
             IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
-            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(new HttpContextMock().SetupUrl("http://localhost:5000"), source);
+            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
             StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
             source2 = source2.WithCQL2(cql);
             OutputHelper.WriteLine(source2.Expression.ToString());
@@ -70,7 +73,7 @@ namespace Stac.Api.Tests
             json = GetJson("CQL2", "SampleItem");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
             IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
-            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(new HttpContextMock().SetupUrl("http://localhost:5000"), source);
+            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
             StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
             source2 = source2.WithCQL2(cql);
             OutputHelper.WriteLine(source2.Expression.ToString());
@@ -85,7 +88,7 @@ namespace Stac.Api.Tests
             json = GetJson("CQL2", "SampleItem");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
             IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
-            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(new HttpContextMock().SetupUrl("http://localhost:5000"), source);
+            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
             StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
             source2 = source2.WithCQL2(cql);
             OutputHelper.WriteLine(source2.Expression.ToString());
@@ -214,7 +217,7 @@ namespace Stac.Api.Tests
             json = GetJson("CQL2", "SampleItem");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
             IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
-            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(new HttpContextMock().SetupUrl("http://localhost:5000"), source);
+            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
             StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
             source2 = source2.WithCQL2(cql);
             OutputHelper.WriteLine(source2.Expression.ToString());
@@ -239,7 +242,7 @@ namespace Stac.Api.Tests
             json = GetJson("CQL2", "SampleItem");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
             IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
-            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(new HttpContextMock().SetupUrl("http://localhost:5000"), source);
+            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
             StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
             source2 = source2.WithCQL2(cql);
             OutputHelper.WriteLine(source2.Expression.ToString());

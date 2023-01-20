@@ -4,27 +4,26 @@ using Microsoft.AspNetCore.Mvc;
 using Stac.Api.Clients.Features;
 using Stac.Api.Interfaces;
 using Stac.Api.Models;
-using Stac.Api.Services.Pagination;
 using Stac.Api.WebApi.Controllers.Features;
 using Stac.Api.WebApi.Services;
 
 namespace Stac.Api.WebApi.Implementations.Default.Features
 {
-    public class DefaultFeaturesController : IFeaturesController
+    public class DefaultFeaturesController : IFeaturesController, IStacLinkValuesProvider<StacItem>
     {
         private readonly IStacApiEndpointManager _stacApiEndpointManager;
         private readonly IDataServicesProvider dataServicesProvider;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IStacApiContextFactory _stacApiContextFactory;
         private readonly IStacLinker _stacLinker;
 
         public DefaultFeaturesController(IStacApiEndpointManager stacApiEndpointManager,
                                             IDataServicesProvider dataServicesProvider,
-                                            IHttpContextAccessor httpContextAccessor,
+                                            IStacApiContextFactory stacApiContextFactory,
                                             IStacLinker stacLinker)
         {
             _stacApiEndpointManager = stacApiEndpointManager;
             this.dataServicesProvider = dataServicesProvider;
-            _httpContextAccessor = httpContextAccessor;
+            _stacApiContextFactory = stacApiContextFactory;
             _stacLinker = stacLinker;
         }
 
@@ -39,29 +38,30 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
 
         public async Task<ActionResult<StacItem>> GetFeatureAsync(string collectionId, string featureId, CancellationToken cancellationToken = default)
         {
-            IItemsProvider _itemsProvider = dataServicesProvider.GetItemsProvider(collectionId, _httpContextAccessor.HttpContext);
-            var item = await _itemsProvider.GetItemByIdAsync(featureId, cancellationToken);
+            // Create the context
+            IStacApiContext stacApiContext = _stacApiContextFactory.Create();
+            IItemsProvider _itemsProvider = dataServicesProvider.GetItemsProvider();
+            var item = await _itemsProvider.GetItemByIdAsync(featureId, stacApiContext, cancellationToken);
             if (item == null)
                 return new NotFoundResult();
-            _stacLinker.Link(item, _httpContextAccessor.HttpContext);
+            _stacLinker.Link(item, stacApiContext);
             return item;
         }
 
         public async Task<ActionResult<StacFeatureCollection>> GetFeaturesAsync(string collectionId, int limit, string bbox, string datetime, CancellationToken cancellationToken = default)
         {
-            ICollectionsProvider collectionsProvider = dataServicesProvider.GetCollectionsProvider(_httpContextAccessor.HttpContext);
-            var collection = collectionsProvider.GetCollectionByIdAsync(collectionId, cancellationToken);
+            // Create the context
+            IStacApiContext stacApiContext = _stacApiContextFactory.Create();
+            stacApiContext.SetCollection(collectionId);
+            ICollectionsProvider collectionsProvider = dataServicesProvider.GetCollectionsProvider();
+
+            var collection = collectionsProvider.GetCollectionByIdAsync(collectionId, stacApiContext, cancellationToken);
             if (collection == null)
             {
                 throw new StacApiException($"Collection {collectionId} not found", (int)HttpStatusCode.NotFound);
             }
 
-            IItemsProvider itemsProvider = dataServicesProvider.GetItemsProvider(collectionId, _httpContextAccessor.HttpContext);
-
-            if (itemsProvider is IPaginator<StacItem> paginator)
-            {
-                paginator.SetPaging(QueryStringPaginationParameters.GetPaginatorParameters(_httpContextAccessor.HttpContext));
-            }
+            IItemsProvider itemsProvider = dataServicesProvider.GetItemsProvider();
 
             double[]? bboxArray = null;
             if (!string.IsNullOrEmpty(bbox))
@@ -75,13 +75,19 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
                 datetimeValue = DateTime.Parse(datetime);
             }
 
-            var items = await itemsProvider.GetItemsAsync(bboxArray, datetimeValue, cancellationToken);
+            var items = await itemsProvider.GetItemsAsync(bboxArray, datetimeValue, stacApiContext, cancellationToken);
 
             StacFeatureCollection fc = new StacFeatureCollection(items);
+            fc.Collection = collectionId;
+
+            _stacLinker.Link(fc, stacApiContext);
 
             return fc;
         }
 
-
+        public IEnumerable<ILinkValues> GetLinkValues()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

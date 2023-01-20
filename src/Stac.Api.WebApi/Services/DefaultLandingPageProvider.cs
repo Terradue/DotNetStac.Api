@@ -14,61 +14,59 @@ namespace Stac.Api.WebApi.Services
     {
         private readonly IStacApiEndpointManager _stacApiEndpointManager;
         private readonly IDataServicesProvider _dataServicesProvider;
+        private readonly IStacApiContextFactory _stacApiContextFactory;
+        private readonly IStacLinker _stacLinker;
 
         public LinkGenerator LinkGenerator { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
 
         public DefaultLandingPageProvider(IStacApiEndpointManager stacApiEndpointManager,
                                           IDataServicesProvider dataServicesProvider,
                                           LinkGenerator linkGenerator,
-                                          IHttpContextAccessor httpContextAccessor)
+                                          IStacApiContextFactory stacApiContextFactory,
+                                          IStacLinker stacLinker)
         {
             _stacApiEndpointManager = stacApiEndpointManager;
             _dataServicesProvider = dataServicesProvider;
             LinkGenerator = linkGenerator;
-            HttpContextAccessor = httpContextAccessor;
+            _stacApiContextFactory = stacApiContextFactory;
+            _stacLinker = stacLinker;
         }
 
         public async Task<LandingPage> GetLandingPageAsync(CancellationToken cancellationToken)
         {
-            var rootCatalogProvider = _dataServicesProvider.GetRootCatalogProvider(HttpContextAccessor.HttpContext);
+            // Create a new StacApiContext
+            var stacApiContext = _stacApiContextFactory.Create();
 
-            var landingPage = new LandingPage(await rootCatalogProvider.GetRootCatalogAsync());
+            var rootCatalogProvider = _dataServicesProvider.GetRootCatalogProvider();
+
+            var landingPage = new LandingPage(await rootCatalogProvider.GetRootCatalogAsync(stacApiContext, cancellationToken));
 
             AddConformanceClasses(landingPage);
 
-            AddLinks(landingPage);
+            AddLinks(landingPage, stacApiContext);
 
             return landingPage;
         }
 
-        private LandingPage AddLinks(LandingPage landingPage)
+        private LandingPage AddLinks(LandingPage landingPage, IStacApiContext stacApiContext)
         {
-            AddBaseLinks(landingPage);
-            AddEnpointLinks(landingPage);
+            _stacLinker.Link(landingPage, stacApiContext);
+            AddEnpointLinks(landingPage, stacApiContext);
             return landingPage;
         }
 
-        private LandingPage AddEnpointLinks(LandingPage landingPage)
+        private LandingPage AddEnpointLinks(LandingPage landingPage, IStacApiContext stacApiContext)
         {
             var stacapiControllers = _stacApiEndpointManager.GetRegisteredStacApiControllers();
             foreach (var controller in stacapiControllers)
             {
-                var links = controller.GetLandingPageLinks(LinkGenerator, HttpContextAccessor);
+                var links = controller.GetLandingPageLinks(stacApiContext);
                 landingPage.Links.AddRange(links);
             }
             return landingPage;
         }
 
-        private LandingPage AddBaseLinks(LandingPage landingPage)
-        {
-            landingPage.Links.Add(StacLink.CreateSelfLink(new Uri(LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "GetLandingPage", "Core")),
-                                     "application/json"));
-            landingPage.Links.Add(StacLink.CreateRootLink(new Uri(LinkGenerator.GetUriByAction(HttpContextAccessor.HttpContext, "GetLandingPage", "Core")),
-                                     "application/json"));
-
-            return landingPage;
-        }
+        
 
         public LandingPage AddConformanceClasses(LandingPage landingPage)
         {

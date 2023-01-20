@@ -1,17 +1,23 @@
 using Microsoft.AspNetCore.Http;
 using Stac.Api.Clients.Collections;
+using Stac.Api.Interfaces;
+using Stac.Api.Models;
 
 namespace Stac.Api.WebApi.Services
 {
     public interface IStacLinker
     {
-        void Link(StacCollection collection, HttpContext httpContext);
+        void Link(LandingPage landingPage, IStacApiContext stacApiContext);
 
-        void Link(StacCollections collections, HttpContext httpContext);
+        void Link(StacCollection collection, IStacApiContext stacApiContext);
 
-        void Link(StacItem item, HttpContext httpContext);
+        void Link(StacCollections collections, IStacApiContext stacApiContext);
 
-        void Link<T>(T linksCollectionObject, IStacLinkValuesProvider<T> stacLinkValuesProvider, HttpContext httpContext) where T : ILinksCollectionObject;
+        void Link(StacItem item, IStacApiContext stacApiContext);
+
+        void Link(StacFeatureCollection collection, IStacApiContext stacApiContext);
+
+        void Link<T>(T linksCollectionObject, IStacLinkValuesProvider<T> stacLinkValuesProvider, IStacApiContext stacApiContext) where T : ILinksCollectionObject;
         
     }
 }

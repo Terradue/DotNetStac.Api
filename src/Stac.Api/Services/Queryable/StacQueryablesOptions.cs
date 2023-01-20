@@ -2,16 +2,17 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Schema;
+using Stac.Api.Interfaces;
 
 namespace Stac.Api.Services.Queryable
 {
     public class StacQueryablesOptions : JSchema
     {
-        public static StacQueryablesOptions GenerateDefaultOptions<T>(HttpContext httpContext) where T : IStacObject
+        public static StacQueryablesOptions GenerateDefaultOptions<T>(IStacApiContext stacApiContext) where T : IStacObject
         {
             var schema = new StacQueryablesOptions()
             {
-                Id = new System.Uri($"{httpContext.Request.Scheme}://{httpContext.Request.Host}/queryables"),
+                Id = new System.Uri(stacApiContext.BaseUri, "queryables"),
                 Type = JSchemaType.Object,
                 Title = "STAC Item Queryables",
                 Description = "Queryable names for STAC Items",

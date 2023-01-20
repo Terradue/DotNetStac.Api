@@ -7,10 +7,8 @@ using Stac.Api.Interfaces;
 
 namespace Stac.Api.Clients.Collections
 {
-    public partial class StacCollections : IStacPageable<StacCollection>
+    public partial class StacCollections :ILinksCollectionObject
     {
-        [JsonIgnore]
-        public ICollection<StacCollection> Items => Collections;
 
         ICollection<StacLink> ILinksCollectionObject.Links => Links as ICollection<StacLink>;
     }

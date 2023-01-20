@@ -3,7 +3,11 @@ using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using HttpContextMoq;
+using HttpContextMoq.Extensions;
 using Newtonsoft.Json.Schema;
+using Stac.Api.Interfaces;
+using Stac.Api.WebApi.Services.Context;
 using Stac.Schemas;
 using Xunit.Abstractions;
 
@@ -21,10 +25,13 @@ namespace Stac.Api.Tests
         private static StacValidator stacValidator = new StacValidator(new JSchemaUrlResolver());
         protected ITestOutputHelper OutputHelper;
 
+        protected IStacApiContext TestStacApiContext { get; private set; }
+
         protected TestBase(ITestOutputHelper outputHelper)
         {
             // Route output from the fixture's logs to xunit's output
             OutputHelper = outputHelper;
+            TestStacApiContext = HttpStacApiContext.Create(new HttpContextMock().SetupUrl("http://localhost:5000"));
         }
 
         public static string AssemblyDirectory

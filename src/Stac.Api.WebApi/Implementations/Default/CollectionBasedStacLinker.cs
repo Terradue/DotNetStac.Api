@@ -7,6 +7,7 @@ using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Stac.Api.Clients.Collections;
+using Stac.Api.Interfaces;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Services;
 
@@ -14,84 +15,102 @@ namespace Stac.Api.WebApi.Patterns.CollectionBased
 {
     public class CollectionBasedStacLinker : IStacLinker
     {
-        private readonly LinkGenerator _linkGenerator;
-
-        public CollectionBasedStacLinker(LinkGenerator linkGenerator)
-        {
-            _linkGenerator = linkGenerator;
-        }
 
         #region Implementation of IStacLinker
 
-        public void Link(StacCollection collection, HttpContext httpContext)
+        public void Link(LandingPage landingPage, IStacApiContext stacApiContext)
         {
-            collection.Links.Add(GetSelfLink(collection, httpContext));
-            collection.Links.Add(GetRootLink(httpContext));
+            landingPage.Links.Add(StacLink.CreateSelfLink(new Uri(stacApiContext.LinkGenerator.GetUriByAction(stacApiContext.HttpContext, "GetLandingPage", "Core")),
+                                     "application/json"));
+            landingPage.Links.Add(StacLink.CreateRootLink(new Uri(stacApiContext.LinkGenerator.GetUriByAction(stacApiContext.HttpContext, "GetLandingPage", "Core")),
+                                     "application/json"));
+
         }
 
-        public void Link(StacCollections collections, HttpContext httpContext)
+        public void Link(StacCollection collection, IStacApiContext stacApiContext)
         {
-            collections.Links.Add(GetSelfLink(collections, httpContext));
-            collections.Links.Add(GetRootLink(httpContext));
+            collection.Links.Add(GetSelfLink(collection, stacApiContext));
+            collection.Links.Add(GetRootLink(stacApiContext));
         }
 
-        public void Link(StacItem item, HttpContext httpContext)
+        public void Link(StacCollections collections, IStacApiContext stacApiContext)
         {
-            item.Links.Add(GetSelfLink(item, httpContext));
-            item.Links.Add(GetRootLink(httpContext));
+            collections.Links.Add(GetSelfLink(collections, stacApiContext));
+            collections.Links.Add(GetRootLink(stacApiContext));
         }
 
-        public void Link<T>(T linksCollectionObject, IStacLinkValuesProvider<T> stacLinkValuesProvider, HttpContext httpContext) where T : ILinksCollectionObject
+        public void Link(StacItem item, IStacApiContext stacApiContext)
+        {
+            item.Links.Add(GetSelfLink(item, stacApiContext));
+            item.Links.Add(GetRootLink(stacApiContext));
+        }
+
+        public void Link(StacFeatureCollection collection, IStacApiContext stacApiContext)
+        {
+            collection.Links.Add(GetSelfLink(collection, stacApiContext));
+            collection.Links.Add(GetRootLink(stacApiContext));
+        }
+
+        public void Link<T>(T linksCollectionObject, IStacLinkValuesProvider<T> stacLinkValuesProvider, IStacApiContext stacApiContext) where T : ILinksCollectionObject
         {
             GetActionId<T>(out string actionId, out string controllerId);
             foreach (var linkValue in stacLinkValuesProvider.GetLinkValues())
             {
-                GetUriByAction(httpContext, actionId, controllerId, linkValue.RouteValues, linkValue.QueryValues);
+                GetUriByAction(stacApiContext, actionId, controllerId, linkValue.RouteValues, linkValue.QueryValues);
             }
         }
 
         #endregion
 
-        private StacApiLink GetRootLink(HttpContext httpContext)
+        private StacApiLink GetRootLink(IStacApiContext stacApiContext)
         {
             return new StacApiLink(
-                GetUriByAction(httpContext, "GetLandingPage", "Core", new { }, null),
+                GetUriByAction(stacApiContext, "GetLandingPage", "Core", new { }, null),
                 "root",
                 null,
                 "application/json");
         }
 
-        protected StacApiLink GetSelfLink(StacCollections stacCollections, HttpContext httpContext)
+        protected StacApiLink GetSelfLink(StacCollections stacCollections, IStacApiContext stacApiContext)
         {
             return new StacApiLink(
-                GetUriByAction(httpContext, "GetCollections", "Collections", new { }, null),
+                GetUriByAction(stacApiContext, "GetCollections", "Collections", new { }, null),
                 "self",
                 "Collections",
                 "application/json");
         }
 
-        protected StacApiLink GetSelfLink(StacItem stacItem, HttpContext httpContext)
+        protected StacApiLink GetSelfLink(StacItem stacItem, IStacApiContext stacApiContext)
         {
             return new StacApiLink(
-                GetUriByAction(httpContext, "GetFeature", "Features", new { collectionId = stacItem.Collection, featureId = stacItem.Id }, null),
+                GetUriByAction(stacApiContext, "GetFeature", "Features", new { collectionId = stacItem.Collection, featureId = stacItem.Id }, null),
                 "self",
                 stacItem.Title,
                 stacItem.MediaType.ToString());
         }
 
-        protected StacApiLink GetSelfLink(StacCollection collection, HttpContext httpContext)
+        protected StacApiLink GetSelfLink(StacCollection collection, IStacApiContext stacApiContext)
         {
             return new StacApiLink(
-                GetUriByAction(httpContext, "GetCollections", "Collections", new { collectionId = collection.Id }, null),
+                GetUriByAction(stacApiContext, "GetCollections", "Collections", new { collectionId = collection.Id }, null),
                 "self",
                 collection.Title,
                 collection.MediaType.ToString());
         }
 
-        private Uri GetUriByAction(HttpContext httpContext, string actionName, string controllerName, object? value, IDictionary<string, object>? queryValues)
+        protected StacApiLink GetSelfLink(StacFeatureCollection collection, IStacApiContext stacApiContext)
         {
-            var url = _linkGenerator.GetUriByAction(httpContext, actionName, controllerName, value);
-            if ( url == null )
+            return new StacApiLink(
+                GetUriByAction(stacApiContext, "GetFeatures", "Features", new { collectionId = collection.Collection }, null),
+                "self",
+                null,
+                "application/geo+json");
+        }
+
+        private Uri GetUriByAction(IStacApiContext stacApiContext, string actionName, string controllerName, object? value, IDictionary<string, object>? queryValues)
+        {
+            var url = stacApiContext.LinkGenerator.GetUriByAction(stacApiContext.HttpContext, actionName, controllerName, value);
+            if (url == null)
             {
                 throw new InvalidOperationException($"Could not generate URL for action {actionName} on controller {controllerName} with value {value}");
             }
@@ -109,5 +128,49 @@ namespace Stac.Api.WebApi.Patterns.CollectionBased
         {
             throw new NotImplementedException();
         }
+
+        internal static void LinkPagination(ILinksCollectionObject linksCollectionObject, RouteValueDictionary routeValues)
+        {
+            // List<ILinkValues> linkValues = new List<ILinkValues>();
+            // if (paginator.HasNextPage)
+            // {
+            //     linkValues.Add(new LinkValues("next", routeValues, new Dictionary<string, object>()
+            //     {
+            //         {"limit", paginator.CurrentLimit},
+            //         {"page", paginator.CurrentPage + 1},
+            //         {"startIndex", paginator.StartIndex}
+            //     }, null, null));
+            // }
+            // if (paginator.CurrentPage > 1)
+            // {
+            //     linkValues.Add(new LinkValues("prev", routeValues, new Dictionary<string, object>()
+            //     {
+            //         {"limit", paginator.CurrentLimit},
+            //         {"page", paginator.CurrentPage - 1},
+            //         {"startIndex", paginator.StartIndex}
+            //     }, null, null));
+            // }
+            // if (paginator.CurrentPage > 2)
+            // {
+            //     linkValues.Add(new LinkValues("first", routeValues, new Dictionary<string, object>()
+            //     {
+            //         {"limit", paginator.CurrentLimit},
+            //         {"page", 1},
+            //         {"startIndex", paginator.StartIndex}
+            //     }, null, null));
+            // }
+            // if (paginator.TotalPages > 1 && paginator.CurrentPage < paginator.TotalPages)
+            // {
+            //     linkValues.Add(new LinkValues("last", routeValues, new Dictionary<string, object>()
+            //     {
+            //         {"limit", paginator.CurrentLimit},
+            //         {"page", paginator.TotalPages},
+            //         {"startIndex", paginator.StartIndex}
+            //     }, null, null));
+            // }
+            // return linkValues;
+        }
+
+        
     }
 }

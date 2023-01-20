@@ -16,19 +16,19 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Transaction
 {
     public class DefaultTransactionController : ITransactionController
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IStacApiContextFactory _stacApiContextFactory;
         private readonly IDataServicesProvider _dataServicesProvider;
         private readonly IFeaturesController _fileSystemFeaturesController;
         private readonly IStacLinker _stacLinker;
         private readonly ICollectionsController _fileSystemCollectionsController;
 
-        public DefaultTransactionController(IHttpContextAccessor httpContextAccessor,
+        public DefaultTransactionController(IStacApiContextFactory stacApiContextFactory,
                                             IDataServicesProvider dataServicesProvider,
                                             IFeaturesController fileSystemFeaturesController,
                                             IStacLinker stacLinker,
                                             ICollectionsController fileSystemCollectionsController)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _stacApiContextFactory = stacApiContextFactory;
             _dataServicesProvider = dataServicesProvider;
             _fileSystemFeaturesController = fileSystemFeaturesController;
             _stacLinker = stacLinker;
@@ -37,33 +37,39 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Transaction
 
         public async Task<IActionResult> DeleteFeatureAsync(string if_Match, string collectionId, string featureId, CancellationToken cancellationToken = default)
         {
-            IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider(collectionId, _httpContextAccessor.HttpContext);
-            StacItem stacItem = await itemsProvider.GetItemByIdAsync(featureId, cancellationToken);
+            // Create a new context for this request
+            IStacApiContext stacApiContext = _stacApiContextFactory.Create();
+
+            IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider();
+            StacItem stacItem = await itemsProvider.GetItemByIdAsync(featureId, stacApiContext, cancellationToken);
             if (stacItem == null)
             {
                 return new NotFoundResult();
             }
-            IItemsBroker itemsBroker = _dataServicesProvider.GetItemsBroker(collectionId, _httpContextAccessor.HttpContext);
-            await itemsBroker.DeleteItemAsync(featureId, cancellationToken);
+            IItemsBroker itemsBroker = _dataServicesProvider.GetItemsBroker();
+            await itemsBroker.DeleteItemAsync(featureId, stacApiContext, cancellationToken);
             return new NoContentResult();
         }
 
         public async Task<ActionResult<StacItem>> PatchFeatureAsync(string if_Match, Patch body, string collectionId, string featureId, CancellationToken cancellationToken = default)
         {
-            IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider(collectionId, _httpContextAccessor.HttpContext);
-            StacItem stacItem = await itemsProvider.GetItemByIdAsync(featureId, cancellationToken);
+            // Create a new context for this request
+            IStacApiContext stacApiContext = _stacApiContextFactory.Create();
+
+            IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider();
+            StacItem stacItem = await itemsProvider.GetItemByIdAsync(featureId, stacApiContext, cancellationToken);
             if (stacItem == null)
             {
                 return new NotFoundResult();
             }
-            string etag = itemsProvider.GetItemEtag(featureId);
+            string etag = itemsProvider.GetItemEtag(featureId, stacApiContext);
             if (if_Match != null && if_Match != etag)
             {
                 throw new StacApiException("If-Match header does not match current ETag", (int)HttpStatusCode.PreconditionFailed);
             }
             var newItem = stacItem.Patch(body);
-            IItemsBroker itemsBroker = _dataServicesProvider.GetItemsBroker(collectionId, _httpContextAccessor.HttpContext);
-            return await itemsBroker.UpdateItemAsync(newItem, featureId, cancellationToken);
+            IItemsBroker itemsBroker = _dataServicesProvider.GetItemsBroker();
+            return await itemsBroker.UpdateItemAsync(newItem, featureId, stacApiContext, cancellationToken);
         }
 
         public async Task<ActionResult<StacItem>> PostFeatureAsync(PostStacItemOrCollection body, string collectionId, CancellationToken cancellationToken = default)
@@ -76,56 +82,81 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Transaction
             else
             {
                 var task = PostFeaturesAsync(body.StacFeatureCollection, collectionId, cancellationToken);
-                if ( body.StacFeatureCollection.Items.Count > 1000 ){
+                if (!task.Wait(500))
+                {
                     return new AcceptedResult();
                 }
-                StacItem item =(await task).Value.FirstOrDefault();
-                return new CreatedResult(item.Links.FirstOrDefault(i => i.RelationshipType == "self").Uri, item) ;
+                var result = task.Result;
+                return new ContentResult()
+                {
+                    Content = StacConvert.Serialize(result.Value.FirstOrDefault()),
+                    StatusCode = 201
+                };
             }
         }
 
         private async Task<ActionResult<StacItem>> PostFeatureAsync(StacItem body, string collectionId, CancellationToken cancellationToken)
         {
-            IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider(collectionId, _httpContextAccessor.HttpContext);
-            StacItem stacItem = await itemsProvider.GetItemByIdAsync(body.Id, cancellationToken);
-            if (stacItem != null)
+            // Create a new context for this request
+            IStacApiContext stacApiContext = _stacApiContextFactory.Create();
+
+            IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider();
+            StacItem existingItem = await itemsProvider.GetItemByIdAsync(body.Id, stacApiContext, cancellationToken);
+            if (existingItem != null)
             {
                 return new ConflictResult();
             }
-            IItemsBroker itemsBroker = _dataServicesProvider.GetItemsBroker(collectionId, _httpContextAccessor.HttpContext);
-            StacItem createdItem = await itemsBroker.CreateItemAsync(body, cancellationToken);
-            _stacLinker.Link(createdItem, _httpContextAccessor.HttpContext);
+            IItemsBroker itemsBroker = _dataServicesProvider.GetItemsBroker();
+            StacItem createdItem = await itemsBroker.CreateItemAsync(body, stacApiContext, cancellationToken);
+            _stacLinker.Link(createdItem, stacApiContext);
             return new CreatedResult(createdItem.Links.FirstOrDefault(i => i.RelationshipType == "self").Uri, createdItem);
         }
 
-        public async Task<ActionResult<IEnumerable<StacItem>>> PostFeaturesAsync(StacFeatureCollection collection, string collectionId, CancellationToken cancellationToken = default)
+        private async Task<ActionResult<IEnumerable<StacItem>>> PostFeaturesAsync(StacFeatureCollection collection, string collectionId, CancellationToken cancellationToken = default)
         {
-            IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider(collectionId, _httpContextAccessor.HttpContext);
-            foreach (var item in collection.Items)
+            // Create a new context for this request
+            IStacApiContext stacApiContext = _stacApiContextFactory.Create();
+            // Set the collection id
+            stacApiContext.SetCollection(collectionId);
+            // Clear the pagination parameters so that we get all items
+            stacApiContext.SetPaginationParameters(null);
+
+            // Check if any of the items already exist
+            IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider();
+            if (itemsProvider.AnyItemsExist(collection.Items, stacApiContext))
             {
-                try
-                {
-                    var existingItem = await itemsProvider.GetItemByIdAsync(item.Id, cancellationToken);
-                    if (item != null)
-                    {
-                        return new ConflictResult();
-                    }
-                }
-                catch { }
+                return new ConflictResult();
             }
+
+            // Create the items
             List<StacItem> items = new List<StacItem>();
-            IItemsBroker itemsBroker = _dataServicesProvider.GetItemsBroker(collectionId, _httpContextAccessor.HttpContext);
+            IItemsBroker itemsBroker = _dataServicesProvider.GetItemsBroker();
             foreach (var item in collection.Items)
             {
-                items.Add(await itemsBroker.CreateItemAsync(item, cancellationToken));
+                items.Add(await itemsBroker.CreateItemAsync(item, stacApiContext, cancellationToken));
             }
+
+            // Update the collection in the background
+            itemsBroker.RefreshStacCollectionAsync(stacApiContext, cancellationToken).ConfigureAwait(false);
+
             return items;
         }
 
         public async Task<ActionResult<StacItem>> UpdateFeatureAsync(string if_Match, StacItem body, string collectionId, string featureId, CancellationToken cancellationToken = default)
         {
-            IItemsBroker itemsBroker = _dataServicesProvider.GetItemsBroker(collectionId, _httpContextAccessor.HttpContext);
-            return await itemsBroker.UpdateItemAsync(body, featureId, cancellationToken);
+            // Create a new context for this request
+            IStacApiContext stacApiContext = _stacApiContextFactory.Create();
+
+            IItemsBroker itemsBroker = _dataServicesProvider.GetItemsBroker();
+            var update = await itemsBroker.UpdateItemAsync(body, featureId, stacApiContext, cancellationToken);
+
+            // Clear the pagination parameters so that we get all items
+            stacApiContext.SetPaginationParameters(null);
+
+            // Update the collection in the background
+            itemsBroker.RefreshStacCollectionAsync(stacApiContext, cancellationToken).ConfigureAwait(false);
+
+            return update;
         }
     }
 }

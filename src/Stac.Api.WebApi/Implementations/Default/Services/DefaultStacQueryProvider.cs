@@ -27,9 +27,9 @@ namespace Stac.Api.WebApi.Implementations.Default.Services
             _seed = seed;
         }
 
-        public static DefaultStacQueryProvider CreateDefaultQueryProvider(HttpContext httpContext, IEnumerable<IStacObject> seed)
+        public static DefaultStacQueryProvider CreateDefaultQueryProvider(IStacApiContext apiContext, IEnumerable<IStacObject> seed)
         {
-            return new DefaultStacQueryProvider(StacQueryablesOptions.GenerateDefaultOptions<StacItem>(httpContext), seed);
+            return new DefaultStacQueryProvider(StacQueryablesOptions.GenerateDefaultOptions<StacItem>(apiContext), seed);
         }
 
         public override TResult Execute<TResult>(Expression expression)

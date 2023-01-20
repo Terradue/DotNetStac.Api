@@ -15,7 +15,8 @@ namespace Stac.Api.WebApi
         {
         }
 
-        public virtual object GetActionParameters(string actionName){
+        public virtual object GetActionParameters(string actionName)
+        {
             return null;
         }
 
@@ -30,13 +31,13 @@ namespace Stac.Api.WebApi
             return conformanceClasses;
         }
 
-        public IReadOnlyCollection<StacLink> GetLandingPageLinks(LinkGenerator linkGenerator, IHttpContextAccessor httpContextAccessor)
+        public IReadOnlyCollection<StacLink> GetLandingPageLinks(IStacApiContext stacApiContext)
         {
             System.Attribute[] lpaAttrs = System.Attribute.GetCustomAttributes(this.GetType()).Where(a => a is LandingPageActionAttribute).ToArray();
             List<StacLink> landingPageActionLinks = new List<StacLink>();
             foreach (LandingPageActionAttribute lpaAttr in lpaAttrs)
             {
-                landingPageActionLinks.Add(lpaAttr.GetStacLink(linkGenerator, httpContextAccessor, this.GetType().Name.Replace("Controller", ""), this.GetActionParameters(lpaAttr.Action)));
+                landingPageActionLinks.Add(lpaAttr.GetStacLink(stacApiContext, this.GetType().Name.Replace("Controller", ""), this.GetActionParameters(lpaAttr.Action)));
             }
             return landingPageActionLinks;
         }

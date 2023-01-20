@@ -3,25 +3,28 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using GeoJSON.Net.Feature;
 using Newtonsoft.Json;
+using Stac.Api.Converters;
 using Stac.Converters;
 
 namespace Stac.Api.Models
 {
-    public partial class StacFeatureCollection : GeoJSON.Net.Feature.FeatureCollection
+    public partial class StacFeatureCollection : GeoJSON.Net.Feature.FeatureCollection, ILinksCollectionObject
     {
         public StacFeatureCollection()
         {
-            Items = new ObservableCollection<StacItem>();
-            (Items as ObservableCollection<StacItem>).CollectionChanged += ItemsCollectionChanged;
+            Features = new List<Feature>();
             this.Links = new ObservableCollection<StacLink>();
             (Links as ObservableCollection<StacLink>).CollectionChanged += LinksCollectionChanged;
+            TimeStamp = DateTimeOffset.UtcNow;
         }
 
         public StacFeatureCollection(IEnumerable<StacItem> items): this()
         {
-            Items.AddRange(items);
+            Features.AddRange(items);
         }
 
         private void LinksCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -46,8 +49,17 @@ namespace Stac.Api.Models
             }
         }
 
-        [JsonIgnore]
-        public ObservableCollection<StacItem> Items { get; set; }
+        [JsonProperty(PropertyName = "features", Required = Required.Always)]
+        [JsonConverter(typeof(ListConverter<StacItem, Feature>))]
+        public new List<Feature> Features { get; private set; }
+
+        public IEnumerable<StacItem> Items
+        {
+            get
+            {
+                return Features.Cast<StacItem>();
+            }
+        }
 
         /// <summary>
         /// A list of references to other documents.
@@ -69,7 +81,10 @@ namespace Stac.Api.Models
 
         [Newtonsoft.Json.JsonProperty("numberReturned", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [System.ComponentModel.DataAnnotations.Range(0, int.MaxValue)]
-        public int NumberReturned { get; set; }
+        public int NumberReturned => Features.Count;
+
+        [JsonIgnore]
+        public string Collection { get; set; }
 
     }
 }

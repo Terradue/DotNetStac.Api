@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Stac.Api.Interfaces;
 
 namespace Stac.Api.Attributes
 {
@@ -20,9 +21,9 @@ namespace Stac.Api.Attributes
         public string MediaType { get; }
         public string Method { get; set; }
 
-        public StacLink GetStacLink(LinkGenerator linkGenerator, IHttpContextAccessor httpContextAccessor, string controllerName, object values)
+        public StacLink GetStacLink(IStacApiContext stacApiContext, string controllerName, object values)
         {
-            StacLink link = new StacLink(new Uri(linkGenerator.GetUriByAction(httpContextAccessor.HttpContext, Action, controllerName, values)), Relationship, null, MediaType);
+            StacLink link = new StacLink(new Uri(stacApiContext.LinkGenerator.GetUriByAction(stacApiContext.HttpContext, Action, controllerName, values)), Relationship, null, MediaType);
             if (!string.IsNullOrEmpty(Method))
             {
                 link.AdditionalProperties = new Dictionary<string, object>();

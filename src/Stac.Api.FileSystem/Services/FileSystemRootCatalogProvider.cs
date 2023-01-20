@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Multiformats.Hash.Algorithms;
 using Stac.Api.Interfaces;
-using Stac.Api.Services.Pagination;
 using Stac.Api.Services.Queryable;
 using Stac.Api.WebApi.Implementations.Default.Services;
 using Stac.Api.WebApi.Services;
@@ -22,7 +21,7 @@ namespace Stac.Api.FileSystem.Services
             _fileSystemResolver = fileSystemResolver;
         }
 
-        public Task<StacCatalog> GetRootCatalogAsync()
+        public Task<StacCatalog> GetRootCatalogAsync(IStacApiContext stacApiContext, CancellationToken cancellationToken = default)
         {
             return Task.FromResult(StacConvert.Deserialize<StacCatalog>(_fileSystemResolver.FileSystem.File.ReadAllText(_fileSystemResolver.GetRootDirectory().FullName + "/catalog.json")));
         }

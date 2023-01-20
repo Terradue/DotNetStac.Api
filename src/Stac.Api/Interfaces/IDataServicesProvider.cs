@@ -8,9 +8,9 @@ namespace Stac.Api.Interfaces
 {
     public interface IDataServicesProvider
     {
-        IRootCatalogProvider GetRootCatalogProvider(Microsoft.AspNetCore.Http.HttpContext httpContext);
-        ICollectionsProvider GetCollectionsProvider(Microsoft.AspNetCore.Http.HttpContext httpContext);
-        IItemsBroker GetItemsBroker(string collectionId, HttpContext httpContext);
-        IItemsProvider GetItemsProvider(string collectionId, HttpContext httpContext);
+        IRootCatalogProvider GetRootCatalogProvider();
+        ICollectionsProvider GetCollectionsProvider();
+        IItemsBroker GetItemsBroker();
+        IItemsProvider GetItemsProvider();
     }
 }

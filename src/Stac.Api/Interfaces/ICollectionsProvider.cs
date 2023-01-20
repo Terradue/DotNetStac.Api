@@ -8,8 +8,8 @@ namespace Stac.Api.Interfaces
 
     public interface ICollectionsProvider
     {
-        Task<StacCollection> GetCollectionByIdAsync(string collectionId, CancellationToken cancellationToken = default);
+        Task<StacCollection> GetCollectionByIdAsync(string collectionId, IStacApiContext stacApiContext, CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<StacCollection>> GetCollectionsAsync(CancellationToken cancellationToken = default);
+        Task<IEnumerable<StacCollection>> GetCollectionsAsync(IStacApiContext stacApiContext, CancellationToken cancellationToken = default);
     }
 }
