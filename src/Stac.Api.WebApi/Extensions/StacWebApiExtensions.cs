@@ -27,12 +27,16 @@ namespace Stac.Api.WebApi.Extensions
     {
         public static IServiceCollection AddStacWebApi(this IServiceCollection services)
         {
-            services.AddControllers()
+            services.AddControllers( options =>
+                {
+                    options.Filters.Add<JsonErrorActionFilter>();
+                })
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.Converters.Add(new StringEnumConverter());
                     options.SerializerSettings.Converters.Add(new GeometryConverter());
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                    options.AllowInputFormatterExceptionMessages = false;
                 });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ILandingPageProvider, DefaultLandingPageProvider>();

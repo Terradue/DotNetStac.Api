@@ -20,6 +20,8 @@ namespace Stac.Api.WebApi.Services.Context
         
         public int MatchedItemsCount { get; private set; }
 
+        public IList<ILinkValues> LinkValues { get; } = new List<ILinkValues>();
+
         public static HttpStacApiContext Create(HttpContext httpContext)
         {
             return new HttpStacApiContext

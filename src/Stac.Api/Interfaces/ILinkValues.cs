@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Routing;
 
-namespace Stac.Api.WebApi.Services
+namespace Stac.Api.Interfaces
 {
     public interface ILinkValues
     {

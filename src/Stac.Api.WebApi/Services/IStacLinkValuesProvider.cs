@@ -1,4 +1,6 @@
 
+using Stac.Api.Interfaces;
+
 namespace Stac.Api.WebApi.Services
 {
     public interface IStacLinkValuesProvider<T> where T : ILinksCollectionObject

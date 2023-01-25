@@ -18,5 +18,6 @@ namespace Stac.Api.Interfaces
         void SetCollection(string collectionId);
         void SetMatchedItemsCount(int length);
         void SetPaginationParameters(IPaginationParameters paginationParameters);
+        IList<ILinkValues> LinkValues { get; }
     }
 }

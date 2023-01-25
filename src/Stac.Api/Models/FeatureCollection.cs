@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -12,7 +13,7 @@ using Stac.Converters;
 
 namespace Stac.Api.Models
 {
-    public partial class StacFeatureCollection : GeoJSON.Net.Feature.FeatureCollection, ILinksCollectionObject
+    public partial class StacFeatureCollection : GeoJSON.Net.Feature.FeatureCollection, ILinksCollectionObject, IEnumerable<StacItem>
     {
         public StacFeatureCollection()
         {
@@ -49,9 +50,19 @@ namespace Stac.Api.Models
             }
         }
 
+        public IEnumerator<StacItem> GetEnumerator()
+        {
+            return Items.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
         [JsonProperty(PropertyName = "features", Required = Required.Always)]
         [JsonConverter(typeof(ListConverter<StacItem, Feature>))]
-        public new List<Feature> Features { get; private set; }
+        public new List<Feature> Features { get; set; }
 
         public IEnumerable<StacItem> Items
         {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Stac.Api.Interfaces
 {
-    public interface IItemsProvider
+    public interface IItemsProvider : IDataProvider<StacItem>
     {
 
         Task<StacItem> GetItemByIdAsync(string featureId, IStacApiContext stacApiContext, CancellationToken cancellationToken);

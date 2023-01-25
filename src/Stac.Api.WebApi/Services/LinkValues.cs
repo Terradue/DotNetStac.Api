@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Routing;
+using Stac.Api.Interfaces;
 
 namespace Stac.Api.WebApi.Services
 {

@@ -6,7 +6,7 @@ using Stac.Api.Services.Queryable;
 namespace Stac.Api.Interfaces
 {
 
-    public interface ICollectionsProvider
+    public interface ICollectionsProvider : IDataProvider<StacCollection>
     {
         Task<StacCollection> GetCollectionByIdAsync(string collectionId, IStacApiContext stacApiContext, CancellationToken cancellationToken = default);
 

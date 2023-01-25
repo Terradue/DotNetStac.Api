@@ -9,7 +9,7 @@ using Stac.Api.WebApi.Services;
 
 namespace Stac.Api.WebApi.Implementations.Default.Features
 {
-    public class DefaultFeaturesController : IFeaturesController, IStacLinkValuesProvider<StacItem>
+    public class DefaultFeaturesController : IFeaturesController
     {
         private readonly IStacApiEndpointManager _stacApiEndpointManager;
         private readonly IDataServicesProvider dataServicesProvider;
@@ -40,11 +40,24 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
         {
             // Create the context
             IStacApiContext stacApiContext = _stacApiContextFactory.Create();
-            IItemsProvider _itemsProvider = dataServicesProvider.GetItemsProvider();
-            var item = await _itemsProvider.GetItemByIdAsync(featureId, stacApiContext, cancellationToken);
+
+            // Get the data provider
+            IItemsProvider itemsProvider = dataServicesProvider.GetItemsProvider();
+
+            // Apply Context Pre Query Filters
+            _stacApiContextFactory.ApplyContextPreQueryFilters<StacItem>(stacApiContext, itemsProvider);
+
+            // Query the item           
+            var item = await itemsProvider.GetItemByIdAsync(featureId, stacApiContext, cancellationToken);
             if (item == null)
                 return new NotFoundResult();
+
+            // Apply Context Post Query Filters
+            _stacApiContextFactory.ApplyContextPostQueryFilters<StacItem>(stacApiContext, itemsProvider, item);
+
+            // Link the item
             _stacLinker.Link(item, stacApiContext);
+
             return item;
         }
 
@@ -52,9 +65,14 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
         {
             // Create the context
             IStacApiContext stacApiContext = _stacApiContextFactory.Create();
+
+            // Set the collection
             stacApiContext.SetCollection(collectionId);
+
+            // Get the collections provider
             ICollectionsProvider collectionsProvider = dataServicesProvider.GetCollectionsProvider();
 
+            // Get the collection
             var collection = collectionsProvider.GetCollectionByIdAsync(collectionId, stacApiContext, cancellationToken);
             if (collection == null)
             {
@@ -63,6 +81,10 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
 
             IItemsProvider itemsProvider = dataServicesProvider.GetItemsProvider();
 
+            // Apply Context Pre Query Filters
+            _stacApiContextFactory.ApplyContextPreQueryFilters<StacItem>(stacApiContext, itemsProvider);
+
+            // Prepare filters
             double[]? bboxArray = null;
             if (!string.IsNullOrEmpty(bbox))
             {
@@ -75,19 +97,18 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
                 datetimeValue = DateTime.Parse(datetime);
             }
 
+            // Query the items
             var items = await itemsProvider.GetItemsAsync(bboxArray, datetimeValue, stacApiContext, cancellationToken);
-
             StacFeatureCollection fc = new StacFeatureCollection(items);
             fc.Collection = collectionId;
 
+            // Apply Context Post Query Filters
+            _stacApiContextFactory.ApplyContextPostQueryFilters<StacItem>(stacApiContext, itemsProvider, fc);
+
+            // Link the collection
             _stacLinker.Link(fc, stacApiContext);
 
             return fc;
-        }
-
-        public IEnumerable<ILinkValues> GetLinkValues()
-        {
-            throw new NotImplementedException();
         }
     }
 }

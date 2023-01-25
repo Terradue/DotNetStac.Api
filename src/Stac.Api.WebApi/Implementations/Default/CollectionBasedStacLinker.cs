@@ -37,6 +37,10 @@ namespace Stac.Api.WebApi.Patterns.CollectionBased
         {
             collections.Links.Add(GetSelfLink(collections, stacApiContext));
             collections.Links.Add(GetRootLink(stacApiContext));
+            foreach (var collection in collections.Collections)
+            {
+                Link(collection, stacApiContext);
+            }
         }
 
         public void Link(StacItem item, IStacApiContext stacApiContext)
@@ -49,7 +53,11 @@ namespace Stac.Api.WebApi.Patterns.CollectionBased
         {
             collection.Links.Add(GetSelfLink(collection, stacApiContext));
             collection.Links.Add(GetRootLink(stacApiContext));
+            collection.Links.Add(GetParentLink(collection, stacApiContext));
+            LinkPagination(collection, stacApiContext);
         }
+
+        
 
         public void Link<T>(T linksCollectionObject, IStacLinkValuesProvider<T> stacLinkValuesProvider, IStacApiContext stacApiContext) where T : ILinksCollectionObject
         {
@@ -107,6 +115,15 @@ namespace Stac.Api.WebApi.Patterns.CollectionBased
                 "application/geo+json");
         }
 
+        private StacLink GetParentLink(StacFeatureCollection collection, IStacApiContext stacApiContext)
+        {
+            return new StacApiLink(
+                GetUriByAction(stacApiContext, "DescribeCollection", "Collections", new { collectionId = collection.Collection }, null),
+                "parent",
+                null,
+                "application/json");
+        }
+
         private Uri GetUriByAction(IStacApiContext stacApiContext, string actionName, string controllerName, object? value, IDictionary<string, object>? queryValues)
         {
             var url = stacApiContext.LinkGenerator.GetUriByAction(stacApiContext.HttpContext, actionName, controllerName, value);
@@ -129,8 +146,15 @@ namespace Stac.Api.WebApi.Patterns.CollectionBased
             throw new NotImplementedException();
         }
 
-        internal static void LinkPagination(ILinksCollectionObject linksCollectionObject, RouteValueDictionary routeValues)
+        internal static void LinkPagination(ILinksCollectionObject linksCollectionObject, IStacApiContext stacApiContext)
         {
+            if ( stacApiContext.PaginationParameters == null)
+            {
+                return;
+            }
+
+
+
             // List<ILinkValues> linkValues = new List<ILinkValues>();
             // if (paginator.HasNextPage)
             // {

@@ -19,6 +19,21 @@ namespace Stac.Api.WebApi.Services.Context
             _linkGenerator = linkGenerator;
         }
 
+        public void ApplyContextPostQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IEnumerable<T> items) where T : IStacObject
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ApplyContextPostQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, T item) where T : IStacObject
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ApplyContextPreQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider) where T : IStacObject
+        {
+            throw new NotImplementedException();
+        }
+
         public IStacApiContext Create()
         {
             HttpStacApiContext httpStacApiContext = HttpStacApiContext.Create(_httpContextAccessor.HttpContext);
