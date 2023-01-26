@@ -10,7 +10,7 @@ namespace Stac.Api.Interfaces
 
         Task<StacItem> GetItemByIdAsync(string featureId, IStacApiContext stacApiContext, CancellationToken cancellationToken);
         string GetItemEtag(string featureId, IStacApiContext stacApiContext);
-        Task<IEnumerable<StacItem>> GetItemsAsync(double[] bboxArray, DateTime? datetime, IStacApiContext stacApiContext, CancellationToken cancellationToken);
+        Task<IEnumerable<StacItem>> GetItemsAsync(IStacApiContext stacApiContext, CancellationToken cancellationToken);
         bool AnyItemsExist(IEnumerable<StacItem> items, IStacApiContext stacApiContext);
 
     }

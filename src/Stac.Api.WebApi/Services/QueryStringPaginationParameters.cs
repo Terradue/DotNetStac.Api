@@ -8,10 +8,22 @@ namespace Stac.Api.WebApi.Services
 {
     public class QueryStringPaginationParameters : IPaginationParameters
     {
-        public int? Limit { get; private set; }
-        public int? Page { get; private set; }
-        public int? Offset { get; private set; }
-        public string Token { get; private set; }
+        public QueryStringPaginationParameters()
+        {
+        }
+
+        public QueryStringPaginationParameters(IPaginationParameters paginationParameters)
+        {
+            Limit = paginationParameters.Limit;
+            Page = paginationParameters.Page;
+            Offset = paginationParameters.Offset;
+            Token = paginationParameters.Token;
+        }
+
+        public int? Limit { get; set; }
+        public int? Page { get; set; }
+        public int? Offset { get; set; }
+        public string Token { get; set; }
 
         public static QueryStringPaginationParameters GetPaginatorParameters(HttpContext httpContext)
         {

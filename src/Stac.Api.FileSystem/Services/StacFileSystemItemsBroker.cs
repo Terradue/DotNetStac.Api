@@ -57,7 +57,7 @@ namespace Stac.Api.FileSystem.Services
 
             StacCollection collection = StacCollection.Create(
                 stacApiContext.Collection, stacApiContext.Collection.Titleize(),
-                itemsProvider.GetItemsAsync(null, null, stacApiContext, cancellationToken).GetAwaiter().GetResult()
+                (await itemsProvider.GetItemsAsync(stacApiContext, cancellationToken))
                     .ToDictionary(i => new Uri($"items/{i.Id}.json", UriKind.Relative), i =>
                     {
                         if (cancellationToken.IsCancellationRequested)

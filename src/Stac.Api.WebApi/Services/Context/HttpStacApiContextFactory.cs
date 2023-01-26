@@ -12,36 +12,40 @@ namespace Stac.Api.WebApi.Services.Context
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LinkGenerator _linkGenerator;
-        private readonly IStacApiContextFilterProvider _stacApiContextFilterProvider;
+        private readonly IStacApiContextFiltersProvider _stacApiContextFilterProvider;
 
         public HttpStacApiContextFactory(IHttpContextAccessor httpContextAccessor,
                                          LinkGenerator linkGenerator,
-                                         IStacApiContextFilterProvider stacApiContextFilterProvider)
+                                         IStacApiContextFiltersProvider stacApiContextFilterProvider)
         {
             _httpContextAccessor = httpContextAccessor;
             _linkGenerator = linkGenerator;
             _stacApiContextFilterProvider = stacApiContextFilterProvider;
         }
 
-        public void ApplyContextPostQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IEnumerable<T> items) where T : IStacObject
+        public IEnumerable<T> ApplyContextPostQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IEnumerable<T> items) where T : IStacObject
         {
-            foreach (IStacApiContextFilter stacApiContextFilter in _stacApiContextFilterProvider.GetPostQueryFilters<T>())
+            IEnumerable<T> filteredItems = items;
+            foreach (IStacApiContextFilter stacApiContextFilter in _stacApiContextFilterProvider.GetFilters<T>())
             {
-                stacApiContextFilter.ApplyContextPostQueryFilters(stacApiContext, dataProvider, items);
+                filteredItems = stacApiContextFilter.ApplyContextPostQueryFilters(stacApiContext, dataProvider, filteredItems);
             }
+            return filteredItems;
         }
 
-        public void ApplyContextPostQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, T item) where T : IStacObject
+        public T ApplyContextPostQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, T item) where T : IStacObject
         {
-            foreach (IStacApiContextFilter stacApiContextFilter in _stacApiContextFilterProvider.GetPostQueryFilters<T>())
+            T filteredItem = item;
+            foreach (IStacApiContextFilter stacApiContextFilter in _stacApiContextFilterProvider.GetFilters<T>())
             {
-                stacApiContextFilter.ApplyContextPostQueryFilters(stacApiContext, dataProvider, item);
+                filteredItem = stacApiContextFilter.ApplyContextPostQueryFilters(stacApiContext, dataProvider, filteredItem);
             }
+            return filteredItem;
         }
 
         public void ApplyContextPreQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider) where T : IStacObject
         {
-            foreach (IStacApiContextFilter stacApiContextFilter in _stacApiContextFilterProvider.GetPreQueryFilters<T>())
+            foreach (IStacApiContextFilter stacApiContextFilter in _stacApiContextFilterProvider.GetFilters<T>())
             {
                 stacApiContextFilter.ApplyContextPreQueryFilters(stacApiContext, dataProvider);
             }

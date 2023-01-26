@@ -8,7 +8,7 @@ using Stac.Api.Interfaces;
 
 namespace Stac.Api.Clients.Collections
 {
-    public partial class StacCollections : ILinksCollectionObject, IEnumerable<StacCollection>
+    public partial class StacCollections : ILinksCollectionObject
     {
         public StacCollections()
         {
@@ -22,14 +22,5 @@ namespace Stac.Api.Clients.Collections
 
         ICollection<StacLink> ILinksCollectionObject.Links => Links as ICollection<StacLink>;
 
-        public IEnumerator<StacCollection> GetEnumerator()
-        {
-            return Collections.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
     }
 }

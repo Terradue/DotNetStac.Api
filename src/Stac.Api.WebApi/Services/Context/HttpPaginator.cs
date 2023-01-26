@@ -46,8 +46,17 @@ namespace Stac.Api.WebApi.Services.Context
 
         private IEnumerable<T> ApplyPagination<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IEnumerable<T> items) where T : IStacObject
         {
+            // If provider is a paginator,
+            // we ask the data provider to deal with pagination on the collection the way it wants to
+            // otherwise, we use the default pagination
+            IPaginator paginator = dataProvider as IPaginator;
+            if (paginator == null)
+            {
+                paginator = this;
+            }
+
             // Get the pagination parameters from the context
-            IPaginationParameters paginationParameters = stacApiContext.GetProperty<IPaginationParameters>(IPaginationParameters.PaginationPropertiesKey);
+            IPaginationParameters paginationParameters = paginator.GetPaginationParameters(stacApiContext);
             // Nothing to do if there are no pagination parameters
             if (paginationParameters == null)
             {
@@ -111,14 +120,15 @@ namespace Stac.Api.WebApi.Services.Context
                 new Microsoft.AspNetCore.Routing.RouteData(stacApiContext.HttpContext.Request.RouteValues));
 
             nextLinkValues.Method = new HttpMethod(stacApiContext.HttpContext.Request.Method);
-            if (!ArePaginationParametersInBody(stacApiContext))
-            {
-                nextLinkValues.QueryValues = GetPaginationValues(paginationParameters);
-            }
-            else
+            if (paginationParameters is BodyPaginationParameters)
             {
                 nextLinkValues.BodyValues = GetPaginationValues(paginationParameters);
             }
+            else
+            {
+                nextLinkValues.QueryValues = GetPaginationValues(paginationParameters);
+            }
+            nextLinkValues.Merge = true;
             return nextLinkValues;
         }
 
@@ -135,14 +145,15 @@ namespace Stac.Api.WebApi.Services.Context
                 ILinkValues.LinkRelationType.Previous,
                 new Microsoft.AspNetCore.Routing.RouteData(stacApiContext.HttpContext.Request.RouteValues));
             previousLinkValues.Method = new HttpMethod(stacApiContext.HttpContext.Request.Method);
-            if (!ArePaginationParametersInBody(stacApiContext))
-            {
-                previousLinkValues.QueryValues = GetPaginationValues(paginationParameters);
-            }
-            else
+            if (paginationParameters is BodyPaginationParameters)
             {
                 previousLinkValues.BodyValues = GetPaginationValues(paginationParameters);
             }
+            else
+            {
+                previousLinkValues.QueryValues = GetPaginationValues(paginationParameters);
+            }
+            previousLinkValues.Merge = true;
             return previousLinkValues;
         }
 
@@ -169,22 +180,11 @@ namespace Stac.Api.WebApi.Services.Context
             return values;
         }
 
-        private bool ArePaginationParametersInBody(IStacApiContext stacApiContext)
-        {
-            HttpStacApiContext httpStacApiContext = stacApiContext as HttpStacApiContext;
-            if (httpStacApiContext == null)
-            {
-                return false;
-            }
-            return httpStacApiContext.GetProperty<IPaginationParameters>(IPaginationParameters.PaginationPropertiesKey) is BodyPaginationParameters;
-        }
-
         public IPaginationParameters GetNextPageParameters<T>(IEnumerable<T> items, IStacApiContext stacApiContext) where T : IStacObject
         {
             // Simply increment the page by 1 if the number of items is equal to the limit
             // otherwise, there is no next page
-            DefaultPaginationParameters nextPageParameters = new DefaultPaginationParameters(
-                stacApiContext.GetProperty<IPaginationParameters>(IPaginationParameters.PaginationPropertiesKey));
+            DefaultPaginationParameters nextPageParameters = new DefaultPaginationParameters(GetPaginationParameters(stacApiContext));
             if (nextPageParameters == null || items.Count() < nextPageParameters.Limit)
             {
                 return null;
@@ -197,8 +197,7 @@ namespace Stac.Api.WebApi.Services.Context
         {
             // Simply decrement the page by 1 if the page is greater than 1
             // otherwise, there is no previous page
-            DefaultPaginationParameters previousPageParameters = new DefaultPaginationParameters(
-                stacApiContext.GetProperty<IPaginationParameters>(IPaginationParameters.PaginationPropertiesKey));
+            DefaultPaginationParameters previousPageParameters = new DefaultPaginationParameters(GetPaginationParameters(stacApiContext));
             if (previousPageParameters == null || previousPageParameters.Page <= 1)
             {
                 return null;
@@ -207,9 +206,82 @@ namespace Stac.Api.WebApi.Services.Context
             return previousPageParameters;
         }
 
-        public void PreparePagination(IPaginationParameters paginationParameters, IStacApiContext paginationContext)
+        public void PreparePagination(IPaginationParameters paginationParameters, IStacApiContext stacApiContext)
         {
-            paginationContext.SetProperty(IPaginationParameters.PaginationPropertiesKey, paginationParameters);
+            // Get the existing pagination parameters
+            IPaginationParameters existingPaginationParameters = GetPaginationParameters(stacApiContext);
+            if (existingPaginationParameters != null)
+            {
+                if ( existingPaginationParameters is BodyPaginationParameters ){
+                    // If the existing pagination parameters are in the body, we need to merge them with the new ones
+                    // The existing ones take precedence
+                    BodyPaginationParameters newPaginationParameters = new BodyPaginationParameters(paginationParameters);
+                    Merge(newPaginationParameters, existingPaginationParameters);
+                    stacApiContext.SetProperty(IPaginationParameters.PaginationPropertiesKey, newPaginationParameters);
+                }
+                else
+                {
+                    // If the existing pagination parameters are in the query string, we need to merge them with the new ones
+                    // The new ones take precedence
+                    QueryStringPaginationParameters newPaginationParameters = new QueryStringPaginationParameters(paginationParameters);
+                    Merge(newPaginationParameters, existingPaginationParameters);
+                    stacApiContext.SetProperty(IPaginationParameters.PaginationPropertiesKey, newPaginationParameters);
+                }
+            }
+        }
+
+        private void Merge(BodyPaginationParameters newPaginationParameters, IPaginationParameters existingPaginationParameters)
+        {
+            if (existingPaginationParameters.Limit.HasValue)
+            {
+                newPaginationParameters.Limit = existingPaginationParameters.Limit;
+            }
+            if (existingPaginationParameters.Offset.HasValue)
+            {
+                newPaginationParameters.Offset = existingPaginationParameters.Offset;
+            }
+            if (existingPaginationParameters.Page.HasValue)
+            {
+                newPaginationParameters.Page = existingPaginationParameters.Page;
+            }
+            if (!string.IsNullOrEmpty(existingPaginationParameters.Token))
+            {
+                newPaginationParameters.Token = existingPaginationParameters.Token;
+            }
+        }
+
+        private void Merge(QueryStringPaginationParameters newPaginationParameters, IPaginationParameters existingPaginationParameters)
+        {
+            if (existingPaginationParameters.Limit.HasValue)
+            {
+                newPaginationParameters.Limit = existingPaginationParameters.Limit;
+            }
+            if (existingPaginationParameters.Offset.HasValue)
+            {
+                newPaginationParameters.Offset = existingPaginationParameters.Offset;
+            }
+            if (existingPaginationParameters.Page.HasValue)
+            {
+                newPaginationParameters.Page = existingPaginationParameters.Page;
+            }
+            if (!string.IsNullOrEmpty(existingPaginationParameters.Token))
+            {
+                newPaginationParameters.Token = existingPaginationParameters.Token;
+            }
+        }
+
+        public bool CanHandle<T>() where T : IStacObject
+        {
+            return true;
+        }
+
+        public IPaginationParameters GetPaginationParameters(IStacApiContext stacApiContext)
+        {
+            if ( stacApiContext.Properties.ContainsKey(IPaginationParameters.PaginationPropertiesKey) )
+            {
+                return stacApiContext.Properties[IPaginationParameters.PaginationPropertiesKey] as IPaginationParameters;
+            }
+            return null;
         }
     }
 }

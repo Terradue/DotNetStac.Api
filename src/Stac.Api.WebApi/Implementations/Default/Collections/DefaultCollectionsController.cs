@@ -42,7 +42,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Collections
             }
 
             // Apply Context Post Query Filters
-            _stacApiContextFactory.ApplyContextPostQueryFilters<StacCollection>(stacApiContext, collectionsProvider, collection);
+            collection = _stacApiContextFactory.ApplyContextPostQueryFilters<StacCollection>(stacApiContext, collectionsProvider, collection);
 
             // Link
             _stacLinker.Link(collection, stacApiContext);
@@ -65,42 +65,16 @@ namespace Stac.Api.WebApi.Implementations.Default.Collections
             // Get collections from the provider
             var collectionsQueryable = await collectionsProvider.GetCollectionsAsync(stacApiContext, cancellationToken);
 
+            // Apply Context Post Query Filters
+            collectionsQueryable = _stacApiContextFactory.ApplyContextPostQueryFilters<StacCollection>(stacApiContext, collectionsProvider, collectionsQueryable);
+
             // Create the collection container
             StacCollections collections = new StacCollections(collectionsQueryable);
-
-            // Apply Context Post Query Filters
-            _stacApiContextFactory.ApplyContextPostQueryFilters<StacCollection>(stacApiContext, collectionsProvider, collections);
 
             // Link the collections
             _stacLinker.Link(collections, stacApiContext);
 
             return collections;
-        }
-
-        public async Task<ActionResult<StacCollections>> GetCollectionsAsync2(CancellationToken cancellationToken = default)
-        {
-            // Create the context
-            IStacApiContext stacApiContext = _stacApiContextFactory.Create();
-
-            // Get the collections provider
-            ICollectionsProvider collectionsProvider = _dataServicesProvider.GetCollectionsProvider();
-
-            // Apply Context Pre Query Filters
-            _stacApiContextFactory.ApplyContextPreQueryFilters<StacCollection>(stacApiContext, collectionsProvider);
-
-            // Get collections from the provider
-            IEnumerable<StacCollection> collections = await collectionsProvider.GetCollectionsAsync(stacApiContext, cancellationToken);
-
-            // Apply Context Post Query Filters
-            _stacApiContextFactory.ApplyContextPostQueryFilters<StacCollection>(stacApiContext, collectionsProvider, collections);
-
-            // Create the collection container
-            StacCollections collectionsContainer = new StacCollections(collections);
-
-            // Link the collections
-            _stacLinker.Link(collectionsContainer, stacApiContext);
-
-            return collectionsContainer;
         }
     }
 }

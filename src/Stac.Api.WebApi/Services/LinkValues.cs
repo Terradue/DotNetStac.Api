@@ -21,5 +21,6 @@ namespace Stac.Api.WebApi.Services
         public IDictionary<string, object> BodyValues { get; set; } = new Dictionary<string, object>();
         public string Title { get; set; }
         public string MediaType { get; set; }
+        public bool Merge { get; set; }
     }
 }

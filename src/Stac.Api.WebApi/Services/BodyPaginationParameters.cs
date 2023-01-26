@@ -8,11 +8,22 @@ namespace Stac.Api.WebApi.Services
 {
     public class BodyPaginationParameters : IPaginationParameters
     {
+        public BodyPaginationParameters()
+        {
+        }
 
-        public int? Limit { get; private set; }
-        public int? Page { get; private set; }
-        public int? Offset { get; private set; }
-        public string Token { get; private set; }
+        public BodyPaginationParameters(IPaginationParameters paginationParameters)
+        {
+            Limit = paginationParameters.Limit;
+            Page = paginationParameters.Page;
+            Offset = paginationParameters.Offset;
+            Token = paginationParameters.Token;
+        }
+
+        public int? Limit { get; set; }
+        public int? Page { get; set; }
+        public int? Offset { get; set; }
+        public string Token { get; set; }
 
         public static BodyPaginationParameters GetPaginatorParameters(IDictionary<string, object> body)
         {

@@ -4,6 +4,10 @@ namespace Stac.Api.WebApi.Services.Context
 {
     internal class DefaultPaginationParameters : IPaginationParameters
     {
+        public DefaultPaginationParameters()
+        {
+        }
+
         public DefaultPaginationParameters(IPaginationParameters paginationParameters)
         {
             Limit = paginationParameters?.Limit;

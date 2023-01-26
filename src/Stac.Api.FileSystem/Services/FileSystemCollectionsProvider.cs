@@ -50,30 +50,23 @@ namespace Stac.Api.FileSystem.Services
             // set the total number of collections in the context
             stacApiContext.SetMatchedItemsCount(collectionFiles.Count());
 
-            // return all the collections using the pagination parameters
-            var collections = collectionFiles
-                                .Select(collectionFile =>
-                                        {
-                                            if (cancellationToken.IsCancellationRequested)
-                                                throw new TaskCanceledException();
-                                            var collection = _fileSystemResolver.FileSystem.File.ReadAllText(collectionFile.FullName);
-                                            return StacConvert.Deserialize<StacCollection>(collection);
-                                        });
+            // deserialize the collections as queryable
+            var collections = collectionFiles.AsQueryable()
+                                            .AsParallel()
+                                            .WithCancellation(cancellationToken)
+                                            .WithDegreeOfParallelism(Environment.ProcessorCount)
+                                            .WithExecutionMode(ParallelExecutionMode.ForceParallelism)
+                                            .Select(collectionFile =>
+                                            {
+                                                var collection = _fileSystemResolver.FileSystem.File.ReadAllText(collectionFile.FullName);
+                                                return StacConvert.Deserialize<StacCollection>(collection);
+                                            });
 
             // Create a queryable provider
             var _queryProvider = DefaultStacQueryProvider.CreateDefaultQueryProvider(stacApiContext, collections);
             var queryable = new StacQueryable<StacCollection>(_queryProvider, collections.AsQueryable<StacCollection>().Expression);
 
-            IQueryable<StacCollection> genericQueryable = queryable;
-
-            // Apply the pagination parameters if any
-            // if (stacApiContext.PaginationParameters != null)
-            // {
-            //     genericQueryable = queryable.Skip(stacApiContext.PaginationParameters.StartIndex + ((stacApiContext.PaginationParameters.Page -1) * stacApiContext.PaginationParameters.Limit))
-            //                                 .Take(stacApiContext.PaginationParameters.Limit);
-            // }
-
-            return Task.FromResult(genericQueryable as IEnumerable<StacCollection>);
+            return Task.FromResult(queryable as IEnumerable<StacCollection>);
         }
     }
 }

@@ -46,7 +46,7 @@ namespace Stac.Api.FileSystem.Services
             return _hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(featureJson)).ToString();
         }
 
-        public Task<IEnumerable<StacItem>> GetItemsAsync(double[] bboxArray, DateTime? datetime, IStacApiContext stacApiContext, CancellationToken cancellationToken)
+        public Task<IEnumerable<StacItem>> GetItemsAsync(IStacApiContext stacApiContext, CancellationToken cancellationToken)
         {
             IEnumerable<IFileInfo> itemFiles = _fileSystemResolver.GetDirectory(
                 Path.Combine(StacFileSystemResolver.COLLECTIONS_DIR, stacApiContext.Collection, "items"))
@@ -55,41 +55,22 @@ namespace Stac.Api.FileSystem.Services
             // Set the total number of items in the context
             stacApiContext.SetMatchedItemsCount(itemFiles.Count());
 
-            // if the filters are null, we can paginate the items directly to speed up the process
-            // if (bboxArray == null && datetime == null && stacApiContext.PaginationParameters != null)
-            // {
-            //     itemFiles = itemFiles.AsQueryable().Skip(stacApiContext.PaginationParameters.StartIndex + ((stacApiContext.PaginationParameters.Page -1) * stacApiContext.PaginationParameters.Limit))
-            //                          .Take(stacApiContext.PaginationParameters.Limit);
-            // }
-
-            var items = itemFiles.Select(itemFile =>
-                                            {
-                                                if (cancellationToken.IsCancellationRequested)
-                                                    throw new TaskCanceledException();
-                                                var collection = _fileSystemResolver.FileSystem.File.ReadAllText(itemFile.FullName);
-                                                return StacConvert.Deserialize<StacItem>(collection);
-                                            });
+            var items = itemFiles.AsQueryable()
+                                .AsParallel()
+                                .WithCancellation(cancellationToken)
+                                .WithDegreeOfParallelism(Environment.ProcessorCount)
+                                .WithExecutionMode(ParallelExecutionMode.ForceParallelism)
+                                .Select(itemFile =>
+                                {
+                                    var collection = _fileSystemResolver.FileSystem.File.ReadAllText(itemFile.FullName);
+                                    return StacConvert.Deserialize<StacItem>(collection);
+                                });
 
             // Create a queryable provider
             var queryProvider = DefaultStacQueryProvider.CreateDefaultQueryProvider(stacApiContext, items);
             var queryable = new StacQueryable<StacItem>(queryProvider, items.AsQueryable<StacItem>().Expression);
 
-            IQueryable<StacItem> genericQueryable = queryable;
-
-            // Apply the filters if they are not null
-            if (bboxArray != null || datetime != null)
-            {
-                queryable = queryable.Filter(bboxArray)
-                                     .Filter(datetime);
-
-                // if (stacApiContext.PaginationParameters != null)
-                // {
-                //     genericQueryable = queryable.Skip(stacApiContext.PaginationParameters.StartIndex + ((stacApiContext.PaginationParameters.Page -1) * stacApiContext.PaginationParameters.Limit))
-                //                                 .Take(stacApiContext.PaginationParameters.Limit);
-                // }
-            }
-
-            return Task.FromResult(genericQueryable as IEnumerable<StacItem>);
+            return Task.FromResult(queryable as IEnumerable<StacItem>);
 
         }
 

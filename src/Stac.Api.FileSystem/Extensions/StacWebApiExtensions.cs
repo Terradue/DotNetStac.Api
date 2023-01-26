@@ -17,6 +17,7 @@ using Stac.Api.FileSystem.Services;
 using Stac.Api.WebApi.Patterns.CollectionBased;
 using Stac.Api.WebApi.Implementations.Default.Services;
 using Stac.Api.WebApi.Services.Context;
+using Stac.Api.Services.Default;
 
 namespace Stac.Api.FileSystem.Extensions
 {
@@ -29,6 +30,10 @@ namespace Stac.Api.FileSystem.Extensions
             services.AddSingleton<IDataServicesProvider, FileSystemDataServicesProvider>();
             // Add the Http Stac Api context factory
             services.AddSingleton<IStacApiContextFactory, HttpStacApiContextFactory>();
+            // Add the default context filters provider
+            services.AddSingleton<IStacApiContextFiltersProvider, DefaultStacContextFiltersProvider>();
+            // Register the HTTP pagination filter
+            services.AddSingleton<IStacApiContextFilter, HttpPaginator>();
             // The filesystem implements a collection based pattern
             services.AddSingleton<IStacLinker, CollectionBasedStacLinker>();
             // Add the default controllers

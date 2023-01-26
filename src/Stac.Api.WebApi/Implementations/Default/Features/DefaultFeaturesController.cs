@@ -5,7 +5,9 @@ using Stac.Api.Clients.Features;
 using Stac.Api.Interfaces;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.Features;
+using Stac.Api.WebApi.Implementations.Shared.Geometry;
 using Stac.Api.WebApi.Services;
+using Stac.Api.WebApi.Services.Context;
 
 namespace Stac.Api.WebApi.Implementations.Default.Features
 {
@@ -53,7 +55,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
                 return new NotFoundResult();
 
             // Apply Context Post Query Filters
-            _stacApiContextFactory.ApplyContextPostQueryFilters<StacItem>(stacApiContext, itemsProvider, item);
+            item = _stacApiContextFactory.ApplyContextPostQueryFilters<StacItem>(stacApiContext, itemsProvider, item);
 
             // Link the item
             _stacLinker.Link(item, stacApiContext);
@@ -68,7 +70,9 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
 
             // Set the collection
             stacApiContext.SetCollection(collectionId);
-            // Only GET request to this controller, thus pagination parameters are never overriden
+
+            // Set the Limit
+            stacApiContext.Properties.Add(IPaginationParameters.PaginationPropertiesKey, new DefaultPaginationParameters() { Limit = limit });
 
             // Get the collections provider
             ICollectionsProvider collectionsProvider = dataServicesProvider.GetCollectionsProvider();
@@ -85,26 +89,28 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
             // Apply Context Pre Query Filters
             _stacApiContextFactory.ApplyContextPreQueryFilters<StacItem>(stacApiContext, itemsProvider);
 
+            // Query the items
+            var items = await itemsProvider.GetItemsAsync(stacApiContext, cancellationToken);
+
             // Prepare filters
             double[]? bboxArray = null;
             if (!string.IsNullOrEmpty(bbox))
             {
                 bboxArray = Array.ConvertAll(bbox.Split(','), double.Parse);
+                items = items.Where(i => i.Geometry.Intersects(bboxArray));
             }
 
-            DateTime? datetimeValue = null;
             if (!string.IsNullOrEmpty(datetime))
             {
-                datetimeValue = DateTime.Parse(datetime);
+                var datetimeValue = DateTime.Parse(datetime);
+                items = items.Where(i => i.DateTime.HasInside(datetimeValue));
             }
 
-            // Query the items
-            var items = await itemsProvider.GetItemsAsync(bboxArray, datetimeValue, stacApiContext, cancellationToken);
+            // Apply Context Post Query Filters
+            items = _stacApiContextFactory.ApplyContextPostQueryFilters<StacItem>(stacApiContext, itemsProvider, items);
+
             StacFeatureCollection fc = new StacFeatureCollection(items);
             fc.Collection = collectionId;
-
-            // Apply Context Post Query Filters
-            _stacApiContextFactory.ApplyContextPostQueryFilters<StacItem>(stacApiContext, itemsProvider, fc);
 
             // Link the collection
             _stacLinker.Link(fc, stacApiContext);

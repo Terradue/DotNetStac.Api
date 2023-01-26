@@ -13,7 +13,7 @@ using Stac.Converters;
 
 namespace Stac.Api.Models
 {
-    public partial class StacFeatureCollection : GeoJSON.Net.Feature.FeatureCollection, ILinksCollectionObject, IEnumerable<StacItem>
+    public partial class StacFeatureCollection : GeoJSON.Net.Feature.FeatureCollection, ILinksCollectionObject
     {
         public StacFeatureCollection()
         {
@@ -48,16 +48,6 @@ namespace Stac.Api.Models
                     Features.Add(newItem);
                 }
             }
-        }
-
-        public IEnumerator<StacItem> GetEnumerator()
-        {
-            return Items.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
 
         [JsonProperty(PropertyName = "features", Required = Required.Always)]
