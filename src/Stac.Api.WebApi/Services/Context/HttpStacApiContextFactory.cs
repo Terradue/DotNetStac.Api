@@ -12,26 +12,39 @@ namespace Stac.Api.WebApi.Services.Context
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LinkGenerator _linkGenerator;
+        private readonly IStacApiContextFilterProvider _stacApiContextFilterProvider;
 
-        public HttpStacApiContextFactory(IHttpContextAccessor httpContextAccessor, LinkGenerator linkGenerator)
+        public HttpStacApiContextFactory(IHttpContextAccessor httpContextAccessor,
+                                         LinkGenerator linkGenerator,
+                                         IStacApiContextFilterProvider stacApiContextFilterProvider)
         {
             _httpContextAccessor = httpContextAccessor;
             _linkGenerator = linkGenerator;
+            _stacApiContextFilterProvider = stacApiContextFilterProvider;
         }
 
         public void ApplyContextPostQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IEnumerable<T> items) where T : IStacObject
         {
-            throw new NotImplementedException();
+            foreach (IStacApiContextFilter stacApiContextFilter in _stacApiContextFilterProvider.GetPostQueryFilters<T>())
+            {
+                stacApiContextFilter.ApplyContextPostQueryFilters(stacApiContext, dataProvider, items);
+            }
         }
 
         public void ApplyContextPostQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, T item) where T : IStacObject
         {
-            throw new NotImplementedException();
+            foreach (IStacApiContextFilter stacApiContextFilter in _stacApiContextFilterProvider.GetPostQueryFilters<T>())
+            {
+                stacApiContextFilter.ApplyContextPostQueryFilters(stacApiContext, dataProvider, item);
+            }
         }
 
         public void ApplyContextPreQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider) where T : IStacObject
         {
-            throw new NotImplementedException();
+            foreach (IStacApiContextFilter stacApiContextFilter in _stacApiContextFilterProvider.GetPreQueryFilters<T>())
+            {
+                stacApiContextFilter.ApplyContextPreQueryFilters(stacApiContext, dataProvider);
+            }
         }
 
         public IStacApiContext Create()

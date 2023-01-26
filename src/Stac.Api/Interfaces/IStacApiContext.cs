@@ -8,16 +8,16 @@ using Microsoft.AspNetCore.Routing;
 
 namespace Stac.Api.Interfaces
 {
-    public interface IStacApiContext
+    public interface IStacApiContext: IStacPropertiesContainer
     {
         Uri BaseUri { get; }
         LinkGenerator LinkGenerator { get; }
         HttpContext HttpContext { get; }
-        IPaginationParameters PaginationParameters { get; }
         string Collection { get; }
         void SetCollection(string collectionId);
         void SetMatchedItemsCount(int length);
-        void SetPaginationParameters(IPaginationParameters paginationParameters);
         IList<ILinkValues> LinkValues { get; }
+
+
     }
 }

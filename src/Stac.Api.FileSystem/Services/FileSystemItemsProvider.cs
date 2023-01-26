@@ -13,7 +13,7 @@ using Stac.Api.WebApi.Implementations.Shared.Geometry;
 
 namespace Stac.Api.FileSystem.Services
 {
-    public class FileSystemItemsProvider : IItemsProvider
+    public class FileSystemItemsProvider : FileSystemDataProvider<StacItem>, IItemsProvider
     {
         private readonly StacFileSystemResolver _fileSystemResolver;
         private readonly MultihashAlgorithm _hashAlgorithm = new MD5();
@@ -56,11 +56,11 @@ namespace Stac.Api.FileSystem.Services
             stacApiContext.SetMatchedItemsCount(itemFiles.Count());
 
             // if the filters are null, we can paginate the items directly to speed up the process
-            if (bboxArray == null && datetime == null && stacApiContext.PaginationParameters != null)
-            {
-                itemFiles = itemFiles.AsQueryable().Skip(stacApiContext.PaginationParameters.StartIndex + ((stacApiContext.PaginationParameters.Page -1) * stacApiContext.PaginationParameters.Limit))
-                                     .Take(stacApiContext.PaginationParameters.Limit);
-            }
+            // if (bboxArray == null && datetime == null && stacApiContext.PaginationParameters != null)
+            // {
+            //     itemFiles = itemFiles.AsQueryable().Skip(stacApiContext.PaginationParameters.StartIndex + ((stacApiContext.PaginationParameters.Page -1) * stacApiContext.PaginationParameters.Limit))
+            //                          .Take(stacApiContext.PaginationParameters.Limit);
+            // }
 
             var items = itemFiles.Select(itemFile =>
                                             {
@@ -82,11 +82,11 @@ namespace Stac.Api.FileSystem.Services
                 queryable = queryable.Filter(bboxArray)
                                      .Filter(datetime);
 
-                if (stacApiContext.PaginationParameters != null)
-                {
-                    genericQueryable = queryable.Skip(stacApiContext.PaginationParameters.StartIndex + ((stacApiContext.PaginationParameters.Page -1) * stacApiContext.PaginationParameters.Limit))
-                                                .Take(stacApiContext.PaginationParameters.Limit);
-                }
+                // if (stacApiContext.PaginationParameters != null)
+                // {
+                //     genericQueryable = queryable.Skip(stacApiContext.PaginationParameters.StartIndex + ((stacApiContext.PaginationParameters.Page -1) * stacApiContext.PaginationParameters.Limit))
+                //                                 .Take(stacApiContext.PaginationParameters.Limit);
+                // }
             }
 
             return Task.FromResult(genericQueryable as IEnumerable<StacItem>);

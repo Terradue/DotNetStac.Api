@@ -11,7 +11,7 @@ using Stac.Api.WebApi.Implementations.Default.Services;
 
 namespace Stac.Api.FileSystem.Services
 {
-    public class FileSystemCollectionsProvider : ICollectionsProvider
+    public class FileSystemCollectionsProvider : FileSystemDataProvider<StacCollection>, ICollectionsProvider
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private StacFileSystemResolver _fileSystemResolver;
@@ -67,11 +67,11 @@ namespace Stac.Api.FileSystem.Services
             IQueryable<StacCollection> genericQueryable = queryable;
 
             // Apply the pagination parameters if any
-            if (stacApiContext.PaginationParameters != null)
-            {
-                genericQueryable = queryable.Skip(stacApiContext.PaginationParameters.StartIndex + ((stacApiContext.PaginationParameters.Page -1) * stacApiContext.PaginationParameters.Limit))
-                                            .Take(stacApiContext.PaginationParameters.Limit);
-            }
+            // if (stacApiContext.PaginationParameters != null)
+            // {
+            //     genericQueryable = queryable.Skip(stacApiContext.PaginationParameters.StartIndex + ((stacApiContext.PaginationParameters.Page -1) * stacApiContext.PaginationParameters.Limit))
+            //                                 .Take(stacApiContext.PaginationParameters.Limit);
+            // }
 
             return Task.FromResult(genericQueryable as IEnumerable<StacCollection>);
         }

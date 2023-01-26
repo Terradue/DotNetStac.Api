@@ -1,18 +1,34 @@
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Routing;
 
 namespace Stac.Api.Interfaces
 {
     public interface ILinkValues
     {
-        string RelationshipType { get; }
+        LinkRelationType RelationshipType { get; }
 
-        RouteValueDictionary RouteValues { get; }
+        HttpMethod Method { get; }
+
+        RouteData RouteData { get; }
 
         IDictionary<string, object> QueryValues { get; }
 
         IDictionary<string, object> HeaderValues { get; }
 
         IDictionary<string, object> BodyValues { get; }
+        string Title { get; }
+        string MediaType { get; }
+
+        public enum LinkRelationType {
+            [EnumMember(Value = "self")]
+            Self,
+            [EnumMember(Value = "next")]
+            Next,
+            Previous
+        }
+
+
     }
 }

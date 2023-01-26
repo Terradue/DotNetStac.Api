@@ -54,17 +54,17 @@ namespace Stac.Api.WebApi.Patterns.CollectionBased
             collection.Links.Add(GetSelfLink(collection, stacApiContext));
             collection.Links.Add(GetRootLink(stacApiContext));
             collection.Links.Add(GetParentLink(collection, stacApiContext));
-            LinkPagination(collection, stacApiContext);
+            AddAdditionalLinks(collection, stacApiContext);
         }
 
-        
+
 
         public void Link<T>(T linksCollectionObject, IStacLinkValuesProvider<T> stacLinkValuesProvider, IStacApiContext stacApiContext) where T : ILinksCollectionObject
         {
             GetActionId<T>(out string actionId, out string controllerId);
             foreach (var linkValue in stacLinkValuesProvider.GetLinkValues())
             {
-                GetUriByAction(stacApiContext, actionId, controllerId, linkValue.RouteValues, linkValue.QueryValues);
+                GetUriByAction(stacApiContext, actionId, controllerId, linkValue.RouteData, linkValue.QueryValues);
             }
         }
 
@@ -146,14 +146,26 @@ namespace Stac.Api.WebApi.Patterns.CollectionBased
             throw new NotImplementedException();
         }
 
-        internal static void LinkPagination(ILinksCollectionObject linksCollectionObject, IStacApiContext stacApiContext)
+        internal static void AddAdditionalLinks(ILinksCollectionObject linksCollectionObject, IStacApiContext stacApiContext)
         {
-            if ( stacApiContext.PaginationParameters == null)
+            foreach (ILinkValues linkValue in stacApiContext.LinkValues)
             {
-                return;
+                string BaseUri = stacApiContext.LinkGenerator.GetUriByRouteValues(stacApiContext.HttpContext, null, linkValue.RouteData);
+                UriBuilder uriBuilder = new UriBuilder(BaseUri);
+                var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+                foreach (var queryValue in linkValue.QueryValues ?? new Dictionary<string, object>())
+                {
+                    query[queryValue.Key] = queryValue.Value.ToString();
+                }
+                uriBuilder.Query = query.ToString();
+                Uri uri = new Uri(uriBuilder.ToString());
+                StacApiLink stacApiLink = new StacApiLink(
+                    uri,
+                    linkValue.RelationshipType.ToString().ToLowerInvariant(),
+                    linkValue.Title,
+                    linkValue.MediaType);
+                linksCollectionObject.Links.Add(stacApiLink);
             }
-
-
 
             // List<ILinkValues> linkValues = new List<ILinkValues>();
             // if (paginator.HasNextPage)
@@ -195,6 +207,6 @@ namespace Stac.Api.WebApi.Patterns.CollectionBased
             // return linkValues;
         }
 
-        
+
     }
 }

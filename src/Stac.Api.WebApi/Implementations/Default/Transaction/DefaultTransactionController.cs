@@ -119,7 +119,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Transaction
             // Set the collection id
             stacApiContext.SetCollection(collectionId);
             // Clear the pagination parameters so that we get all items
-            stacApiContext.SetPaginationParameters(null);
+            // stacApiContext.SetPaginationParameters(null);
 
             // Check if any of the items already exist
             IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider();
@@ -151,7 +151,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Transaction
             var update = await itemsBroker.UpdateItemAsync(body, featureId, stacApiContext, cancellationToken);
 
             // Clear the pagination parameters so that we get all items
-            stacApiContext.SetPaginationParameters(null);
+            // stacApiContext.SetPaginationParameters(null);
 
             // Update the collection in the background
             itemsBroker.RefreshStacCollectionAsync(stacApiContext, cancellationToken).ConfigureAwait(false);

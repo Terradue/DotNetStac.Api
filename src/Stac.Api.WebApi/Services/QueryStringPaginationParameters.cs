@@ -8,26 +8,36 @@ namespace Stac.Api.WebApi.Services
 {
     public class QueryStringPaginationParameters : IPaginationParameters
     {
-        public QueryStringPaginationParameters(int limit, int page, int startIndex)
-        {
-            Limit = limit;
-            Page = page;
-            StartIndex = startIndex;
-        }
-
-        public int Limit { get; }
-        public int Page { get; }
-        public int StartIndex { get; }
+        public int? Limit { get; private set; }
+        public int? Page { get; private set; }
+        public int? Offset { get; private set; }
+        public string Token { get; private set; }
 
         public static QueryStringPaginationParameters GetPaginatorParameters(HttpContext httpContext)
         {
+            QueryStringPaginationParameters paginatorParameters = new QueryStringPaginationParameters();
             StringValues limitsv = httpContext.Request.Query["limit"];
-            int limit = limitsv.Count > 0 ? int.Parse(limitsv[0]) : 10;
+            if (limitsv.Count > 0)
+            {
+                paginatorParameters.Limit = int.Parse(limitsv[0]);
+            }
             StringValues pagesv = httpContext.Request.Query["page"];
-            int page = pagesv.Count > 0 ? int.Parse(pagesv[0]) : 1;
-            StringValues startsv = httpContext.Request.Query["startIndex"];
-            int startIndex = startsv.Count > 0 ? int.Parse(startsv[0]) : 0;
-            return new QueryStringPaginationParameters(limit, page, startIndex);
+            if (pagesv.Count > 0)
+            {
+                paginatorParameters.Page = int.Parse(pagesv[0]);
+            }
+            StringValues startsv = httpContext.Request.Query["offset"];
+            if (startsv.Count > 0)
+            {
+                paginatorParameters.Offset = int.Parse(startsv[0]);
+            }
+            StringValues tokensv = httpContext.Request.Query["token"];
+            if (tokensv.Count > 0)
+            {
+                paginatorParameters.Token = tokensv[0];
+            }
+            
+            return paginatorParameters;
         }
 
     }

@@ -68,6 +68,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
 
             // Set the collection
             stacApiContext.SetCollection(collectionId);
+            // Only GET request to this controller, thus pagination parameters are never overriden
 
             // Get the collections provider
             ICollectionsProvider collectionsProvider = dataServicesProvider.GetCollectionsProvider();
