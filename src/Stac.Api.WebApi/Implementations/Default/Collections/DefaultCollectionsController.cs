@@ -26,7 +26,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Collections
         {
             // Create the context
             IStacApiContext stacApiContext = _stacApiContextFactory.Create();
-            stacApiContext.SetCollection(collectionId);
+            stacApiContext.SetCollections(new List<string> { collectionId });
             
             // Get the collections provider
             ICollectionsProvider collectionsProvider = _dataServicesProvider.GetCollectionsProvider();
@@ -73,6 +73,10 @@ namespace Stac.Api.WebApi.Implementations.Default.Collections
 
             // Link the collections
             _stacLinker.Link(collections, stacApiContext);
+
+            // Set the matched count
+            if (stacApiContext.Properties.GetProperty<int?>(DefaultConventions.MatchedCountPropertiesKey) != null)
+                collections.NumberMatched = stacApiContext.Properties.GetProperty<int?>(DefaultConventions.MatchedCountPropertiesKey).Value;
 
             return collections;
         }

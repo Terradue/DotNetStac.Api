@@ -13,9 +13,8 @@ namespace Stac.Api.Interfaces
         Uri BaseUri { get; }
         LinkGenerator LinkGenerator { get; }
         HttpContext HttpContext { get; }
-        string Collection { get; }
-        void SetCollection(string collectionId);
-        void SetMatchedItemsCount(int length);
+        IList<string> Collections { get; }
+        void SetCollections(IList<string> collectionId);
         IList<ILinkValues> LinkValues { get; }
 
 

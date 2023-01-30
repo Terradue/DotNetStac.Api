@@ -117,7 +117,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Transaction
             // Create a new context for this request
             IStacApiContext stacApiContext = _stacApiContextFactory.Create();
             // Set the collection id
-            stacApiContext.SetCollection(collectionId);
+            stacApiContext.SetCollections(new List<string>() { collectionId });
             // Clear the pagination parameters so that we get all items
             // stacApiContext.SetPaginationParameters(null);
 

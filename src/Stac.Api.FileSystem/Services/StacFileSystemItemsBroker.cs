@@ -52,36 +52,39 @@ namespace Stac.Api.FileSystem.Services
 
         public async Task RefreshStacCollectionAsync(IStacApiContext stacApiContext, CancellationToken cancellationToken)
         {
-            StacCollection existingCollection = await GetStacCollectionAsync(stacApiContext.Collection, stacApiContext, cancellationToken);
-            var itemsProvider = _dataServicesProvider.GetItemsProvider();
-
-            StacCollection collection = StacCollection.Create(
-                stacApiContext.Collection, stacApiContext.Collection.Titleize(),
-                (await itemsProvider.GetItemsAsync(stacApiContext, cancellationToken))
-                    .ToDictionary(i => new Uri($"items/{i.Id}.json", UriKind.Relative), i =>
-                    {
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            throw new TaskCanceledException();
-                        }
-                        return i;
-                    }),
-                    "various");
-
-            // remove item links
-            collection.Links.Clear();
-
-            if (existingCollection != null)
+            foreach (var collectionId in stacApiContext.Collections)
             {
-                collection.Title = existingCollection.Title;
-                collection.Description = existingCollection.Description;
-                collection.Keywords.AddRange(existingCollection.Keywords);
-                collection.License = existingCollection.License;
-                collection.Providers.AddRange(existingCollection.Providers);
-                collection.Assets.AddRange(existingCollection.Assets);
-                collection.Links.AddRange(existingCollection.Links);
+                StacCollection existingCollection = await GetStacCollectionAsync(collectionId, stacApiContext, cancellationToken);
+                var itemsProvider = _dataServicesProvider.GetItemsProvider();
+
+                StacCollection collection = StacCollection.Create(
+                    collectionId, collectionId.Titleize(),
+                    (await itemsProvider.GetItemsAsync(stacApiContext, cancellationToken))
+                        .ToDictionary(i => new Uri($"items/{i.Id}.json", UriKind.Relative), i =>
+                        {
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                throw new TaskCanceledException();
+                            }
+                            return i;
+                        }),
+                        "various");
+
+                // remove item links
+                collection.Links.Clear();
+
+                if (existingCollection != null)
+                {
+                    collection.Title = existingCollection.Title;
+                    collection.Description = existingCollection.Description;
+                    collection.Keywords.AddRange(existingCollection.Keywords);
+                    collection.License = existingCollection.License;
+                    collection.Providers.AddRange(existingCollection.Providers);
+                    collection.Assets.AddRange(existingCollection.Assets);
+                    collection.Links.AddRange(existingCollection.Links);
+                }
+                UpdateStacCollection(collection);
             }
-            UpdateStacCollection(collection);
         }
 
         private async Task<StacCollection> GetStacCollectionAsync(string collection, IStacApiContext stacApiContext, CancellationToken cancellationToken)
@@ -107,31 +110,38 @@ namespace Stac.Api.FileSystem.Services
             }
         }
 
-        private StacItem PrepareStacItem(StacItem stacItem, IStacApiContext stacApiContext)
+        private StacItem PrepareStacItem(StacItem stacItem, string collection)
         {
             StacItem fsStacItem = new StacItem(stacItem);
             ClearFileSystemLink(fsStacItem);
-            fsStacItem.Collection = stacApiContext.Collection;
+            fsStacItem.Collection = collection;
             return fsStacItem;
         }
 
         public async Task<StacItem> CreateItemAsync(StacItem stacItem, IStacApiContext stacApiContext, CancellationToken cancellationToken)
         {
-            StacItem preparedItem = PrepareStacItem(stacItem, stacApiContext);
-            var json = StacConvert.Serialize(preparedItem);
-            var path = _fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{stacApiContext.Collection}/items/{preparedItem.Id}.json";
-            PreparePath(path);
-            _fileSystemResolver.FileSystem.File.WriteAllText(path, json);
+            StacItem preparedItem = null;
+            foreach (var collection in stacApiContext.Collections)
+            {
+                preparedItem = PrepareStacItem(stacItem, collection);
+                var json = StacConvert.Serialize(preparedItem);
+                var path = _fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{collection}/items/{preparedItem.Id}.json";
+                PreparePath(path);
+                _fileSystemResolver.FileSystem.File.WriteAllText(path, json);
+            }
             return preparedItem;
         }
 
         public async Task DeleteItemAsync(string featureId, IStacApiContext stacApiContext, CancellationToken cancellationToken)
         {
-            if (!_fileSystemResolver.FileSystem.File.Exists(_fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{stacApiContext.Collection}/{featureId}.json"))
+            foreach (var collection in stacApiContext.Collections)
             {
-                throw new FileNotFoundException("Item not found");
+                if (!_fileSystemResolver.FileSystem.File.Exists(_fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{collection}/{featureId}.json"))
+                {
+                    throw new FileNotFoundException("Item not found");
+                }
+                _fileSystemResolver.FileSystem.File.Delete(_fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{collection}/{featureId}.json");
             }
-            _fileSystemResolver.FileSystem.File.Delete(_fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{stacApiContext.Collection}/{featureId}.json");
         }
 
         public async Task<ActionResult<StacItem>> UpdateItemAsync(StacItem newItem, string featureId, IStacApiContext stacApiContext, CancellationToken cancellationToken)

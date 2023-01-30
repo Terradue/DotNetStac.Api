@@ -20,13 +20,16 @@ namespace Stac.Api.Interfaces
         IDictionary<string, object> BodyValues { get; }
         string Title { get; }
         string MediaType { get; }
-        bool Merge { get; }
+        bool? Merge { get; }
+        string ActionName { get; }
+        string ControllerName { get; }
 
         public enum LinkRelationType {
             [EnumMember(Value = "self")]
             Self,
             [EnumMember(Value = "next")]
             Next,
+            [EnumMember(Value = "prev")]
             Previous
         }
 

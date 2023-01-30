@@ -84,8 +84,5 @@ namespace Stac.Api.Models
         [System.ComponentModel.DataAnnotations.Range(0, int.MaxValue)]
         public int NumberReturned => Features.Count;
 
-        [JsonIgnore]
-        public string Collection { get; set; }
-
     }
 }

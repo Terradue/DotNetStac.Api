@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Routing;
 using Stac.Api.Clients.Collections;
 using Stac.Api.Interfaces;
 using Stac.Api.Models;
+using Stac.Api.Models.Core;
 using Stac.Api.WebApi.Services;
 
 namespace Stac.Api.WebApi.Patterns.CollectionBased
@@ -57,17 +58,6 @@ namespace Stac.Api.WebApi.Patterns.CollectionBased
             AddAdditionalLinks(collection, stacApiContext);
         }
 
-
-
-        public void Link<T>(T linksCollectionObject, IStacLinkValuesProvider<T> stacLinkValuesProvider, IStacApiContext stacApiContext) where T : ILinksCollectionObject
-        {
-            GetActionId<T>(out string actionId, out string controllerId);
-            foreach (var linkValue in stacLinkValuesProvider.GetLinkValues())
-            {
-                GetUriByAction(stacApiContext, actionId, controllerId, linkValue.RouteData, linkValue.QueryValues);
-            }
-        }
-
         #endregion
 
         private StacApiLink GetRootLink(IStacApiContext stacApiContext)
@@ -109,7 +99,8 @@ namespace Stac.Api.WebApi.Patterns.CollectionBased
         protected StacApiLink GetSelfLink(StacFeatureCollection collection, IStacApiContext stacApiContext)
         {
             return new StacApiLink(
-                GetUriByAction(stacApiContext, "GetFeatures", "Features", new { collectionId = collection.Collection }, null),
+                new Uri(stacApiContext.LinkGenerator.GetUriByRouteValues(stacApiContext.HttpContext, null, stacApiContext.HttpContext.Request.Query.ToDictionary(x => x.Key, x => x.Value.ToString()))),
+                // GetUriByAction(stacApiContext, "GetFeatures", "Features", new { collectionId = collection.Collection }, null),
                 "self",
                 null,
                 "application/geo+json");
@@ -117,11 +108,22 @@ namespace Stac.Api.WebApi.Patterns.CollectionBased
 
         private StacLink GetParentLink(StacFeatureCollection collection, IStacApiContext stacApiContext)
         {
-            return new StacApiLink(
-                GetUriByAction(stacApiContext, "DescribeCollection", "Collections", new { collectionId = collection.Collection }, null),
-                "parent",
-                null,
-                "application/json");
+            if (stacApiContext.Collections?.Count() == 1)
+            {
+                return new StacApiLink(
+                                GetUriByAction(stacApiContext, "DescribeCollection", "Collections", new { collectionId = stacApiContext.Collections.First() }, null),
+                                "parent",
+                                null,
+                                "application/json");
+            }
+            else
+            {
+                return new StacApiLink(
+                    GetUriByAction(stacApiContext, "GetCollections", "Collections", new { }, null),
+                    "parent",
+                    null,
+                    "application/json");
+            }
         }
 
         private Uri GetUriByAction(IStacApiContext stacApiContext, string actionName, string controllerName, object? value, IDictionary<string, object>? queryValues)
@@ -141,72 +143,32 @@ namespace Stac.Api.WebApi.Patterns.CollectionBased
             return new Uri(uriBuilder.ToString());
         }
 
-        private void GetActionId<T>(out string actionId, out string controllerId) where T : ILinksCollectionObject
-        {
-            throw new NotImplementedException();
-        }
-
         internal static void AddAdditionalLinks(ILinksCollectionObject linksCollectionObject, IStacApiContext stacApiContext)
         {
             foreach (ILinkValues linkValue in stacApiContext.LinkValues)
             {
-                string BaseUri = stacApiContext.LinkGenerator.GetUriByRouteValues(stacApiContext.HttpContext, null, linkValue.RouteData);
-                UriBuilder uriBuilder = new UriBuilder(BaseUri);
-                var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-                foreach (var queryValue in linkValue.QueryValues ?? new Dictionary<string, object>())
-                {
-                    query[queryValue.Key] = queryValue.Value.ToString();
-                }
-                uriBuilder.Query = query.ToString();
-                Uri uri = new Uri(uriBuilder.ToString());
-                StacApiLink stacApiLink = new StacApiLink(
-                    uri,
-                    linkValue.RelationshipType.ToString().ToLowerInvariant(),
-                    linkValue.Title,
-                    linkValue.MediaType);
+                StacApiLink stacApiLink = CreateStacApiLink(stacApiContext, linkValue);
                 linksCollectionObject.Links.Add(stacApiLink);
             }
-
-            // List<ILinkValues> linkValues = new List<ILinkValues>();
-            // if (paginator.HasNextPage)
-            // {
-            //     linkValues.Add(new LinkValues("next", routeValues, new Dictionary<string, object>()
-            //     {
-            //         {"limit", paginator.CurrentLimit},
-            //         {"page", paginator.CurrentPage + 1},
-            //         {"startIndex", paginator.StartIndex}
-            //     }, null, null));
-            // }
-            // if (paginator.CurrentPage > 1)
-            // {
-            //     linkValues.Add(new LinkValues("prev", routeValues, new Dictionary<string, object>()
-            //     {
-            //         {"limit", paginator.CurrentLimit},
-            //         {"page", paginator.CurrentPage - 1},
-            //         {"startIndex", paginator.StartIndex}
-            //     }, null, null));
-            // }
-            // if (paginator.CurrentPage > 2)
-            // {
-            //     linkValues.Add(new LinkValues("first", routeValues, new Dictionary<string, object>()
-            //     {
-            //         {"limit", paginator.CurrentLimit},
-            //         {"page", 1},
-            //         {"startIndex", paginator.StartIndex}
-            //     }, null, null));
-            // }
-            // if (paginator.TotalPages > 1 && paginator.CurrentPage < paginator.TotalPages)
-            // {
-            //     linkValues.Add(new LinkValues("last", routeValues, new Dictionary<string, object>()
-            //     {
-            //         {"limit", paginator.CurrentLimit},
-            //         {"page", paginator.TotalPages},
-            //         {"startIndex", paginator.StartIndex}
-            //     }, null, null));
-            // }
-            // return linkValues;
         }
 
-
+        private static StacApiLink CreateStacApiLink(IStacApiContext stacApiContext, ILinkValues linkValue)
+        {
+            string BaseUri = stacApiContext.LinkGenerator.GetUriByAction(stacApiContext.HttpContext, linkValue.ActionName, linkValue.ControllerName);
+            UriBuilder uriBuilder = new UriBuilder(BaseUri);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            foreach (var queryValue in linkValue.QueryValues ?? new Dictionary<string, object>())
+            {
+                query[queryValue.Key] = queryValue.Value.ToString();
+            }
+            uriBuilder.Query = query.ToString();
+            Uri uri = new Uri(uriBuilder.ToString());
+            StacApiLink stacApiLink = new StacApiLink(
+                uri,
+                linkValue.RelationshipType.GetEnumMemberValue(),
+                linkValue.Title,
+                linkValue.MediaType);
+            return stacApiLink;
+        }
     }
 }

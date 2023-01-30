@@ -20,6 +20,9 @@ namespace Stac.Api.Clients.Collections
             Collections = collections.ToList();
         }
 
+        [JsonProperty("numberMatched")]
+        public int NumberMatched { get; set; }
+
         ICollection<StacLink> ILinksCollectionObject.Links => Links as ICollection<StacLink>;
 
     }

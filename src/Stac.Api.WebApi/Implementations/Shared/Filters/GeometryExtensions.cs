@@ -16,5 +16,12 @@ namespace Stac.Api.WebApi.Implementations.Shared.Geometry
             NetTopologySuite.Geometries.Geometry geometry2 = geometry.ToNTSGeometry();
             return geometry2.Intersects(bboxGeometry);
         }
+
+        public static bool Intersects(this IGeometryObject geometry, IGeometryObject geometry2)
+        {
+            NetTopologySuite.Geometries.Geometry geometry3 = geometry.ToNTSGeometry();
+            NetTopologySuite.Geometries.Geometry geometry4 = geometry2.ToNTSGeometry();
+            return geometry3.Intersects(geometry4);
+        }
     }
 }

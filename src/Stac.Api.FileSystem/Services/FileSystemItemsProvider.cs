@@ -8,6 +8,7 @@ using Multiformats.Hash.Algorithms;
 using Stac.Api.Interfaces;
 using Stac.Api.Services.Filtering;
 using Stac.Api.Services.Queryable;
+using Stac.Api.WebApi.Implementations.Default;
 using Stac.Api.WebApi.Implementations.Default.Services;
 using Stac.Api.WebApi.Implementations.Shared.Geometry;
 
@@ -30,7 +31,7 @@ namespace Stac.Api.FileSystem.Services
                 return Task.FromResult(StacConvert.Deserialize<StacItem>(
                         _fileSystemResolver.FileSystem.File.ReadAllText(
                                 _fileSystemResolver.GetDirectory(
-                                    StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{stacApiContext.Collection}/items/{featureId}.json")));
+                                    StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{stacApiContext.Collections.First()}/items/{featureId}.json")));
             }
             catch (System.IO.IOException)
             {
@@ -42,18 +43,18 @@ namespace Stac.Api.FileSystem.Services
         {
             var featureJson = _fileSystemResolver.FileSystem.File.ReadAllText(
                         _fileSystemResolver.GetDirectory(
-                            StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{stacApiContext.Collection}/items/{featureId}.json");
+                            StacFileSystemResolver.COLLECTIONS_DIR).FullName + $"/{stacApiContext.Collections.First()}/items/{featureId}.json");
             return _hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(featureJson)).ToString();
         }
 
         public Task<IEnumerable<StacItem>> GetItemsAsync(IStacApiContext stacApiContext, CancellationToken cancellationToken)
         {
             IEnumerable<IFileInfo> itemFiles = _fileSystemResolver.GetDirectory(
-                Path.Combine(StacFileSystemResolver.COLLECTIONS_DIR, stacApiContext.Collection, "items"))
+                Path.Combine(StacFileSystemResolver.COLLECTIONS_DIR, stacApiContext.Collections.First(), "items"))
                 .GetFiles("*.json").ToList();
 
             // Set the total number of items in the context
-            stacApiContext.SetMatchedItemsCount(itemFiles.Count());
+            stacApiContext.Properties.SetProperty(DefaultConventions.MatchedCountPropertiesKey, itemFiles.Count());
 
             var items = itemFiles.AsQueryable()
                                 .AsParallel()
@@ -76,15 +77,22 @@ namespace Stac.Api.FileSystem.Services
 
         public bool AnyItemsExist(IEnumerable<StacItem> items, IStacApiContext stacApiContext)
         {
-            try
+            foreach (var collection in stacApiContext.Collections)
             {
-                var files = _fileSystemResolver.GetDirectory(Path.Combine(StacFileSystemResolver.COLLECTIONS_DIR, $"{stacApiContext.Collection}/items")).GetFiles("*.json");
-                return items.Any(i => files.Any(f => Path.GetFileNameWithoutExtension(f.Name) == i.Id));
+                try
+                {
+                    var files = _fileSystemResolver.GetDirectory(Path.Combine(StacFileSystemResolver.COLLECTIONS_DIR, $"{collection}/items")).GetFiles("*.json");
+                    if ( items.Any(i => files.Any(f => Path.GetFileNameWithoutExtension(f.Name) == i.Id)) )
+                    {
+                        return true;
+                    }
+                }
+                catch (System.IO.IOException)
+                {
+                    return false;
+                }
             }
-            catch (System.IO.IOException)
-            {
-                return false;
-            }
+            return false;
         }
     }
 }

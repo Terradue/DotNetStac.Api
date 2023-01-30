@@ -15,7 +15,7 @@ namespace Stac.Api.WebApi.Services.Context
 
         public HttpContext HttpContext { get; private set; }
 
-        public string Collection { get; private set; }
+        public IList<string> Collections { get; private set; }
         
         public int MatchedItemsCount { get; private set; }
 
@@ -35,9 +35,9 @@ namespace Stac.Api.WebApi.Services.Context
             };
         }
 
-        public void SetCollection(string collectionId)
+        public void SetCollections(IList<string> collectionIds)
         {
-            Collection = collectionId;
+            Collections = collectionIds;
         }
 
         public void SetMatchedItemsCount(int count)

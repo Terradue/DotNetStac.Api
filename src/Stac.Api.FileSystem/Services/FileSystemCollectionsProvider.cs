@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Multiformats.Hash.Algorithms;
 using Stac.Api.Interfaces;
 using Stac.Api.Services.Queryable;
+using Stac.Api.WebApi.Implementations.Default;
 using Stac.Api.WebApi.Implementations.Default.Services;
 
 namespace Stac.Api.FileSystem.Services
@@ -48,7 +49,7 @@ namespace Stac.Api.FileSystem.Services
             catch { }
 
             // set the total number of collections in the context
-            stacApiContext.SetMatchedItemsCount(collectionFiles.Count());
+            stacApiContext.Properties.SetProperty(DefaultConventions.MatchedCountPropertiesKey, collectionFiles.Count());
 
             // deserialize the collections as queryable
             var collections = collectionFiles.AsQueryable()
