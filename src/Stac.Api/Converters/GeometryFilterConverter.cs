@@ -19,7 +19,7 @@ namespace Stac.Api.Converters
 
         public override void WriteJson(JsonWriter writer, IGeometryFilter value, JsonSerializer serializer)
         {
-            _geometryConverter.WriteJson(writer, value.Geometry, serializer);
+            serializer.Serialize(writer, value.Geometry);
         }
     }
 }

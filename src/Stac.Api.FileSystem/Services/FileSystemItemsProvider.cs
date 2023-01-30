@@ -74,7 +74,6 @@ namespace Stac.Api.FileSystem.Services
                     }
                 });
 
-
             // Set the total number of items in the context
             stacApiContext.Properties.SetProperty(DefaultConventions.MatchedCountPropertiesKey, itemFiles.Count());
 

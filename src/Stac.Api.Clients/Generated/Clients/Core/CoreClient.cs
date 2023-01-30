@@ -7,7 +7,6 @@
 using Stac;
 using Stac.Common;
 using Stac.Api.Models;
-using System;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -190,10 +189,7 @@ namespace Stac.Api.Clients.Core
                     using (var jsonTextReader = new Newtonsoft.Json.JsonTextReader(streamReader))
                     {
                         var serializer = Newtonsoft.Json.JsonSerializer.Create(JsonSerializerSettings);
-                        var json = streamReader.ReadToEnd();
-                        Console.WriteLine(json);
-                        var tmpReader = new Newtonsoft.Json.JsonTextReader(new System.IO.StringReader(json));
-                        var typedBody = serializer.Deserialize<T>(tmpReader);
+                        var typedBody = serializer.Deserialize<T>(jsonTextReader);
                         return new ObjectResponseResult<T>(typedBody, string.Empty);
                     }
                 }

@@ -111,7 +111,7 @@ namespace Stac.Api.Clients.ItemSearch
         /// <br/>Only Item objects in one of the provided collections will be searched</param>
         /// <returns>A feature collection.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, GeoJSON.Net.Geometry.IGeometryObject intersects, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections)
+        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, Stac.Api.Models.Core.IntersectGeometryFilter intersects, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections)
         {
             return GetItemSearchAsync(bbox, intersects, datetime, limit, ids, collections, System.Threading.CancellationToken.None);
         }
@@ -180,7 +180,7 @@ namespace Stac.Api.Clients.ItemSearch
         /// <br/>Only Item objects in one of the provided collections will be searched</param>
         /// <returns>A feature collection.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, GeoJSON.Net.Geometry.IGeometryObject intersects, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(string bbox, Stac.Api.Models.Core.IntersectGeometryFilter intersects, string datetime, int? limit, System.Collections.Generic.IEnumerable<string> ids, System.Collections.Generic.IEnumerable<string> collections, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append("search?");
@@ -473,10 +473,10 @@ namespace Stac.Api.Clients.ItemSearch
         public string Datetime { get; set; }
 
         [Newtonsoft.Json.JsonProperty("intersects", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public GeoJSON.Net.Geometry.IGeometryObject Intersects { get; set; }
+        public Stac.Api.Models.Core.IntersectGeometryFilter Intersects { get; set; }
 
         [Newtonsoft.Json.JsonProperty("collections", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public CollectionsArray Collections { get; set; }
+        public string[] Collections { get; set; }
 
         [Newtonsoft.Json.JsonProperty("ids", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public Ids Ids { get; set; }
@@ -506,16 +506,6 @@ namespace Stac.Api.Clients.ItemSearch
             get { return _additionalProperties; }
             set { _additionalProperties = value; }
         }
-
-    }
-
-    /// <summary>
-    /// Array of Collection IDs to include in the search for items.
-    /// <br/>Only Item objects in one of the provided collections will be searched.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CollectionsArray : System.Collections.ObjectModel.Collection<string>
-    {
 
     }
 
@@ -562,6 +552,15 @@ namespace Stac.Api.Clients.ItemSearch
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Bbox : System.Collections.ObjectModel.Collection<double>
     {
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum IntersectGeometryFilterType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Point")]
+        Point = 0,
 
     }
 

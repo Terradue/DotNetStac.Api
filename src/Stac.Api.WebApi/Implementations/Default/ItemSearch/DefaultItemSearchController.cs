@@ -38,7 +38,7 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
             // Set the collection
             stacApiContext.SetCollections(collections.ToList());
 
-            // Set the Limit
+            // Set the Limit as a Pagination Parameter
             stacApiContext.Properties.Add(IPaginationParameters.PaginationPropertiesKey, new DefaultPaginationParameters() { Limit = limit });
 
             IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider();
@@ -112,7 +112,7 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
 
         public Task<ActionResult<StacFeatureCollection>> PostItemSearchAsync(SearchBody body, CancellationToken cancellationToken = default)
         {
-            return GetItemSearchAsync(string.Join(",", body.Bbox), body.Intersects, body.Datetime, body.Limit, body.Ids, body.Collections, cancellationToken);
+            return GetItemSearchAsync(string.Join(",", body.Bbox ?? new Bbox()), body.Intersects.Geometry, body.Datetime, body.Limit, body.Ids, body.Collections, cancellationToken);
         }
     }
 }

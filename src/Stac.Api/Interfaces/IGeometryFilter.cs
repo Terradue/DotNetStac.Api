@@ -6,7 +6,7 @@ using GeoJSON.Net.Geometry;
 
 namespace Stac.Api.Interfaces
 {
-    public interface IGeometryFilter
+    public interface IGeometryFilter : IConvertible
     {
         IGeometryObject Geometry { get; set; }
 

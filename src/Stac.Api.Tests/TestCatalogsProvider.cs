@@ -49,7 +49,7 @@ namespace Stac.Api.Tests
         {
             foreach (var name in catalogNames)
             {
-                yield return new object[] { new StacApiApplication(Path.Combine(GetTestCatalogsRootPath(), "Catalog*")) };
+                yield return new object[] { new StacApiApplication(Path.Combine(GetTestCatalogsRootPath(), name)) };
             }
         }
 
