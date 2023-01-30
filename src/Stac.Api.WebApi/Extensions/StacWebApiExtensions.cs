@@ -20,6 +20,7 @@ using Stac.Api.WebApi.Controllers.Extensions.Filter;
 using Stac.Api.WebApi.Implementations.Default.Filter;
 using Stac.Api.WebApi.Controllers.Extensions.Transaction;
 using Stac.Api.WebApi.Implementations.Default.Extensions.Transaction;
+using GeoJSON.Net.Geometry;
 
 namespace Stac.Api.WebApi.Extensions
 {
@@ -27,12 +28,14 @@ namespace Stac.Api.WebApi.Extensions
     {
         public static IServiceCollection AddStacWebApi(this IServiceCollection services)
         {
-            services.AddControllers( options =>
+            services.AddControllers(options =>
                 {
                     options.Filters.Add<JsonErrorActionFilter>();
+                    options.ModelBinderProviders.Insert(0, new GeometryModelBinderProvider());
                 })
                 .AddNewtonsoftJson(options =>
                 {
+                    options.SerializerSettings.ContractResolver.ResolveContract(typeof(IGeometryObject)).Converter = new GeometryConverter();
                     options.SerializerSettings.Converters.Add(new StringEnumConverter());
                     options.SerializerSettings.Converters.Add(new GeometryConverter());
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
@@ -85,6 +88,6 @@ namespace Stac.Api.WebApi.Extensions
             options.MapToStatusCode<System.Exception>(StatusCodes.Status500InternalServerError);
         }
 
-        
+
     }
 }

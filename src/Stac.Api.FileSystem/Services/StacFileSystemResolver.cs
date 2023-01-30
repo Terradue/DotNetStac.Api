@@ -6,6 +6,8 @@ namespace Stac.Api.FileSystem.Services
     {
         public const string COLLECTIONS_DIR = "collections";
 
+        public const string NO_COLLECTION_DIR = "__unknown__";
+
         private readonly IFileSystem _fileSystem;
 
         public string RootPath { get; }

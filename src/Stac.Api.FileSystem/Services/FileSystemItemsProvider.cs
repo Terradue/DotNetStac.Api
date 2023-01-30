@@ -49,9 +49,31 @@ namespace Stac.Api.FileSystem.Services
 
         public Task<IEnumerable<StacItem>> GetItemsAsync(IStacApiContext stacApiContext, CancellationToken cancellationToken)
         {
-            IEnumerable<IFileInfo> itemFiles = _fileSystemResolver.GetDirectory(
-                Path.Combine(StacFileSystemResolver.COLLECTIONS_DIR, stacApiContext.Collections.First(), "items"))
-                .GetFiles("*.json").ToList();
+            IList<string> collectionIds = stacApiContext.Collections?.ToList();
+            IEnumerable<IFileInfo> itemFiles = null;
+            if (collectionIds == null || !collectionIds.Any())
+            {
+                collectionIds = new List<string> { StacFileSystemResolver.NO_COLLECTION_DIR };
+            }
+
+            itemFiles = collectionIds.AsParallel()
+                .WithCancellation(cancellationToken)
+                .WithDegreeOfParallelism(Environment.ProcessorCount)
+                .WithExecutionMode(ParallelExecutionMode.ForceParallelism)
+                .SelectMany(collectionId =>
+                {
+                    try
+                    {
+                        return _fileSystemResolver.GetDirectory(
+                            Path.Combine(StacFileSystemResolver.COLLECTIONS_DIR, $"{collectionId}/items"))
+                            .GetFiles("*.json");
+                    }
+                    catch (System.IO.IOException)
+                    {
+                        return Enumerable.Empty<IFileInfo>();
+                    }
+                });
+
 
             // Set the total number of items in the context
             stacApiContext.Properties.SetProperty(DefaultConventions.MatchedCountPropertiesKey, itemFiles.Count());
@@ -82,7 +104,7 @@ namespace Stac.Api.FileSystem.Services
                 try
                 {
                     var files = _fileSystemResolver.GetDirectory(Path.Combine(StacFileSystemResolver.COLLECTIONS_DIR, $"{collection}/items")).GetFiles("*.json");
-                    if ( items.Any(i => files.Any(f => Path.GetFileNameWithoutExtension(f.Name) == i.Id)) )
+                    if (items.Any(i => files.Any(f => Path.GetFileNameWithoutExtension(f.Name) == i.Id)))
                     {
                         return true;
                     }

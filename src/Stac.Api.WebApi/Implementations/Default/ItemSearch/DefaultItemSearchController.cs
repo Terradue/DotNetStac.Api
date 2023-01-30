@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using GeoJSON.Net.Geometry;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Stac.Api.Clients.ItemSearch;
 using Stac.Api.Interfaces;
 using Stac.Api.Models;
@@ -71,6 +72,9 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
                 items = items.Where(i => i.DateTime.HasInside(datetimeValue));
             }
 
+            // Save the query parameters in the context
+            SetQueryParametersInContext(stacApiContext, bbox, intersects, datetime, limit, ids, collections);
+
             // Apply Context Post Query Filters
             items = _stacApiContextFactory.ApplyContextPostQueryFilters<StacItem>(stacApiContext, itemsProvider, items);
 
@@ -84,6 +88,26 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
                 fc.NumberMatched = stacApiContext.Properties.GetProperty<int?>(DefaultConventions.MatchedCountPropertiesKey).Value;
 
             return fc;
+        }
+
+        private void SetQueryParametersInContext(IStacApiContext stacApiContext, string bbox, IGeometryObject? intersects, string datetime, int? limit, IEnumerable<string>? ids, IEnumerable<string> collections)
+        {
+            DefaultQueryParameters queryParameters = new DefaultQueryParameters();
+            if (bbox != null)
+                queryParameters.Add("bbox", bbox);
+            if (intersects != null)
+                queryParameters.Add("intersects", JsonConvert.SerializeObject(intersects));
+            if (datetime != null)
+                queryParameters.Add("datetime", datetime);
+            if (limit != null)
+                queryParameters.Add("limit", limit.ToString());
+            if (ids != null)
+                queryParameters.Add("ids", string.Join(",", ids));
+            if (collections != null)
+                queryParameters.Add("collections", string.Join(",", collections));
+            
+            stacApiContext.Properties.Add(DefaultConventions.QueryParametersPropertiesKey, queryParameters);
+
         }
 
         public Task<ActionResult<StacFeatureCollection>> PostItemSearchAsync(SearchBody body, CancellationToken cancellationToken = default)
