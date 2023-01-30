@@ -3,10 +3,11 @@ using GeoJSON.Net.Geometry;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Stac.Api.Clients.ItemSearch;
+using Stac.Api.Extensions.Filters;
 using Stac.Api.Interfaces;
 using Stac.Api.Models;
+using Stac.Api.Models.Core;
 using Stac.Api.WebApi.Controllers.ItemSearch;
-using Stac.Api.WebApi.Implementations.Shared.Geometry;
 using Stac.Api.WebApi.Services;
 using Stac.Api.WebApi.Services.Context;
 
@@ -30,7 +31,7 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
             _stacLinker = stacLinker;
         }
 
-        public async Task<ActionResult<StacFeatureCollection>> GetItemSearchAsync(string bbox, IGeometryObject intersects, string datetime, int limit, IEnumerable<string> ids, IEnumerable<string> collections, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<StacFeatureCollection>> GetItemSearchAsync(string bbox, IntersectGeometryFilter intersects, string datetime, int limit, IEnumerable<string> ids, IEnumerable<string> collections, CancellationToken cancellationToken = default)
         {
             // Create the context
             IStacApiContext stacApiContext = _stacApiContextFactory.Create();
@@ -63,7 +64,7 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
 
             if (intersects != null)
             {
-                items = items.Where(i => i.Geometry.Intersects(intersects));
+                items = items.Where(i => intersects.Filter(i.Geometry));
             }
 
             if (!string.IsNullOrEmpty(datetime))
@@ -73,7 +74,7 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
             }
 
             // Save the query parameters in the context
-            SetQueryParametersInContext(stacApiContext, bbox, intersects, datetime, limit, ids, collections);
+            SetQueryParametersInContext(stacApiContext, bbox, intersects.Geometry, datetime, limit, ids, collections);
 
             // Apply Context Post Query Filters
             items = _stacApiContextFactory.ApplyContextPostQueryFilters<StacItem>(stacApiContext, itemsProvider, items);
@@ -112,7 +113,7 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
 
         public Task<ActionResult<StacFeatureCollection>> PostItemSearchAsync(SearchBody body, CancellationToken cancellationToken = default)
         {
-            return GetItemSearchAsync(string.Join(",", body.Bbox ?? new Bbox()), body.Intersects.Geometry, body.Datetime, body.Limit, body.Ids, body.Collections, cancellationToken);
+            return GetItemSearchAsync(string.Join(",", body.Bbox ?? new Bbox()), body.Intersects, body.Datetime, body.Limit, body.Ids, body.Collections, cancellationToken);
         }
     }
 }

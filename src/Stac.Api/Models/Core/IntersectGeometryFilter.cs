@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GeoJSON.Net.Geometry;
 using Newtonsoft.Json;
 using Stac.Api.Converters;
+using Stac.Api.Extensions.Filters;
 using Stac.Api.Interfaces;
 
 namespace Stac.Api.Models.Core
@@ -24,6 +25,11 @@ namespace Stac.Api.Models.Core
         public IGeometryObject Geometry { get; set; }
 
         public GeometryOperation Operation => GeometryOperation.Intersects;
+
+        public bool Filter(IGeometryObject geom)
+        {
+            return Geometry.Intersects(geom);
+        }
 
         public TypeCode GetTypeCode()
         {

@@ -2,10 +2,10 @@ using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Stac.Api.Clients.Features;
+using Stac.Api.Extensions.Filters;
 using Stac.Api.Interfaces;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.Features;
-using Stac.Api.WebApi.Implementations.Shared.Geometry;
 using Stac.Api.WebApi.Services;
 using Stac.Api.WebApi.Services.Context;
 

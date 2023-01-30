@@ -10,7 +10,6 @@ using Stac.Api.Services.Filtering;
 using Stac.Api.Services.Queryable;
 using Stac.Api.WebApi.Implementations.Default;
 using Stac.Api.WebApi.Implementations.Default.Services;
-using Stac.Api.WebApi.Implementations.Shared.Geometry;
 
 namespace Stac.Api.FileSystem.Services
 {

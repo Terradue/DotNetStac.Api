@@ -6,7 +6,7 @@ using Stac.Api.Interfaces;
 
 namespace Stac.Api.Converters
 {
-    internal class GeometryFilterConverter<T> : JsonConverter<IGeometryFilter> where T : IGeometryFilter
+    public class GeometryFilterConverter<T> : JsonConverter<IGeometryFilter> where T : IGeometryFilter
     {
         private static GeometryConverter _geometryConverter = new GeometryConverter();
 

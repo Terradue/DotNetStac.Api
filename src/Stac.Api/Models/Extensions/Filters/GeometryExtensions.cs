@@ -6,7 +6,7 @@ using GeoJSON.Net.Geometry;
 using NetTopologySuite.Geometries;
 using Stars.Geometry.NTS;
 
-namespace Stac.Api.WebApi.Implementations.Shared.Geometry
+namespace Stac.Api.Extensions.Filters
 {
     public static class GeometryExtensions
     {

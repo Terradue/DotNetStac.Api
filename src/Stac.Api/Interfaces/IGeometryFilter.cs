@@ -11,5 +11,7 @@ namespace Stac.Api.Interfaces
         IGeometryObject Geometry { get; set; }
 
         GeometryOperation Operation { get; }
+
+        bool Filter(IGeometryObject geom);
     }
 }

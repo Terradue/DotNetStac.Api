@@ -7,7 +7,7 @@ using Stac.Api.Clients.Collections;
 using System.Linq;
 using Stac.Api.Clients.ItemSearch;
 using GeoJSON.Net.Geometry;
-using Stac.Api.WebApi.Implementations.Shared.Geometry;
+using Stac.Api.Extensions.Filters;
 
 namespace Stac.Api.Tests.AppTests
 {
@@ -17,14 +17,6 @@ namespace Stac.Api.Tests.AppTests
         public ItemSearchApiTests(StacApiAppFixture fixture, ITestOutputHelper outputHelper) : base(fixture, outputHelper)
         {
 
-        }
-
-        [Fact]
-        public void DeserializeStacCollections()
-        {
-            StacCollections colls = new StacCollections();
-            string json = JsonConvert.SerializeObject(colls);
-            var catalog = JsonConvert.DeserializeObject<StacCollections>(json);
         }
 
         [Theory, MemberData(nameof(GetTestCatalogs), new object[] { new string[] { "CatalogS2L2A" } })]

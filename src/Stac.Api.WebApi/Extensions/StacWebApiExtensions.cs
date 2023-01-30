@@ -21,6 +21,8 @@ using Stac.Api.WebApi.Implementations.Default.Filter;
 using Stac.Api.WebApi.Controllers.Extensions.Transaction;
 using Stac.Api.WebApi.Implementations.Default.Extensions.Transaction;
 using GeoJSON.Net.Geometry;
+using Stac.Api.Converters;
+using Stac.Api.Models.Core;
 
 namespace Stac.Api.WebApi.Extensions
 {
@@ -36,8 +38,10 @@ namespace Stac.Api.WebApi.Extensions
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ContractResolver.ResolveContract(typeof(IGeometryObject)).Converter = new GeometryConverter();
+                    options.SerializerSettings.ContractResolver.ResolveContract(typeof(IntersectGeometryFilter)).Converter = new GeometryFilterConverter<IntersectGeometryFilter>();
                     options.SerializerSettings.Converters.Add(new StringEnumConverter());
                     options.SerializerSettings.Converters.Add(new GeometryConverter());
+                    options.SerializerSettings.Converters.Add(new GeometryFilterConverter<IntersectGeometryFilter>());
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     options.AllowInputFormatterExceptionMessages = false;
                 });
