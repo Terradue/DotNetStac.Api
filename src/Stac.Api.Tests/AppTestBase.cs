@@ -23,15 +23,9 @@ namespace Stac.Api.Tests
             Fixture.SetOutputHelper(OutputHelper);
         }
 
-        public static IEnumerable<object[]> TestCatalogs(string testClassName)
+        public static IEnumerable<object[]> GetTestCatalogs(string[] catalogNames)
         {
-            switch (testClassName)
-            {
-                case nameof(TransactionApiTests):
-                    return TestCatalogsProvider.GetStacApiApplicationsAndTestDatasets();
-                default:
-                    return TestCatalogsProvider.GetStacApiApplications();
-            }
+            return TestCatalogsProvider.GetStacApiApplications(catalogNames);
         }
 
         protected static TestCatalogsProvider TestCatalogsProvider
@@ -49,7 +43,7 @@ namespace Stac.Api.Tests
 
         public void Dispose()
         {
-            if ( _testCatalogsProvider != null)
+            if (_testCatalogsProvider != null)
             {
                 _testCatalogsProvider.Dispose();
                 _testCatalogsProvider = null;

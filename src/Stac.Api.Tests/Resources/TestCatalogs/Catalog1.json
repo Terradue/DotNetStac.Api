@@ -1,0 +1,39 @@
+{
+    "Tests": {
+        "CollectionsApi":
+        {
+            "TestName": "CollectionsApi",
+            "TestType": "Api",
+            "TestDescription": "Test the Collections API",
+            "TestEnabled": true,
+            "TestParameters": {
+                "ApiUrl": "http://localhost:5000/api/collections",
+                "ApiMethod": "GET",
+                "ApiHeaders": {
+                    "Content-Type": "application/json"
+                },
+                "ApiBody": null,
+                "ApiTimeout": 10000,
+                "ApiExpectedStatusCode": 200,
+                "ApiExpectedResponse": {
+                    "collections": [
+                        {
+                            "id": 1,
+                            "name": "Test Collection 1",
+                            "description": "Test Collection 1 Description",
+                            "created": "2018-01-01T00:00:00",
+                            "updated": "2018-01-01T00:00:00"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Test Collection 2",
+                            "description": "Test Collection 2 Description",
+                            "created": "2018-01-01T00:00:00",
+                            "updated": "2018-01-01T00:00:00"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

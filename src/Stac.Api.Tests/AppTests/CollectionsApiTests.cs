@@ -23,7 +23,7 @@ namespace Stac.Api.Tests.AppTests
             var catalog = JsonConvert.DeserializeObject<StacCollections>(json);
         }
 
-        [Theory, MemberData(nameof(TestCatalogs), new object[] { nameof(CollectionsApiTests) })]
+        [Theory, MemberData(nameof(GetTestCatalogs), new object[] { new string[] { "Catalog1" } })]
         public async Task GetCollectionsAsync(StacApiApplication application)
         {
             var client = application.CreateClient();
@@ -48,7 +48,7 @@ namespace Stac.Api.Tests.AppTests
 
         }
 
-        [Theory, MemberData(nameof(TestCatalogs), new object[] { nameof(CollectionsApiTests) })]
+        [Theory, MemberData(nameof(GetTestCatalogs), new object[] { nameof(CollectionsApiTests) })]
         public async Task GetCollectionsByIdAsync(StacApiApplication application)
         {
             var client = application.CreateClient();

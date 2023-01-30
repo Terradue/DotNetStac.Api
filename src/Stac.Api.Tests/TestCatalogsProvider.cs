@@ -44,8 +44,16 @@ namespace Stac.Api.Tests
                 yield return new object[] { new StacApiApplication(subdir) };
             }
         }
-        
-        private string[] GetReferenceCatalogsDirectories()
+
+        public IEnumerable<object[]> GetStacApiApplications(string[] catalogNames)
+        {
+            foreach (var name in catalogNames)
+            {
+                yield return new object[] { new StacApiApplication(Path.Combine(GetTestCatalogsRootPath(), "Catalog*")) };
+            }
+        }
+
+        private string[] GetReferenceCatalogsDirectories(string searchPattern = "Catalog*")
         {
             return Directory.GetDirectories(GetTestCatalogsRootPath(), "Catalog*", new EnumerationOptions() { RecurseSubdirectories = false });
         }

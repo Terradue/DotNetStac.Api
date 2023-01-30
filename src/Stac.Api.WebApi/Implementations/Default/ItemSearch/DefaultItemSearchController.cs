@@ -112,7 +112,7 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
 
         public Task<ActionResult<StacFeatureCollection>> PostItemSearchAsync(SearchBody body, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return GetItemSearchAsync(string.Join(",", body.Bbox), body.Intersects, body.Datetime, body.Limit, body.Ids, body.Collections, cancellationToken);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Stac.Api.Tests.AppTests
             var catalog = JsonConvert.DeserializeObject<StacCollections>(json);
         }
 
-        [Theory, MemberData(nameof(TestCatalogs), new object[] { nameof(TransactionApiTests) })]
+        [Theory, MemberData(nameof(GetTestCatalogs), new object[] { nameof(TransactionApiTests) })]
         public async Task PostAllCollectionItemsAsync(StacApiApplication application, string collectionPath, string[] itemsPaths)
         {
             var client = application.CreateClient();
