@@ -44,7 +44,7 @@ namespace Stac.Api.CodeGen
             }
             catch { }
 
-            // Fix unsupported array for bbox (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/item-search/openapi.yaml#L179)
+            // Fix unsupported array for bbox (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.2/item-search/openapi.yaml#L179)
             // Replace by a simple string
             if (document.Components.Parameters.ContainsKey("bbox"))
             {
@@ -72,7 +72,7 @@ namespace Stac.Api.CodeGen
             }
             catch { }
 
-            // Set intersects parameter as string (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/item-search/openapi.yaml#L207)
+            // Set intersects parameter as string (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.2/item-search/openapi.yaml#L207)
             // try
             // {
             //     OpenApiParameter intersectsParam = document.Paths["/search"]?["get"]?.Parameters.Cast<OpenApiParameter>().FirstOrDefault(p => ((OpenApiParameter)p.Reference).Name == "intersects");
@@ -85,7 +85,7 @@ namespace Stac.Api.CodeGen
             // }
             // catch { }
 
-            // Set JsonSchema as return Type for Queryables (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/fragments/filter/openapi.yaml#L167)
+            // Set JsonSchema as return Type for Queryables (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.2/fragments/filter/openapi.yaml#L167)
             try
             {
                 OpenApiResponse response = document.Components.Responses.FirstOrDefault(s => s.Key == "Queryables").Value;
@@ -105,7 +105,7 @@ namespace Stac.Api.CodeGen
             }
             catch { }
 
-            // Change Children Schema name (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.1/children/openapi.yaml#L88)
+            // Change Children Schema name (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.2/children/openapi.yaml#L88)
             try
             {
                 OpenApiOperation childrenOperation = document.Paths["/children"]["get"];

@@ -29,7 +29,7 @@ namespace Stac.Api.Clients.Extensions.Query
     /// <br/>Allows users to query properties for specific values
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class SearchBody
+    public partial class QuerySearchBody
     {
         [Newtonsoft.Json.JsonProperty("query", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public Query Query { get; set; }
@@ -71,7 +71,6 @@ namespace Stac.Api.Clients.Extensions.Query
         }
 
     }
-
 
 
 }

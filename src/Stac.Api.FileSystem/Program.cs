@@ -59,7 +59,7 @@ app.UseSwaggerUi3(c =>
 app.UseReDoc(c =>
 {
     c.Path = "/redoc";
-    c.DocumentPath = "/openapi/v1.0.0-rc.1/core/openapi.yaml";
+    c.DocumentPath = "/openapi/v1.0.0-rc.2/core/openapi.yaml";
 }); // serve ReDoc UI
 
 app.UseRouting();
