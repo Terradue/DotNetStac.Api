@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,7 +62,21 @@ namespace Stac.Api.CodeGen
 
             var generator = new CSharpClientGenerator(document, settings);
 
-            return generator.GenerateFile();
+            var code = generator.GenerateFile();
+
+            code = PostProcessCode(code);
+
+            return code;
+        }
+
+        private string PostProcessCode(string code)
+        {
+            string pattern = @"if \(status_ == (\d)[xX]+\)";
+            string substitution = @"if (status_ >= ${1}00 && status_ <= ${1}99)";
+            RegexOptions options = RegexOptions.Multiline;
+            
+            Regex regex = new Regex(pattern, options);
+            return regex.Replace(code, substitution);
         }
     }
 }

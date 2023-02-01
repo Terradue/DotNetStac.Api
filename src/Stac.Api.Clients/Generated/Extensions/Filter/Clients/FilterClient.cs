@@ -238,7 +238,7 @@ namespace Stac.Api.Clients.Extensions.Filter
         /// <br/>A CQL2 filter expression for filtering items.</param>
         /// <returns>A feature collection.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(FilterLang? filter_lang, System.Uri filter_crs, FilterCql2Json2 filterParameter)
+        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(FilterLang? filter_lang, System.Uri filter_crs, string filterParameter)
         {
             return GetItemSearchAsync(filter_lang, filter_crs, filterParameter, System.Threading.CancellationToken.None);
         }
@@ -259,7 +259,7 @@ namespace Stac.Api.Clients.Extensions.Filter
         /// <br/>A CQL2 filter expression for filtering items.</param>
         /// <returns>A feature collection.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(FilterLang? filter_lang, System.Uri filter_crs, FilterCql2Json2 filterParameter, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(FilterLang? filter_lang, System.Uri filter_crs, string filterParameter, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append("search?");
@@ -313,24 +313,24 @@ namespace Stac.Api.Clients.Extensions.Filter
                             return objectResponse_.Object;
                         }
                         else
-                        if (status_ == 4XX)
+                        if (status_ >= 400 && status_ <= 499)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Error>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Features.ServerError>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Error>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Features.ServerError>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 5XX)
+                        if (status_ >= 500 && status_ <= 599)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Error>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Features.ServerError>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Error>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Features.ServerError>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -416,24 +416,24 @@ namespace Stac.Api.Clients.Extensions.Filter
                             return objectResponse_.Object;
                         }
                         else
-                        if (status_ == 4XX)
+                        if (status_ >= 400 && status_ <= 499)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Error>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Features.ServerError>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Error>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Features.ServerError>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 5XX)
+                        if (status_ >= 500 && status_ <= 599)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Error>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Features.ServerError>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Error>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Features.ServerError>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -564,10 +564,10 @@ namespace Stac.Api.Clients.Extensions.Filter
     /// <br/>A filter for properties in Items.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FilterSearchBody : SearchBody
+    public partial class FilterSearchBody : Stac.Api.Clients.ItemSearch.SearchBody
     {
         [Newtonsoft.Json.JsonProperty("filter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FilterCql2Json2 Filter { get; set; }
+        public string Filter { get; set; }
 
         [Newtonsoft.Json.JsonProperty("filter-lang", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -591,327 +591,6 @@ namespace Stac.Api.Clients.Extensions.Filter
 
         [System.Runtime.Serialization.EnumMember(Value = @"cql2-json")]
         Cql2Json = 1,
-
-    }
-
-    /// <summary>
-    /// A GeoJSON FeatureCollection augmented with foreign members that contain values relevant to a STAC entity
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class StacFeatureCollection
-    {
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public StacFeatureCollectionType Type { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("features", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public System.Collections.Generic.ICollection<Features> Features { get; set; } = new System.Collections.ObjectModel.Collection<Features>();
-
-        /// <summary>
-        /// An array of links. Can be used for pagination, e.g. by providing a link with the `next` relation type.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("links", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<Links> Links { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("numberMatched", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.Range(0, int.MaxValue)]
-        public int NumberMatched { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("numberReturned", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.Range(0, int.MaxValue)]
-        public int NumberReturned { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    /// <summary>
-    /// Information about the exception: an error code plus an optional description.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Error
-    {
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Code { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Description { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    /// <summary>
-    /// Only return items that intersect the provided bounding box.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class BboxFilter
-    {
-        [Newtonsoft.Json.JsonProperty("bbox", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.MinLength(4)]
-        [System.ComponentModel.DataAnnotations.MaxLength(6)]
-        public Bbox Bbox { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum StacFeatureCollectionType
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"FeatureCollection")]
-        FeatureCollection = 0,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Links
-    {
-        /// <summary>
-        /// The location of the resource
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("href", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Uri Href { get; set; }
-
-        /// <summary>
-        /// Relation type of the link
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("rel", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Rel { get; set; }
-
-        /// <summary>
-        /// The media type of the resource
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Type { get; set; }
-
-        /// <summary>
-        /// Title of the resource
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Title { get; set; }
-
-        /// <summary>
-        /// Specifies the HTTP method that the resource expects
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("method", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public LinksMethod Method { get; set; } = Stac.Api.Clients.Extensions.Filter.LinksMethod.GET;
-
-        /// <summary>
-        /// Object key values pairs they map to headers
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("headers", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Headers { get; set; }
-
-        /// <summary>
-        /// For POST requests, the resource can specify the HTTP body as a JSON object.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("body", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Body { get; set; }
-
-        /// <summary>
-        /// This is only valid when the server is responding to POST request.
-        /// <br/>
-        /// <br/>If merge is true, the client is expected to merge the body value
-        /// <br/>into the current request body before following the link.
-        /// <br/>This avoids passing large post bodies back and forth when following
-        /// <br/>links, particularly for navigating pages through the `POST /search`
-        /// <br/>endpoint.
-        /// <br/>
-        /// <br/>NOTE: To support form encoding it is expected that a client be able
-        /// <br/>to merge in the key value pairs specified as JSON
-        /// <br/>`{"next": "token"}` will become `&amp;next=token`.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("merge", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool Merge { get; set; } = false;
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Intersects2
-    {
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Intersects2Type Type { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("coordinates", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        [System.ComponentModel.DataAnnotations.MinLength(2)]
-        public System.Collections.Generic.ICollection<double> Coordinates { get; set; } = new System.Collections.ObjectModel.Collection<double>();
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    /// <summary>
-    /// Array of Collection IDs to include in the search for items.
-    /// <br/>Only Item objects in one of the provided collections will be searched.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Collections : System.Collections.ObjectModel.Collection<string>
-    {
-
-    }
-
-    /// <summary>
-    /// Array of Item ids to return.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Ids : System.Collections.ObjectModel.Collection<string>
-    {
-
-    }
-
-    /// <summary>
-    /// Only features that have a geometry that intersects the bounding box are
-    /// <br/>selected. The bounding box is provided as four or six numbers,
-    /// <br/>depending on whether the coordinate reference system includes a
-    /// <br/>vertical axis (elevation or depth):
-    /// <br/>
-    /// <br/>* Lower left corner, coordinate axis 1
-    /// <br/>* Lower left corner, coordinate axis 2  
-    /// <br/>* Lower left corner, coordinate axis 3 (optional) 
-    /// <br/>* Upper right corner, coordinate axis 1 
-    /// <br/>* Upper right corner, coordinate axis 2 
-    /// <br/>* Upper right corner, coordinate axis 3 (optional)
-    /// <br/>
-    /// <br/>The coordinate reference system of the values is WGS84
-    /// <br/>longitude/latitude (http://www.opengis.net/def/crs/OGC/1.3/CRS84).
-    /// <br/>
-    /// <br/>For WGS84 longitude/latitude the values are in most cases the sequence
-    /// <br/>of minimum longitude, minimum latitude, maximum longitude and maximum
-    /// <br/>latitude. However, in cases where the box spans the antimeridian the
-    /// <br/>first value (west-most box edge) is larger than the third value
-    /// <br/>(east-most box edge).
-    /// <br/>
-    /// <br/>If a feature has multiple spatial geometry properties, it is the
-    /// <br/>decision of the server whether only a single spatial geometry property
-    /// <br/>is used to determine the extent or all relevant geometries.
-    /// <br/>
-    /// <br/>Example: The bounding box of the New Zealand Exclusive Economic Zone in
-    /// <br/>WGS 84 (from 160.6°E to 170°W and from 55.95°S to 25.89°S) would be
-    /// <br/>represented in JSON as `[160.6, -55.95, -170, -25.89]` and in a query as
-    /// <br/>`bbox=160.6,-55.95,-170,-25.89`.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Bbox : System.Collections.ObjectModel.Collection<double>
-    {
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Stac_extensions : System.Collections.ObjectModel.Collection<SearchBody>
-    {
-
-    }
-
-    /// <summary>
-    /// The GeoJSON type
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Type
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"Feature")]
-        Feature = 0,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Links2 : System.Collections.ObjectModel.Collection<Links>
-    {
-
-    }
-
-    /// <summary>
-    /// provides the core metadata fields plus extensions
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Properties
-    {
-        [Newtonsoft.Json.JsonProperty("datetime", Required = Newtonsoft.Json.Required.AllowNull)]
-        public System.DateTimeOffset? Datetime { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Assets : System.Collections.Generic.Dictionary<string, SearchBody>
-    {
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum LinksMethod
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"GET")]
-        GET = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"POST")]
-        POST = 1,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Intersects2Type
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"Point")]
-        Point = 0,
 
     }
 
