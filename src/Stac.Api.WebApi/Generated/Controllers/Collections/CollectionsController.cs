@@ -7,6 +7,7 @@
 using Stac;
 using Stac.Common;
 using Stac.Api.Models;
+using Stac.Api.Interfaces;
 using Stac.Api.Clients.Collections;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."

@@ -7,6 +7,7 @@
 using Stac;
 using Stac.Common;
 using Stac.Api.Models;
+using Stac.Api.Interfaces;
 using Stac.Api.Clients.Collections;
 using Stac.Api.Clients.Core;
 using Stac.Api.Clients.Extensions.Filter;
