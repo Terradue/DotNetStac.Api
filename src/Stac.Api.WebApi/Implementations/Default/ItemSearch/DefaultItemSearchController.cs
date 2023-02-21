@@ -74,7 +74,7 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
             }
 
             // Save the query parameters in the context
-            SetQueryParametersInContext(stacApiContext, bbox, intersects.Geometry, datetime, limit, ids, collections);
+            SetQueryParametersInContext(stacApiContext, bbox, intersects?.Geometry, datetime, limit, ids, collections);
 
             // Apply Context Post Query Filters
             items = _stacApiContextFactory.ApplyContextPostQueryFilters<StacItem>(stacApiContext, itemsProvider, items);

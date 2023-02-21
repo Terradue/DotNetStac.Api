@@ -14,6 +14,7 @@ namespace Stac.Api.Models.Cql2
     using GeoJSON.Net;
     using GeoJSON.Net.Geometry;
     using Newtonsoft.Json;
+    using Stac;
     using Stac.Api.Converters;
     using System = global::System;
 
@@ -30,8 +31,8 @@ namespace Stac.Api.Models.Cql2
             set { _additionalProperties = value; }
         }
 
-        public AndOrExpression AndOr() => this as AndOrExpression;
-        public NotExpression Not() => this as NotExpression;
+        public AndOrExpression AndOrExpression() => this as AndOrExpression;
+        public NotExpression NotExpression() => this as NotExpression;
         public ComparisonPredicate Comparison() => this as ComparisonPredicate;
         public SpatialPredicate Spatial() => this as SpatialPredicate;
         public TemporalPredicate Temporal() => this as TemporalPredicate;
@@ -74,11 +75,11 @@ namespace Stac.Api.Models.Cql2
     {
         public BinaryComparisonPredicate Binary() => this as BinaryComparisonPredicate;
         public IsLikePredicate IsLike() => this as IsLikePredicate;
-        public IsBetweenPredicate IsBetween() => this as IsBetweenPredicate;
+        public IsBetweenPredicate IsBetweenPredicate() => this as IsBetweenPredicate;
         public IsInListPredicate IsInList() => this as IsInListPredicate;
         public IsNullPredicate IsNull() => this as IsNullPredicate;
-        public SpatialPredicate Spatial() => this as SpatialPredicate;
-        public TemporalPredicate Temporal() => this as TemporalPredicate;
+        public SpatialPredicate SpatialPredicate() => this as SpatialPredicate;
+        public TemporalPredicate TemporalPredicate() => this as TemporalPredicate;
     }
 
     [JsonConverter(typeof(NoConverter))]

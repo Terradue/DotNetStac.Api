@@ -17,12 +17,12 @@ using Stac.Api.WebApi.Implementations.Default.ItemSearch;
 using Stac.Api.WebApi.Controllers.Features;
 using Stac.Api.WebApi.Implementations.Default.Features;
 using Stac.Api.WebApi.Controllers.Extensions.Filter;
-using Stac.Api.WebApi.Implementations.Default.Filter;
 using Stac.Api.WebApi.Controllers.Extensions.Transaction;
 using Stac.Api.WebApi.Implementations.Default.Extensions.Transaction;
 using GeoJSON.Net.Geometry;
 using Stac.Api.Converters;
 using Stac.Api.Models.Core;
+using Stac.Api.WebApi.Implementations.Default.Extensions.Filter;
 
 namespace Stac.Api.WebApi.Extensions
 {
@@ -34,6 +34,7 @@ namespace Stac.Api.WebApi.Extensions
                 {
                     options.Filters.Add<JsonErrorActionFilter>();
                     options.ModelBinderProviders.Insert(0, new GeometryModelBinderProvider());
+                    options.Conventions.Add(new StacApiExtensionsConvention());
                 })
                 .AddNewtonsoftJson(options =>
                 {
@@ -59,6 +60,13 @@ namespace Stac.Api.WebApi.Extensions
             services.AddSingleton<IFeaturesController, DefaultFeaturesController>();
             services.AddSingleton<IFilterController, DefaultFilterController>();
             services.AddSingleton<ITransactionController, DefaultTransactionController>();
+            return services;
+        }
+
+        public static IServiceCollection AddExtensionsConstraints(this IServiceCollection services)
+        {
+            services.AddRouting(options =>
+                options.ConstraintMap.Add("FilterExtensionSearch", typeof(FilterExtensionSearchConstraint)));
             return services;
         }
 

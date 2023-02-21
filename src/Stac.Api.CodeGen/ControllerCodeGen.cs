@@ -71,9 +71,17 @@ namespace Stac.Api.CodeGen
 
             var generator = new CSharpControllerGenerator(document, settings);
 
-            return generator.GenerateFile();
+            var code = generator.GenerateFile();
+
+            code = PostProcessCode(code);
+            
+            return code;
         }
 
-
+        private string PostProcessCode(string code)
+        {
+            return code;
+            // return code.Replace("public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult", "public partial System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult");
+        }
     }
 }

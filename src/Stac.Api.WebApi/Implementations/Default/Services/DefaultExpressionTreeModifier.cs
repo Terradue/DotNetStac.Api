@@ -30,5 +30,9 @@ namespace Stac.Api.WebApi.Implementations.Default.Services
             return base.VisitMethodCall(node);
         }
 
+        public override Expression? Visit(Expression? node){
+            return base.Visit(node);
+        }
+
     }
 }

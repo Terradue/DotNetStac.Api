@@ -11,14 +11,10 @@ namespace Stac.Api.Services.Filtering
     public static class ItemFiltersExtensions
     {
 
-        public static bool IsMatch(Regex regex, IComparable obj)
+        public static bool IsLike(object like, IComparable pattern)
         {
-            return regex.IsMatch(obj.ToString());
-        }
-
-        public static Regex LikeToRegex(this IComparable isLike)
-        {
-            return new Regex(@"\A" + new Regex(@"\.|\$|\^|\{|\[|\(|\||\)|\*|\+|\?|\\").Replace(isLike.ToString(), ch => @"\" + ch).Replace('_', '.').Replace("%", ".*") + @"\z", RegexOptions.Singleline);
+            Regex regex = new Regex(@"\A" + new Regex(@"\.|\$|\^|\{|\[|\(|\||\)|\*|\+|\?|\\").Replace(pattern.ToString(), ch => @"\" + ch).Replace('_', '.').Replace("%", ".*") + @"\z", RegexOptions.Singleline);
+            return regex.IsMatch(like.ToString());
         }
 
         public static StacQueryable<TSource> Filter<TSource>(this StacQueryable<TSource> items, double[] bboxArray) where TSource : IStacObject

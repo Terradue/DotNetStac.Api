@@ -16,74 +16,21 @@ using Stars.Geometry.NTS;
 
 namespace Stac.Api.Models.Cql2
 {
-    public static class Cql2FilterTranslator
+    public static class Cql2Linq
     {
 
-        public static StacQueryable<TSource> WithCQL2<TSource>(this StacQueryable<TSource> source, BooleanExpression booleanExpression) where TSource : IStacObject
+        public static StacQueryable<TSource> Boolean<TSource>(this StacQueryable<TSource> source, BooleanExpression booleanExpression) where TSource : IStacObject
         {
-            AndOrExpression andOrExpression = booleanExpression.AndOr();
-            if (andOrExpression != null)
-            {
-                return source.WithCQL2(andOrExpression);
-            }
-            NotExpression notExpression = booleanExpression.Not();
-            if (notExpression != null)
-            {
-                return source.WithCQL2(notExpression);
-            }
-            ComparisonPredicate comparisonPredicate = booleanExpression.Comparison();
-            if (comparisonPredicate != null)
-            {
-                return source.WithCQL2(comparisonPredicate);
-            }
-
-            throw new NotImplementedException();
-        }
-
-        public static StacQueryable<TSource> WithCQL2<TSource>(this StacQueryable<TSource> source, AndOrExpression andOrExpression) where TSource : IStacObject
-        {
-            IQueryable<TSource> newSource = source.WithCQL2(andOrExpression.Args[0]);
-            int i = 1;
-            while (andOrExpression.Args.Count > i)
-            {
-                switch (andOrExpression.Op)
-                {
-                    case AndOrExpressionOp.And:
-                        newSource = newSource.Intersect(source.WithCQL2(andOrExpression.Args[i]));
-                        break;
-                    case AndOrExpressionOp.Or:
-                        newSource = newSource.Union(source.WithCQL2(andOrExpression.Args[i]));
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-                i++;
-            }
-
-            return new StacQueryable<TSource>(source.Provider as StacQueryProvider, newSource.Expression);
-        }
-
-        public static StacQueryable<TSource> WithCQL2<TSource>(this StacQueryable<TSource> source, NotExpression notExpression) where TSource : IStacObject
-        {
-            return new StacQueryable<TSource>(source.Provider as StacQueryProvider, source.WithCQL2(notExpression.Args[0]).Except(source).Expression);
-        }
-
-        public static StacQueryable<TSource> WithCQL2<TSource>(this StacQueryable<TSource> source, ComparisonPredicate comparisonPredicate) where TSource : IStacObject
-        {
-            return source.WhereCQL2(comparisonPredicate);
-        }
-
-        public static StacQueryable<TSource> WhereCQL2<TSource>(this StacQueryable<TSource> source,
-                                                                  ComparisonPredicate binaryComparisonPredicate) where TSource : IStacObject
-        {
-            // This method creates a lambda expression that compares the 2 arguments
+            // This method creates a lambda expression that return a boolean value
             // As we start a lambda expression, we need to create a parameter
             ParameterExpression itemParameter = Expression.Parameter(typeof(TSource), "item");
             ParameterExpression providerParameter = Expression.Parameter(typeof(IStacQueryProvider), "provider");
 
-            Expression body = CQL2ComparisonToExpression<TSource>(binaryComparisonPredicate, itemParameter, providerParameter);
+            // We need to create a body for the lambda expression with all the rest of the filter
+            Expression body = CQL2BooleanToExpression<TSource>(booleanExpression, itemParameter, providerParameter);
             var lambda = Expression.Lambda<Func<TSource, bool>>(body, itemParameter);
 
+            // Get the Where method from the IQueryable interface
             var whereMethod = typeof(Queryable).GetMethods()
                 .Where(m => m.Name == nameof(Queryable.Where)
                             && m.GetParameters().Length == 2)
@@ -93,15 +40,75 @@ namespace Stac.Api.Models.Cql2
                             && p.GetParameters().Last().ParameterType.GetGenericArguments().First().GetGenericArguments().Length == 2)
                 .Single();
 
+            // Call the Where method with the lambda expression
             var callExpression = Expression.Call(
                     null,
                     whereMethod.MakeGenericMethod(typeof(TSource)),
                     new Expression[] { source.Expression, Expression.Quote(lambda) }
                     );
 
+            // Return a new StacQueryable with the new expression
             return new StacQueryable<TSource>(source.Provider as IStacQueryProvider,
                                               callExpression);
+        }
 
+        public static Expression CQL2BooleanToExpression<TSource>(BooleanExpression booleanExpression, ParameterExpression itemParameter, ParameterExpression providerParameter) where TSource : IStacObject
+        {
+            AndOrExpression andOrExpression = booleanExpression.AndOrExpression();
+            if (andOrExpression != null)
+            {
+                return CQL2AndOrToExpression<TSource>(andOrExpression, itemParameter, providerParameter);
+            }
+            NotExpression notExpression = booleanExpression.NotExpression();
+            if (notExpression != null)
+            {
+                return CQL2NotToExpression<TSource>(notExpression, itemParameter, providerParameter);
+            }
+            ComparisonPredicate comparisonPredicate = booleanExpression.Comparison();
+            if (comparisonPredicate != null)
+            {
+                return CQL2ComparisonToExpression<TSource>(comparisonPredicate, itemParameter, providerParameter);
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public static Expression CQL2AndOrToExpression<TSource>(AndOrExpression andOrExpression, ParameterExpression itemParameter, ParameterExpression providerParameter) where TSource : IStacObject
+        {
+            // check the arguments
+            if (andOrExpression.Args.Count < 2)
+            {
+                throw new ArgumentException("AndOrExpression must have at least 2 arguments");
+            }
+
+            // We pass the parameter to the CQL2BooleanToExpression method to get left and right expressions
+            var left = CQL2BooleanToExpression<TSource>(andOrExpression.Args[0], itemParameter, providerParameter);
+            var right = CQL2BooleanToExpression<TSource>(andOrExpression.Args[1], itemParameter, providerParameter);
+
+            switch (andOrExpression.Op)
+            {
+                case AndOrExpressionOp.And:
+                    return Expression.AndAlso(left, right);
+                case AndOrExpressionOp.Or:
+                    return Expression.OrElse(left, right);
+                default:
+                    throw new NotImplementedException();
+            }
+
+        }
+
+        public static Expression CQL2NotToExpression<TSource>(NotExpression notExpression, ParameterExpression itemParameter, ParameterExpression providerParameter) where TSource : IStacObject
+        {
+            // check the arguments
+            if (notExpression.Args.Count != 1)
+            {
+                throw new ArgumentException("NotExpression must have exactly 1 argument");
+            }
+
+            // We pass the parameter to the CQL2BooleanToExpression method to get the negated expression
+            var negated = CQL2BooleanToExpression<TSource>(notExpression.Args[0], itemParameter, providerParameter);
+
+            return Expression.Not(negated);
         }
 
         private static Expression CQL2ComparisonToExpression<TSource>(ComparisonPredicate binaryComparisonPredicate, ParameterExpression itemParameter, ParameterExpression providerParameter) where TSource : IStacObject
@@ -125,10 +132,14 @@ namespace Stac.Api.Models.Cql2
             }
         }
 
-
-
         private static BinaryExpression CQL2BinaryComparisonToExpression<TSource>(BinaryComparisonPredicate binaryComparisonPredicate, ParameterExpression itemParameter, ParameterExpression providerParameter) where TSource : IStacObject
         {
+            // check the arguments
+            if (binaryComparisonPredicate.Args.Count != 2)
+            {
+                throw new ArgumentException("BinaryComparisonPredicate must have exactly 2 arguments");
+            }
+
             // We pass the parameter to the CQL2ToExpression method to get the scalar expression value
             var left = CQL2ToExpression<TSource>(binaryComparisonPredicate.Args[0], itemParameter, providerParameter);
             var right = CQL2ToExpression<TSource>(binaryComparisonPredicate.Args[1], itemParameter, providerParameter);
@@ -163,8 +174,7 @@ namespace Stac.Api.Models.Cql2
             var right = CQL2ToExpression<TSource>(isLikeComparisonPredicate.Args[1], itemParameter, providerParameter);
 
             var methodInfo = typeof(Regex).GetMethod("IsMatch", new Type[] { typeof(string) });
-            var rightAsRegex = Expression.Call(null, typeof(ItemFiltersExtensions).GetMethod("LikeToRegex", new Type[] { typeof(IComparable) }), right);
-            var isLikeExpression = Expression.Call(rightAsRegex, methodInfo, Expression.Call(left, typeof(object).GetMethod("ToString", new Type[] { })));
+            var isLikeExpression = Expression.Call(null, typeof(ItemFiltersExtensions).GetMethod("IsLike", new Type[] { typeof(object), typeof(IComparable) }), left, right);
 
             return isLikeExpression;
 
