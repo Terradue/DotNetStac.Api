@@ -93,5 +93,10 @@ namespace Stac.Api.Services.Queryable
         }
 
         public abstract ITimePeriod GetStacObjectDateTime<TSource>(TSource i, string v) where TSource : IStacObject;
+
+        public bool TemporalIntersects(ITimePeriod timePeriod1, ITimePeriod timePeriod2)
+        {
+            return timePeriod1.HasInside(timePeriod2.Start) || timePeriod1.HasInside(timePeriod2.End) || timePeriod2.HasInside(timePeriod1.Start) || timePeriod2.HasInside(timePeriod1.End);
+        }
     }
 }

@@ -44,7 +44,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
             IStacApiContext stacApiContext = _stacApiContextFactory.Create();
 
             // Check the filters
-            IFilter filter = CreateFilter(filter_lang, filterParameter);
+            BooleanExpression filter = CreateFilter(filter_lang, filterParameter);
 
             IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider();
 
@@ -55,7 +55,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
             var items = await itemsProvider.GetItemsAsync(stacApiContext, cancellationToken);
 
             // Apply the filter
-            items = items.Where(filter.Boolean<StacItem>());
+            items = items.Boolean<StacItem>(filter);
 
             // Save the query parameters in the context
             SetQueryParametersInContext(stacApiContext, filter);
@@ -92,7 +92,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
             throw new NotImplementedException();
         }
 
-        private IFilter CreateFilter(FilterLang? filter_lang, string filterParameter)
+        private BooleanExpression CreateFilter(FilterLang? filter_lang, string filterParameter)
         {
             if (filter_lang == null || filter_lang == FilterLang.Cql2Text)
             {
@@ -108,14 +108,14 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
             }
         }
 
-        private IFilter CreateCqlFilterFromJson(string filterParameter)
+        private BooleanExpression CreateCqlFilterFromJson(string filterParameter)
         {
             JObject jObject = JObject.Parse(filterParameter);
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             return cql;
         }
 
-        private IFilter CreateCqlFilterFromText(string filterParameter)
+        private BooleanExpression CreateCqlFilterFromText(string filterParameter)
         {
             throw new NotImplementedException();
         }

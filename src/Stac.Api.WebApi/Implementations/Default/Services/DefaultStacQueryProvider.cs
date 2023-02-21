@@ -77,7 +77,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Services
             return new Itenso.TimePeriod.TimeInterval(s.GetProperty<DateTime>(property));
         }
 
-        public override Geometry? GetStacObjectGeometry<TSource>(TSource s, string property = "geometry")
+        public override Geometry GetStacObjectGeometry<TSource>(TSource s, string property = "geometry")
         {
             if ( s is StacItem stacItem)
             {

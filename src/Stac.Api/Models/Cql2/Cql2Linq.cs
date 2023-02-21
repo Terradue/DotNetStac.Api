@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using GeoJSON.Net.Geometry;
+using Itenso.TimePeriod;
 using NetTopologySuite.Geometries;
 using Stac.Api.Interfaces;
 using Stac.Api.Models.Cql2;
@@ -19,7 +20,12 @@ namespace Stac.Api.Models.Cql2
     public static class Cql2Linq
     {
 
-        public static StacQueryable<TSource> Boolean<TSource>(this StacQueryable<TSource> source, BooleanExpression booleanExpression) where TSource : IStacObject
+        public static IEnumerable<TSource> Boolean<TSource>(this IEnumerable<TSource> source, BooleanExpression booleanExpression) where TSource : IStacObject
+        {
+            return source.AsQueryable().Boolean(booleanExpression);
+        }
+
+        public static IQueryable<TSource> Boolean<TSource>(this IQueryable<TSource> source, BooleanExpression booleanExpression) where TSource : IStacObject
         {
             // This method creates a lambda expression that return a boolean value
             // As we start a lambda expression, we need to create a parameter
@@ -127,6 +133,8 @@ namespace Stac.Api.Models.Cql2
                     return CQL2ToIsNullToExpression<TSource>(isNullPredicate, itemParameter, providerParameter);
                 case SpatialPredicate spatialPredicate:
                     return CQL2ToSpatialToExpression<TSource>(spatialPredicate, itemParameter, providerParameter);
+                case TemporalPredicate temporalPredicate:
+                    return CQL2ToTemporalToExpression<TSource>(temporalPredicate, itemParameter, providerParameter);
                 default:
                     throw new NotImplementedException(binaryComparisonPredicate.GetType().Name);
             }
@@ -259,6 +267,39 @@ namespace Stac.Api.Models.Cql2
             throw new NotImplementedException(op.GetType().ToString());
         }
 
+        private static Expression CQL2ToTemporalToExpression<TSource>(TemporalPredicate temporalPredicate, ParameterExpression itemParameter, ParameterExpression providerParameter) where TSource : IStacObject
+        {
+            // We pass the parameter to the CQL2ToExpression method to get the scalar expression value
+            var left = CQL2ToExpression<TSource>(temporalPredicate.Args[0], itemParameter, providerParameter);
+            var right = CQL2ToExpression<TSource>(temporalPredicate.Args[1], itemParameter, providerParameter);
+            MethodInfo methodInfo = GetTemporalMethod(temporalPredicate.Op);
+            var temporalExpression = Expression.Call(providerParameter, methodInfo, left, right);
+
+            return temporalExpression;
+        }
+
+        private static MethodInfo GetTemporalMethod(TemporalPredicateOp op)
+        {
+            switch (op)
+            {
+                case TemporalPredicateOp.T_before:
+                    return typeof(IStacQueryProvider).GetMethod("TemporalBefore", new Type[] { typeof(ITimePeriod), typeof(ITimePeriod) });
+                case TemporalPredicateOp.T_during:
+                    return typeof(IStacQueryProvider).GetMethod("TemporalDuring", new Type[] { typeof(ITimePeriod), typeof(ITimePeriod) });
+                case TemporalPredicateOp.T_equals:
+                    return typeof(IStacQueryProvider).GetMethod("TemporalEquals", new Type[] { typeof(ITimePeriod), typeof(ITimePeriod) });
+                case TemporalPredicateOp.T_meets:
+                    return typeof(IStacQueryProvider).GetMethod("TemporalMeets", new Type[] { typeof(ITimePeriod), typeof(ITimePeriod) });
+                case TemporalPredicateOp.T_overlaps:
+                    return typeof(IStacQueryProvider).GetMethod("TemporalOverlaps", new Type[] { typeof(ITimePeriod), typeof(ITimePeriod) });
+                case TemporalPredicateOp.T_starts:
+                    return typeof(IStacQueryProvider).GetMethod("TemporalStarts", new Type[] { typeof(ITimePeriod), typeof(ITimePeriod) });
+                case TemporalPredicateOp.T_intersects:
+                    return typeof(IStacQueryProvider).GetMethod("TemporalIntersects", new Type[] { typeof(ITimePeriod), typeof(ITimePeriod) });
+            }
+            throw new NotImplementedException(op.ToString());
+        }
+
         public static Expression CQL2ToExpression<TSource>(IScalarExpression scalarExpression, ParameterExpression item, ParameterExpression providerParameter) where TSource : IStacObject
         {
             if (scalarExpression is IScalarLiteral scalarLiteral)
@@ -286,9 +327,25 @@ namespace Stac.Api.Models.Cql2
 
         public static Expression CQL2ToExpression<TSource>(IIsNullOperand isNullOperand, ParameterExpression item, ParameterExpression providerParameter) where TSource : IStacObject
         {
-            if (isNullOperand is IScalarExpression scalarExpression)
+            if (isNullOperand is CharExpression charExpression)
             {
-                return CQL2ToExpression<TSource>(scalarExpression, item, providerParameter);
+                return CQL2ToExpression<TSource>(charExpression, item, providerParameter);
+            }
+            if (isNullOperand is Number number)
+            {
+                return Expression.Constant(number.Value, typeof(IComparable));
+            }
+            if (isNullOperand is ITemporalExpression temporalExpression)
+            {
+                return CQL2ToExpression<TSource>(temporalExpression, item, providerParameter);
+            }
+            if (isNullOperand is BooleanExpression booleanExpression)
+            {
+                return CQL2BooleanToExpression<TSource>(booleanExpression, item, providerParameter);
+            }
+            if (isNullOperand is IGeomExpression geomExpression)
+            {
+                return CQL2ToExpression<TSource>(geomExpression, item, providerParameter);
             }
 
             throw new NotImplementedException();
@@ -303,6 +360,35 @@ namespace Stac.Api.Models.Cql2
             if (numericExpression is CharExpression charExpression)
             {
                 return CQL2ToExpression<TSource>(charExpression, item, providerParameter);
+            }
+            throw new NotImplementedException();
+        }
+
+        public static Expression CQL2ToExpression<TSource>(ITemporalExpression temporalExpression, ParameterExpression item, ParameterExpression providerParameter) where TSource : IStacObject
+        {
+            if (temporalExpression is ITemporalLiteral temporalLiteral)
+            {
+                return CQL2ToExpression<TSource>(temporalLiteral, item, providerParameter);
+            }
+            if (temporalExpression is PropertyRef propertyRef)
+            {
+                var method = typeof(IStacQueryProvider).GetMethod("GetStacObjectDateTime").MakeGenericMethod(typeof(TSource));
+                return Expression.Call(providerParameter,
+                                       method,
+                                       item, Expression.Constant(propertyRef.Property));
+            }
+            throw new NotImplementedException();
+        }
+
+        public static Expression CQL2ToExpression<TSource>(ITemporalLiteral temporalLiteral, ParameterExpression item, ParameterExpression providerParameter) where TSource : IStacObject
+        {
+            if (temporalLiteral is InstantLiteral instantLiteral)
+            {
+                return Expression.Constant(new TimeInterval(instantLiteral.DateTime.DateTime, instantLiteral.DateTime.DateTime));
+            }
+            if (temporalLiteral is IntervalLiteral intervalLiteral)
+            {
+                return Expression.Constant(intervalLiteral.TimeInterval);
             }
             throw new NotImplementedException();
         }
@@ -336,7 +422,7 @@ namespace Stac.Api.Models.Cql2
 
             if (geomExpression is PropertyRef propertyRef)
             {
-                var method = typeof(StacQueryProvider).GetMethod("GetStacObjectGeometry").MakeGenericMethod(typeof(TSource));
+                var method = typeof(IStacQueryProvider).GetMethod("GetStacObjectGeometry").MakeGenericMethod(typeof(TSource));
                 return Expression.Call(providerParameter,
                                        method,
                                        item, Expression.Constant(propertyRef.Property));

@@ -41,7 +41,7 @@ namespace Stac.Api.Tests
             IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
             var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
             StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
-            source2 = source2.Boolean(cql);
+            source2 = source2.Boolean(cql) as StacQueryable<StacItem>;
             OutputHelper.WriteLine(source2.Expression.ToString());
             Assert.Equal(0, source2.Count());
         }
@@ -57,7 +57,7 @@ namespace Stac.Api.Tests
             IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
             var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
             StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
-            source2 = source2.Boolean(cql);
+            source2 = source2.Boolean(cql) as StacQueryable<StacItem>;
             OutputHelper.WriteLine(source2.Expression.ToString());
             Assert.Equal(1, source2.Count());
         }
@@ -73,8 +73,9 @@ namespace Stac.Api.Tests
             IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
             var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
             StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
-            source2 = source2.Boolean(cql);
+            source2 = source2.Boolean(cql) as StacQueryable<StacItem>;
             OutputHelper.WriteLine(source2.Expression.ToString());
+            Assert.Equal(0, source2.Count());
         }
 
         [Fact]
@@ -88,8 +89,9 @@ namespace Stac.Api.Tests
             IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
             var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
             StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
-            source2 = source2.Boolean(cql);
+            source2 = source2.Boolean(cql) as StacQueryable<StacItem>;
             OutputHelper.WriteLine(source2.Expression.ToString());
+            Assert.Equal(0, source2.Count());
         }
 
         [Fact]
@@ -100,7 +102,12 @@ namespace Stac.Api.Tests
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             json = GetJson("CQL2", "SampleItem", "CQL2Tests");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
-            // Assert.True(item.Filter(cql));
+            IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
+            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
+            StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
+            source2 = source2.Boolean(cql) as StacQueryable<StacItem>;
+            OutputHelper.WriteLine(source2.Expression.ToString());
+            Assert.Equal(1, source2.Count());
         }
 
         [Fact]
@@ -111,7 +118,12 @@ namespace Stac.Api.Tests
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             json = GetJson("CQL2", "SampleItem", "CQL2Tests");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
-            // Assert.True(item.Filter(cql));
+            IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
+            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
+            StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
+            source2 = source2.Boolean(cql) as StacQueryable<StacItem>;
+            OutputHelper.WriteLine(source2.Expression.ToString());
+            Assert.Equal(0, source2.Count());
         }
 
         [Fact]
@@ -131,6 +143,15 @@ namespace Stac.Api.Tests
             Itenso.TimePeriod.TimeInterval interval = new Itenso.TimePeriod.TimeInterval(date1.Date, date2.Date);
             Assert.Equal(interval, cql.Comparison().Temporal().Args[1].TemporalLiteral().IntervalLiteral().TimeInterval);
 
+            json = GetJson("CQL2", "SampleItem", "CQL2Tests");
+            StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
+            IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
+            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
+            StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
+            source2 = source2.Boolean(cql) as StacQueryable<StacItem>;
+            OutputHelper.WriteLine(source2.Expression.ToString());
+            Assert.Equal(1, source2.Count());
+
         }
 
         [Fact]
@@ -146,6 +167,15 @@ namespace Stac.Api.Tests
 
             Assert.Equal("geometry", cql.Comparison().Spatial().Args[0].Property().Property);
             Assert.IsType<Polygon>(cql.Comparison().Spatial().Args[1].SpatialLiteral().GeometryLiteral().GeometryObject);
+
+            json = GetJson("CQL2", "SampleItem", "CQL2Tests");
+            StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
+            IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
+            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
+            StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
+            source2 = source2.Boolean(cql) as StacQueryable<StacItem>;
+            OutputHelper.WriteLine(source2.Expression.ToString());
+            Assert.Equal(0, source2.Count());
 
         }
 
@@ -167,6 +197,15 @@ namespace Stac.Api.Tests
             Assert.Equal(SpatialPredicateOp.S_intersects, cql.AndOrExpression().Args[1].Comparison().Spatial().Op);
             Assert.Equal("geometry", cql.AndOrExpression().Args[1].Comparison().Spatial().Args[0].Property().Property);
             Assert.IsType<Polygon>(cql.AndOrExpression().Args[1].Comparison().Spatial().Args[1].SpatialLiteral().GeometryLiteral().GeometryObject);
+
+            json = GetJson("CQL2", "SampleItem", "CQL2Tests");
+            StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
+            IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
+            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
+            StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
+            source2 = source2.Boolean(cql) as StacQueryable<StacItem>;
+            OutputHelper.WriteLine(source2.Expression.ToString());
+            Assert.Equal(0, source2.Count());
 
         }
 
@@ -195,6 +234,15 @@ namespace Stac.Api.Tests
             Assert.Equal("sentinel:data_coverage", cql.AndOrExpression().Args[2].AndOrExpression().Args[0].Comparison().IsNull().Args.Char().Property().Property);
             Assert.Equal("landsat:coverage_percent", cql.AndOrExpression().Args[2].AndOrExpression().Args[1].Comparison().IsNull().Args.Char().Property().Property);
 
+            json = GetJson("CQL2", "SampleItem", "CQL2Tests");
+            StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
+            IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
+            var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
+            StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
+            source2 = source2.Boolean(cql) as StacQueryable<StacItem>;
+            OutputHelper.WriteLine(source2.Expression.ToString());
+            Assert.Equal(1, source2.Count());
+
         }
 
         [Fact]
@@ -217,8 +265,9 @@ namespace Stac.Api.Tests
             IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
             var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
             StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
-            source2 = source2.Boolean(cql);
+            source2 = source2.Boolean(cql) as StacQueryable<StacItem>;
             OutputHelper.WriteLine(source2.Expression.ToString());
+            Assert.Equal(0, source2.Count());
 
         }
 
@@ -242,8 +291,9 @@ namespace Stac.Api.Tests
             IQueryable<StacItem> source = new StacItem[] { item }.AsQueryable();
             var provider = DefaultStacQueryProvider.CreateDefaultQueryProvider(TestStacApiContext, source);
             StacQueryable<StacItem> source2 = new StacQueryable<StacItem>(provider, source.Expression);
-            source2 = source2.Boolean(cql);
+            source2 = source2.Boolean(cql) as StacQueryable<StacItem>;
             OutputHelper.WriteLine(source2.Expression.ToString());
+            Assert.Equal(0, source2.Count());
 
         }
     }
