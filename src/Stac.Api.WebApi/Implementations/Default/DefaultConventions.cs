@@ -9,6 +9,8 @@ namespace Stac.Api.WebApi.Implementations.Default
     {
         public const string MatchedCountPropertiesKey = "MatchedCount";
 
-        public static string QueryParametersPropertiesKey = "QueryParameters";
+        public const string QueryParametersPropertiesKey = "QueryParameters";
+
+        public const string DebugExpressionTreePropertiesKey = "DebugExpressionTree";
     }
 }

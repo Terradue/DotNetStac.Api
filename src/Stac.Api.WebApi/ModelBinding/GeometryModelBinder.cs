@@ -3,19 +3,18 @@ using GeoJSON.Net.Geometry;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using Stac.Api.Converters;
-using Stac.Api.Interfaces;
 using Stac.Api.Models.Core;
 
-namespace Stac.Api.WebApi.Extensions
+namespace Stac.Api.WebApi.ModelBinding
 {
-    internal class GeometryFilterModelBinder<T> : IModelBinder where T : IGeometryFilter
+    internal class GeometryModelBinder : IModelBinder
     {
         private static JsonSerializer converter;
 
-        public GeometryFilterModelBinder()
+        public GeometryModelBinder()
         {
             converter = new JsonSerializer();
-            converter.Converters.Add(new GeometryFilterConverter<T>());
+            converter.Converters.Add(new GeometryConverter());
         }
 
         public Task BindModelAsync(ModelBindingContext bindingContext)
@@ -38,7 +37,7 @@ namespace Stac.Api.WebApi.Extensions
 
             try
             {
-                IGeometryFilter geometry = converter.Deserialize<IGeometryFilter>(new JsonTextReader(new System.IO.StringReader(value)));
+                IGeometryObject geometry = converter.Deserialize<IGeometryObject>(new JsonTextReader(new System.IO.StringReader(value)));
                 bindingContext.Result = ModelBindingResult.Success(geometry);
             }
             catch (Exception ex)

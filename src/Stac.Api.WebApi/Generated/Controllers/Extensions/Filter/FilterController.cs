@@ -51,6 +51,10 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Filter
         /// Search STAC items with simple filtering.
         /// </summary>
 
+        /// <param name="filter">**Extension:** Filter
+        /// <br/>
+        /// <br/>A CQL2 filter expression for filtering items.</param>
+
         /// <param name="filter_lang">**Extension:** Filter
         /// <br/>
         /// <br/>The CQL2 filter encoding that the 'filter' value uses. Must be one of 'cql2-text' or 'cql2-json'.</param>
@@ -60,13 +64,9 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Filter
         /// <br/>The CRS used by spatial predicates in the filter parameter. In STAC API, only value that must be accepted
         /// <br/>is 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.</param>
 
-        /// <param name="filterParameter">**Extension:** Filter
-        /// <br/>
-        /// <br/>A CQL2 filter expression for filtering items.</param>
-
         /// <returns>A feature collection.</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearchAsync(FilterLang? filter_lang, System.Uri filter_crs, string filterParameter, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearchAsync(Models.Cql2.CQL2Filter filter, FilterLang? filter_lang, System.Uri filter_crs, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// Search STAC items with full-featured filtering.
@@ -116,6 +116,9 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Filter
         /// <summary>
         /// Search STAC items with simple filtering.
         /// </summary>
+        /// <param name="filter">**Extension:** Filter
+        /// <br/>
+        /// <br/>A CQL2 filter expression for filtering items.</param>
         /// <param name="filter_lang">**Extension:** Filter
         /// <br/>
         /// <br/>The CQL2 filter encoding that the 'filter' value uses. Must be one of 'cql2-text' or 'cql2-json'.</param>
@@ -123,15 +126,12 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Filter
         /// <br/>
         /// <br/>The CRS used by spatial predicates in the filter parameter. In STAC API, only value that must be accepted
         /// <br/>is 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.</param>
-        /// <param name="filterParameter">**Extension:** Filter
-        /// <br/>
-        /// <br/>A CQL2 filter expression for filtering items.</param>
         /// <returns>A feature collection.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("search")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearch([Microsoft.AspNetCore.Mvc.FromQuery(Name = "filter-lang")] FilterLang? filter_lang, [Microsoft.AspNetCore.Mvc.FromQuery(Name = "filter-crs")] System.Uri filter_crs, [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string filterParameter, System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearch([Microsoft.AspNetCore.Mvc.FromQuery] [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] Models.Cql2.CQL2Filter filter, [Microsoft.AspNetCore.Mvc.FromQuery(Name = "filter-lang")] FilterLang? filter_lang, [Microsoft.AspNetCore.Mvc.FromQuery(Name = "filter-crs")] System.Uri filter_crs, System.Threading.CancellationToken cancellationToken)
         {
 
-            return _implementation.GetItemSearchAsync(filter_lang, filter_crs, filterParameter, cancellationToken);
+            return _implementation.GetItemSearchAsync(filter, filter_lang, filter_crs, cancellationToken);
         }
 
         /// <summary>

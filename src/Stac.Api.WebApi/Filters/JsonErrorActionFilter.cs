@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using NJsonSchema.Generation;
 
-namespace Stac.Api.WebApi.Extensions
+namespace Stac.Api.WebApi.Filters
+
 {
     public class JsonErrorActionFilter : IActionFilter, IOrderedFilter
     {

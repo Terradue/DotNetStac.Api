@@ -21,7 +21,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStacApiContextFactory _stacApiContextFactory;
         private readonly IStacLinker _stacLinker;
-        private JsonSerializerSettings _settings;
+        
 
         public DefaultFilterController(IStacApiEndpointManager stacApiEndpointManager,
                                             IDataServicesProvider dataServicesProvider,
@@ -34,17 +34,13 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
             _httpContextAccessor = httpContextAccessor;
             _stacApiContextFactory = stacApiContextFactory;
             _stacLinker = stacLinker;
-            _settings = new JsonSerializerSettings();
-            _settings.Converters.Add(new BooleanExpressionConverter());
+            
         }
 
-        public async Task<ActionResult<StacFeatureCollection>> GetItemSearchAsync(FilterLang? filter_lang, Uri filter_crs, string filterParameter, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<StacFeatureCollection>> GetItemSearchAsync(CQL2Filter filter, FilterLang? filter_lang, Uri filter_crs, CancellationToken cancellationToken = default)
         {
             // Create the context
             IStacApiContext stacApiContext = _stacApiContextFactory.Create();
-
-            // Check the filters
-            BooleanExpression filter = CreateFilter(filter_lang, filterParameter);
 
             IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider();
 
@@ -55,7 +51,10 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
             var items = await itemsProvider.GetItemsAsync(stacApiContext, cancellationToken);
 
             // Apply the filter
-            items = items.Boolean<StacItem>(filter);
+            items = items.Boolean<StacItem>(filter.Expression);
+
+            // Log the filter expression
+            stacApiContext.Properties.SetProperty(DefaultConventions.DebugExpressionTreePropertiesKey, items.AsQueryable().Expression.ToString());
 
             // Save the query parameters in the context
             SetQueryParametersInContext(stacApiContext, filter);
@@ -71,6 +70,8 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
             // Set the matched count
             if (stacApiContext.Properties.GetProperty<int?>(DefaultConventions.MatchedCountPropertiesKey) != null)
                 fc.NumberMatched = stacApiContext.Properties.GetProperty<int?>(DefaultConventions.MatchedCountPropertiesKey).Value;
+            if (stacApiContext.Properties.GetProperty<string>(DefaultConventions.DebugExpressionTreePropertiesKey) != null)
+                fc.AdditionalProperties.Add(DefaultConventions.DebugExpressionTreePropertiesKey, stacApiContext.Properties.GetProperty<string>(DefaultConventions.DebugExpressionTreePropertiesKey));
 
             return fc;
         }
@@ -92,33 +93,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
             throw new NotImplementedException();
         }
 
-        private BooleanExpression CreateFilter(FilterLang? filter_lang, string filterParameter)
-        {
-            if (filter_lang == null || filter_lang == FilterLang.Cql2Text)
-            {
-                return CreateCqlFilterFromText(filterParameter);
-            }
-            else if (filter_lang == FilterLang.Cql2Json)
-            {
-                return CreateCqlFilterFromJson(filterParameter);
-            }
-            else
-            {
-                throw new ArgumentException("Invalid filter_lang value");
-            }
-        }
-
-        private BooleanExpression CreateCqlFilterFromJson(string filterParameter)
-        {
-            JObject jObject = JObject.Parse(filterParameter);
-            var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
-            return cql;
-        }
-
-        private BooleanExpression CreateCqlFilterFromText(string filterParameter)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         private void SetQueryParametersInContext(IStacApiContext stacApiContext, IFilter filter)
         {

@@ -50,9 +50,14 @@ namespace Stac.Api.FileSystem.Services
         {
             IList<string> collectionIds = stacApiContext.Collections?.ToList();
             IEnumerable<IFileInfo> itemFiles = null;
+            // If no collections are specified, return all items
             if (collectionIds == null || !collectionIds.Any())
             {
                 collectionIds = new List<string> { StacFileSystemResolver.NO_COLLECTION_DIR };
+                // Add all other collections to the list
+                collectionIds.AddRange(_fileSystemResolver.GetDirectory(StacFileSystemResolver.COLLECTIONS_DIR)
+                    .GetDirectories()
+                    .Select(dir => dir.Name));
             }
 
             itemFiles = collectionIds.AsParallel()

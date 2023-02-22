@@ -58,19 +58,19 @@ namespace Stac.Api.CodeGen
             }
 
             // Set filter parameter with new name (https://github.com/radiantearth/stac-api-spec/blob/master/fragments/filter/openapi.yaml#L95)
-            try
-            {
-                OpenApiParameter filterParam = document.Paths["/search"]?["get"]?.Parameters.Cast<OpenApiParameter>().FirstOrDefault(p => ((OpenApiParameter)p.Reference).Name == "filter");
-                if (filterParam != null)
-                {
-                    var filterSchema = filterParam.Reference as OpenApiParameter;
-                    OpenApiParameter newFilterParam = Clone(filterSchema);
-                    newFilterParam.Name = "FilterParameter";
-                    document.Paths["/search"]?["get"]?.Parameters.Remove(filterParam);
-                    document.Paths["/search"]?["get"]?.Parameters.Add(newFilterParam);
-                }
-            }
-            catch { }
+            // try
+            // {
+            //     OpenApiParameter filterParam = document.Paths["/search"]?["get"]?.Parameters.Cast<OpenApiParameter>().FirstOrDefault(p => ((OpenApiParameter)p.Reference).Name == "filter");
+            //     if (filterParam != null)
+            //     {
+            //         var filterSchema = filterParam.Reference as OpenApiParameter;
+            //         OpenApiParameter newFilterParam = Clone(filterSchema);
+            //         newFilterParam.Name = "FilterParameter";
+            //         document.Paths["/search"]?["get"]?.Parameters.Remove(filterParam);
+            //         document.Paths["/search"]?["get"]?.Parameters.Add(newFilterParam);
+            //     }
+            // }
+            // catch { }
 
             // Set intersects parameter as string (https://github.com/radiantearth/stac-api-spec/blob/v1.0.0-rc.2/item-search/openapi.yaml#L207)
             // try

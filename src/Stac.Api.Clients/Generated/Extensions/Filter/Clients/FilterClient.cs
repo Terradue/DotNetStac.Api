@@ -226,6 +226,9 @@ namespace Stac.Api.Clients.Extensions.Filter
         /// <summary>
         /// Search STAC items with simple filtering.
         /// </summary>
+        /// <param name="filter">**Extension:** Filter
+        /// <br/>
+        /// <br/>A CQL2 filter expression for filtering items.</param>
         /// <param name="filter_lang">**Extension:** Filter
         /// <br/>
         /// <br/>The CQL2 filter encoding that the 'filter' value uses. Must be one of 'cql2-text' or 'cql2-json'.</param>
@@ -233,20 +236,20 @@ namespace Stac.Api.Clients.Extensions.Filter
         /// <br/>
         /// <br/>The CRS used by spatial predicates in the filter parameter. In STAC API, only value that must be accepted
         /// <br/>is 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.</param>
-        /// <param name="filterParameter">**Extension:** Filter
-        /// <br/>
-        /// <br/>A CQL2 filter expression for filtering items.</param>
         /// <returns>A feature collection.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(FilterLang? filter_lang, System.Uri filter_crs, string filterParameter)
+        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(Models.Cql2.CQL2Filter filter, FilterLang? filter_lang, System.Uri filter_crs)
         {
-            return GetItemSearchAsync(filter_lang, filter_crs, filterParameter, System.Threading.CancellationToken.None);
+            return GetItemSearchAsync(filter, filter_lang, filter_crs, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
         /// Search STAC items with simple filtering.
         /// </summary>
+        /// <param name="filter">**Extension:** Filter
+        /// <br/>
+        /// <br/>A CQL2 filter expression for filtering items.</param>
         /// <param name="filter_lang">**Extension:** Filter
         /// <br/>
         /// <br/>The CQL2 filter encoding that the 'filter' value uses. Must be one of 'cql2-text' or 'cql2-json'.</param>
@@ -254,15 +257,16 @@ namespace Stac.Api.Clients.Extensions.Filter
         /// <br/>
         /// <br/>The CRS used by spatial predicates in the filter parameter. In STAC API, only value that must be accepted
         /// <br/>is 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.</param>
-        /// <param name="filterParameter">**Extension:** Filter
-        /// <br/>
-        /// <br/>A CQL2 filter expression for filtering items.</param>
         /// <returns>A feature collection.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(FilterLang? filter_lang, System.Uri filter_crs, string filterParameter, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(Models.Cql2.CQL2Filter filter, FilterLang? filter_lang, System.Uri filter_crs, System.Threading.CancellationToken cancellationToken)
         {
+            if (filter == null)
+                throw new System.ArgumentNullException("filter");
+
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append("search?");
+            urlBuilder_.Append(System.Uri.EscapeDataString("filter") + "=").Append(System.Uri.EscapeDataString(ConvertToString(filter, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             if (filter_lang != null)
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("filter-lang") + "=").Append(System.Uri.EscapeDataString(ConvertToString(filter_lang, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
@@ -567,7 +571,7 @@ namespace Stac.Api.Clients.Extensions.Filter
     public partial class FilterSearchBody : Stac.Api.Clients.ItemSearch.SearchBody
     {
         [Newtonsoft.Json.JsonProperty("filter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Filter { get; set; }
+        public Models.Cql2.CQL2Filter Filter { get; set; }
 
         [Newtonsoft.Json.JsonProperty("filter-lang", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]

@@ -23,6 +23,11 @@ using GeoJSON.Net.Geometry;
 using Stac.Api.Converters;
 using Stac.Api.Models.Core;
 using Stac.Api.WebApi.Implementations.Default.Extensions.Filter;
+using Stac.Api.Clients.Extensions.Filter;
+using Stac.Api.WebApi.Filters;
+using Stac.Api.WebApi.ModelBinding;
+using Stac.Api.WebApi.ApplicationModels;
+using Stac.Api.WebApi.ModelBinding.Extensions;
 
 namespace Stac.Api.WebApi.Extensions
 {
@@ -32,8 +37,13 @@ namespace Stac.Api.WebApi.Extensions
         {
             services.AddControllers(options =>
                 {
+                    // Json error handling
                     options.Filters.Add<JsonErrorActionFilter>();
-                    options.ModelBinderProviders.Insert(0, new GeometryModelBinderProvider());
+                    // Add the STAC API model binder provider to the controller
+                    options.ModelBinderProviders.Insert(0, new StacModelBinderProvider());
+                    // Add the STAC API filter extension model binder provider to the controller
+                    options.ModelBinderProviders.Insert(1, new FilterExtensionModelBinderProvider());
+                    // Add the STAC API extensions convention to the controller
                     options.Conventions.Add(new StacApiExtensionsConvention());
                 })
                 .AddNewtonsoftJson(options =>

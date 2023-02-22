@@ -2,19 +2,17 @@ using GeoJSON.Net.Converters;
 using GeoJSON.Net.Geometry;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Stac.Api.Clients.Extensions.Filter;
 using Stac.Api.Converters;
 using Stac.Api.Models.Core;
 
-namespace Stac.Api.WebApi.Extensions
+namespace Stac.Api.WebApi.ModelBinding
 {
-    internal class GeometryModelBinder : IModelBinder
+    internal class LazyEnumModelBinder : IModelBinder
     {
-        private static JsonSerializer converter;
-
-        public GeometryModelBinder()
+        public LazyEnumModelBinder()
         {
-            converter = new JsonSerializer();
-            converter.Converters.Add(new GeometryConverter());
         }
 
         public Task BindModelAsync(ModelBindingContext bindingContext)
@@ -37,8 +35,9 @@ namespace Stac.Api.WebApi.Extensions
 
             try
             {
-                IGeometryObject geometry = converter.Deserialize<IGeometryObject>(new JsonTextReader(new System.IO.StringReader(value)));
-                bindingContext.Result = ModelBindingResult.Success(geometry);
+                Type underlyingType = Nullable.GetUnderlyingType(bindingContext.ModelType) ?? bindingContext.ModelType;
+                var enumParsed = StacAccessorsHelpers.LazyEnumParse(underlyingType, value);
+                bindingContext.Result = ModelBindingResult.Success(enumParsed);
             }
             catch (Exception ex)
             {

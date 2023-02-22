@@ -26,12 +26,12 @@ namespace Stac.Api.Converters
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            var prop = value.GetType().GetProperties().FirstOrDefault(p => p.GetType() == typeof(IGeometryObject));
+            var prop = value.GetType().GetProperties().FirstOrDefault(p => p.PropertyType == typeof(IGeometryObject));
             if ( prop == null ){
                 throw new Exception($"{value.GetType().Name} does not have a property of type {typeof(IGeometryObject).Name}");
             }
             IGeometryObject geometry = (IGeometryObject)prop.GetValue(value, null);
-            geomConverter.WriteJson(writer, geometry, serializer);
+            serializer.Serialize(writer, geometry);
         }
     }
 }

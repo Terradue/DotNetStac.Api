@@ -1,4 +1,4 @@
-namespace Stac.Api.WebApi.Extensions
+namespace Stac.Api.WebApi.Attributes
 {
     internal class StacExtensionAttribute : Attribute
     {

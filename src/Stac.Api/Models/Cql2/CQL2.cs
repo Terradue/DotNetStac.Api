@@ -390,6 +390,15 @@ namespace Stac.Api.Models.Cql2
     [JsonConverter(typeof(NoConverter))]
     public class PropertyRef : CharExpression, INumericExpression, IIsNullOperand, IGeomExpression, ITemporalExpression
     {
+        public PropertyRef()
+        {
+        }
+
+        public PropertyRef(string property)
+        {
+            Property = property;
+        }
+
         [Newtonsoft.Json.JsonProperty("property", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Property { get; set; }
