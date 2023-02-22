@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Stac.Api.Interfaces;
+using Stac.Api.WebApi.Implementations.Default.Services;
 
 namespace Stac.Api.FileSystem.Services
 {
@@ -37,6 +38,11 @@ namespace Stac.Api.FileSystem.Services
         {
             // Generate a new instance of the root catalog provider
             return ActivatorUtilities.CreateInstance<FileSystemRootCatalogProvider>(_serviceProvider);
+        }
+
+        public IStacQueryProvider GetStacQueryProvider(IStacApiContext stacApiContext)
+        {
+            return DefaultStacQueryProvider.CreateDefaultQueryProvider(stacApiContext, new List<IStacObject>());
         }
     }
 }

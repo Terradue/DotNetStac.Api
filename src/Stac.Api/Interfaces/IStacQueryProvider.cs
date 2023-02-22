@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 using GeoJSON.Net.Geometry;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json.Schema;
+using Stac.Api.Models;
+using Stac.Api.Services.Queryable;
 
 namespace Stac.Api.Interfaces
 {
     public interface IStacQueryProvider : IQueryProvider
     {
-        Expression GetFirstExpression();
         
-        JSchema GetQueryables();
+        StacQueryables GetQueryables();
 
         IComparable GetStacObjectProperty<TSource>(TSource s, string property) where TSource : IStacObject;
 

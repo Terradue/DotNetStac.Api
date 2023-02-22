@@ -28,17 +28,20 @@ namespace Stac.Api.WebApi.ActionConstraints
         public bool Accept(ActionConstraintContext context)
         {
             bool anyParameterPresent = false;
+            bool noParameter = true;
 
             // Check that at least 1 parameter required by the extension is present
             foreach(var parameter in _action.Parameters)
             {
                 string parameterName = parameter.BindingInfo?.BinderModelName ?? parameter.ParameterName;
+                if ( parameter.ParameterType != typeof(CancellationToken) )
+                    noParameter = false;
                 if (parameter.BindingInfo?.BindingSource == BindingSource.Query)
                     anyParameterPresent |= context.RouteContext.HttpContext.Request.Query.ContainsKey(parameterName);
                 if (parameter.BindingInfo?.BindingSource == BindingSource.Body)
                     anyParameterPresent |= context.RouteContext.HttpContext.Request.Body != null;
             }
-            return anyParameterPresent;
+            return anyParameterPresent || noParameter;
         }
     }
 }

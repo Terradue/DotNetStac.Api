@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Stac.Api.Interfaces;
+using Stac.Api.Models;
 using Stac.Api.Services.Filtering;
 using Stac.Api.Services.Queryable;
 using Stars.Geometry.NTS;
@@ -22,14 +23,14 @@ namespace Stac.Api.WebApi.Implementations.Default.Services
     {
         private readonly IEnumerable<IStacObject> _seed;
 
-        private DefaultStacQueryProvider(StacQueryablesOptions queryablesOptions, IEnumerable<IStacObject> seed) : base(queryablesOptions)
+        private DefaultStacQueryProvider(StacQueryables queryablesOptions, IEnumerable<IStacObject> seed) : base(queryablesOptions)
         {
             _seed = seed;
         }
 
         public static DefaultStacQueryProvider CreateDefaultQueryProvider(IStacApiContext apiContext, IEnumerable<IStacObject> seed)
         {
-            return new DefaultStacQueryProvider(StacQueryablesOptions.GenerateDefaultOptions<StacItem>(apiContext), seed);
+            return new DefaultStacQueryProvider(StacQueryables.GenerateDefaultOptions<StacItem>(apiContext), seed);
         }
 
         public override TResult Execute<TResult>(Expression expression)
@@ -59,12 +60,6 @@ namespace Stac.Api.WebApi.Implementations.Default.Services
             }
 
         }
-
-        public override Expression GetFirstExpression()
-        {
-            return _seed.AsQueryable().Expression;
-        }
-
         public override ITimePeriod GetStacObjectDateTime<TSource>(TSource s, string property = "datetime")
         {
             if ( s is StacItem stacItem)

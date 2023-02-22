@@ -54,7 +54,7 @@ namespace Stac.Api.Clients.Extensions.Filter
         /// </summary>
         /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<NJsonSchema.JsonSchema> GetQueryablesAsync()
+        public virtual System.Threading.Tasks.Task<StacQueryables> GetQueryablesAsync()
         {
             return GetQueryablesAsync(System.Threading.CancellationToken.None);
         }
@@ -65,7 +65,7 @@ namespace Stac.Api.Clients.Extensions.Filter
         /// </summary>
         /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<NJsonSchema.JsonSchema> GetQueryablesAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<StacQueryables> GetQueryablesAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append("queryables");
@@ -102,7 +102,7 @@ namespace Stac.Api.Clients.Extensions.Filter
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<NJsonSchema.JsonSchema>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<StacQueryables>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -139,7 +139,7 @@ namespace Stac.Api.Clients.Extensions.Filter
         /// <param name="collectionId">ID of Collection</param>
         /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<NJsonSchema.JsonSchema> GetQueryablesForCollectionAsync(string collectionId)
+        public virtual System.Threading.Tasks.Task<StacQueryables> GetQueryablesForCollectionAsync(string collectionId)
         {
             return GetQueryablesForCollectionAsync(collectionId, System.Threading.CancellationToken.None);
         }
@@ -151,7 +151,7 @@ namespace Stac.Api.Clients.Extensions.Filter
         /// <param name="collectionId">ID of Collection</param>
         /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<NJsonSchema.JsonSchema> GetQueryablesForCollectionAsync(string collectionId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<StacQueryables> GetQueryablesForCollectionAsync(string collectionId, System.Threading.CancellationToken cancellationToken)
         {
             if (collectionId == null)
                 throw new System.ArgumentNullException("collectionId");
@@ -192,7 +192,7 @@ namespace Stac.Api.Clients.Extensions.Filter
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<NJsonSchema.JsonSchema>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<StacQueryables>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);

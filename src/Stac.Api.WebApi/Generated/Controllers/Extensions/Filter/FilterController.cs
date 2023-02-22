@@ -35,7 +35,7 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Filter
 
         /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<NJsonSchema.JsonSchema>> GetQueryablesAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacQueryables>> GetQueryablesAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// Get the JSON Schema defining the list of variable terms that can be used in CQL2 expressions.
@@ -45,7 +45,7 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Filter
 
         /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<NJsonSchema.JsonSchema>> GetQueryablesForCollectionAsync(string collectionId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacQueryables>> GetQueryablesForCollectionAsync(string collectionId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// Search STAC items with simple filtering.
@@ -95,7 +95,7 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Filter
         /// </summary>
         /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("queryables")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<NJsonSchema.JsonSchema>> GetQueryables(System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacQueryables>> GetQueryables(System.Threading.CancellationToken cancellationToken)
         {
 
             return _implementation.GetQueryablesAsync(cancellationToken);
@@ -107,7 +107,7 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Filter
         /// <param name="collectionId">ID of Collection</param>
         /// <returns>A JSON Schema defining the Queryables allowed in CQL2 expressions</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("collections/{collectionId}/queryables")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<NJsonSchema.JsonSchema>> GetQueryablesForCollection([Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string collectionId, System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacQueryables>> GetQueryablesForCollection([Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string collectionId, System.Threading.CancellationToken cancellationToken)
         {
 
             return _implementation.GetQueryablesForCollectionAsync(collectionId, cancellationToken);

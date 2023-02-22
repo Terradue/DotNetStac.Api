@@ -8,19 +8,20 @@ using Itenso.TimePeriod;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json.Schema;
 using Stac.Api.Interfaces;
+using Stac.Api.Models;
 
 namespace Stac.Api.Services.Queryable
 {
     public abstract class StacQueryProvider : IStacQueryProvider
     {
-        private StacQueryablesOptions _stacItemQueryablesOptions;
+        private StacQueryables _stacItemQueryablesOptions;
 
-        public StacQueryProvider(StacQueryablesOptions queryablesOptions)
+        public StacQueryProvider(StacQueryables queryablesOptions)
         {
             StacItemQueryablesOptions = queryablesOptions;
         }
 
-        public StacQueryablesOptions StacItemQueryablesOptions { get => _stacItemQueryablesOptions; private set => _stacItemQueryablesOptions = value; }
+        public StacQueryables StacItemQueryablesOptions { get => _stacItemQueryablesOptions; private set => _stacItemQueryablesOptions = value; }
 
         #region IQueryProvider Members
 
@@ -48,11 +49,9 @@ namespace Stac.Api.Services.Queryable
             throw new NotImplementedException();
         }
 
-        public abstract Expression GetFirstExpression();
-
         #endregion
 
-        public virtual JSchema GetQueryables()
+        public virtual StacQueryables GetQueryables()
         {
             return StacItemQueryablesOptions;
         }

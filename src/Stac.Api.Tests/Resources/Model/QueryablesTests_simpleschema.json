@@ -1,0 +1,26 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "https://stac-api.example.com/queryables",
+    "type": "object",
+    "title": "Queryables for Example STAC API",
+    "description": "Queryable names for the example STAC API Item Search filter.",
+    "properties": {
+        "id": {
+            "description": "ID",
+            "$ref": "https://schemas.stacspec.org/v1.0.0/item-spec/json-schema/item.json#/id"
+        },
+        "collection": {
+            "description": "Collection",
+            "$ref": "https://schemas.stacspec.org/v1.0.0/item-spec/json-schema/item.json#/collection"
+        },
+        "geometry": {
+            "description": "Geometry",
+            "$ref": "https://schemas.stacspec.org/v1.0.0/item-spec/json-schema/item.json#/geometry"
+        },
+        "datetime": {
+            "description": "Datetime",
+            "$ref": "https://schemas.stacspec.org/v1.0.0/item-spec/json-schema/datetime.json#/properties/datetime"
+        }
+    },
+    "additionalProperties": true
+}

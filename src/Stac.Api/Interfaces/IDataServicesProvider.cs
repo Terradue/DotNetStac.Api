@@ -12,5 +12,6 @@ namespace Stac.Api.Interfaces
         ICollectionsProvider GetCollectionsProvider();
         IItemsBroker GetItemsBroker();
         IItemsProvider GetItemsProvider();
+        IStacQueryProvider GetStacQueryProvider(IStacApiContext stacApiContext);
     }
 }

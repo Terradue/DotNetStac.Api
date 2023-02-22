@@ -76,14 +76,20 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
             return fc;
         }
 
-
-
-        public Task<ActionResult<JsonSchema>> GetQueryablesAsync(CancellationToken cancellationToken = default)
+        public async Task<ActionResult<StacQueryables>> GetQueryablesAsync(CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            // Create the context
+            IStacApiContext stacApiContext = _stacApiContextFactory.Create();
+
+            // create the provider
+            IStacQueryProvider queryProvider = _dataServicesProvider.GetStacQueryProvider(stacApiContext);
+
+            var queryables = queryProvider.GetQueryables();
+
+            return queryables;
         }
 
-        public Task<ActionResult<JsonSchema>> GetQueryablesForCollectionAsync(string collectionId, CancellationToken cancellationToken = default)
+        public Task<ActionResult<StacQueryables>> GetQueryablesForCollectionAsync(string collectionId, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
