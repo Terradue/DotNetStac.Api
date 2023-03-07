@@ -45,6 +45,8 @@ builder.Services.AddCors(options =>
 // Create the app
 var app = builder.Build();
 
+var prefix = configuration.GetValue<string>("PathBase", "/");
+
 // Require use of HTTPS in production
 if (!app.Environment.IsDevelopment())
 {
@@ -65,6 +67,8 @@ app.UseReDoc(c =>
     c.Path = "/redoc";
     c.DocumentPath = "/openapi/v1.0.0-rc.2/core/openapi.yaml";
 }); // serve ReDoc UI
+
+app.UsePathBase(prefix);
 
 app.UseRouting();
 app.UseCors();

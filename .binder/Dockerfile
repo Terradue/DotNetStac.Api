@@ -16,14 +16,21 @@ COPY ./src/ ${HOME}/src/
 # Copy notebooks
 COPY ./notebooks/ ${HOME}/notebooks/
 
-RUN chown -R ${NB_UID} ${HOME}
-USER ${USER}
-
 RUN dotnet publish ${HOME}/src/
+
+RUN pip install -U "jupyter-server<2.0.0" "jupyter-server-proxy==1.2.0"
 
 COPY src/Stac.Api.Tests/Resources/TestCatalogs/CatalogS2L2A /data
 # Copy supervisor config
 COPY ./.binder/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./.binder/supervisordserverextension.py /opt/conda/lib/python3.10/site-packages/
+
+# enable supervisord extension
+RUN jupyter serverextension enable --sys-prefix supervisordserverextension
+
+RUN chown -R ${NB_UID} ${HOME}
+RUN chown -R ${NB_UID} /data
+USER ${USER}
 
 # Set root to notebooks
 WORKDIR ${HOME}/notebooks/
