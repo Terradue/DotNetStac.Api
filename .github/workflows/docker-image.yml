@@ -15,4 +15,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the dotnet interactive Docker image
-      run: docker build . --file .binder/Dockerfile.base --tag terradue/stacapi-interactive:latest
+      run: docker build . --file .binder/Dockerfile.base --tag ghcr.io/terradue/stacapi-interactive:latest
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Push the dotnet interactive Docker image
+      run: docker push ghcr.io/terradue/stacapi-interactive:latest
