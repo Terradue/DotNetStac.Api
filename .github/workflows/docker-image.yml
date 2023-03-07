@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Cache Docker image for dotnet interactive
 
 on:
   push:
