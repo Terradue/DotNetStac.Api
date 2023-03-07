@@ -86,7 +86,7 @@ namespace Stac.Api.WebApi.Extensions
             return services;
         }
 
-        public static void ConfigureProblemDetails(ProblemDetailsOptions options, IConfiguration configuration, IHostEnvironment env)
+        public static void ConfigureProblemDetails(Hellang.Middleware.ProblemDetails.ProblemDetailsOptions options, IConfiguration configuration, IHostEnvironment env)
         {
             // This is the default behavior; only include exception details in a development environment.
             options.IncludeExceptionDetails = (ctx, ex) => env.IsDevelopment() || configuration.GetValue<bool>("IncludeExceptionDetails");
