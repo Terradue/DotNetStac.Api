@@ -11,7 +11,7 @@ COPY --chown=${NB_USER} ./src/ ${HOME}/src/
 COPY --chown=${NB_USER} ./notebooks/ ${HOME}/notebooks/
 
 # Install jupyter extensions
-RUN pip install -U "jupyter-server<2.0.0" "jupyter-server-proxy==1.2.0"
+RUN pip install -U "jupyter-server<2.0.0" "jupyter-server-proxy==1.2.0" --no-cache-dir
 
 #Copy Catalog to data folder
 COPY --chown=${NB_USER}  src/Stac.Api.Tests/Resources/TestCatalogs/CatalogS2L2A /data
