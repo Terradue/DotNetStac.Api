@@ -7,7 +7,7 @@ DotNetStac.Api | [DotNetStac](https://github.com/Terradue/DotNetStac)
 [![codecov](https://codecov.io/gh/Terradue/DotNetStac.Api/branch/main/graph/badge.svg)](https://codecov.io/gh/Terradue/DotNetStac.Api)
 [![Gitter](https://img.shields.io/gitter/room/SpatioTemporal-Asset-Catalog/Lobby?color=yellow)](https://gitter.im/SpatioTemporal-Asset-Catalog/Lobby)
 [![License](https://img.shields.io/badge/license-AGPL3-blue.svg)](LICENSE)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Terradue/DotNetStac.Api/develop?filepath=example.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Terradue/DotNetStac.Api/develop?filepath=tutorial1.ipynb)
 
 DotNetStac.Api is a Software Development Kit (SDK) for .NET and ASP.NET Core to build and query STAC API compliant services. It is based on the [STAC API specification](https://github.com/radiantearth/stac-api-spec) and uses the [DotNetStac library](https://github.com/Terradue/DotNetStac) for the [STAC data model](https://github.com/radiantearth/stac-spec).
 
