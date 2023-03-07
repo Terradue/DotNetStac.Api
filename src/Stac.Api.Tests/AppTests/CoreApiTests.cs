@@ -28,7 +28,7 @@ namespace Stac.Api.Tests.AppTests
             LandingPage lp2 = JsonConvert.DeserializeObject<LandingPage>(json);
         }
 
-        [Theory, MemberData(nameof(GetTestCatalogs), new object[] { nameof(CoreApiTests) })]
+        [Theory, MemberData(nameof(GetTestCatalogs), new object[] { new string[] { "Catalog1" } })]
         public async Task GetLandingPageAsync(StacApiApplication application)
         {
             var client = application.CreateClient();

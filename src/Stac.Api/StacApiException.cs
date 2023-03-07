@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Stac.Api
 {
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class StacApiException : System.Exception
     {
 
-        public int StatusCode { get; private set; }
+        public int StatusCode { get; protected set; }
 
-        public string Response { get; private set; }
+        public string Response { get; protected set; }
 
         public System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
 
         public StacApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
-            : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + ((response == null) ? "(null)" : response.Substring(0, response.Length >= 512 ? 512 : response.Length)), innerException)
+            : base(message, innerException)
         {
             StatusCode = statusCode;
             Response = response;
@@ -33,17 +33,24 @@ namespace Stac.Api
         {
             return string.Format("HTTP Response: \n\n{0}\n\n{1}", Response, base.ToString());
         }
+
+        public override string Message
+        {
+            get
+            {
+                return base.Message + "\n\nStatus: " + StatusCode + "\nResponse: \n" + ((Response == null) ? "(null)" : Response.Substring(0, Response.Length >= 512 ? 512 : Response.Length));
+            }
+        }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class StacApiException<TResult> : StacApiException
     {
-        public TResult Result { get; private set; }
 
         public StacApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
-            : base(message, statusCode, response, headers, innerException)
+        : base(message, statusCode, response, headers, innerException)
+
         {
-            Result = result;
+            Response = JsonConvert.SerializeObject(result);
         }
     }
 }

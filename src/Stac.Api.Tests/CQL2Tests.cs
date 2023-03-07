@@ -37,7 +37,7 @@ namespace Stac.Api.Tests
             Assert.Equal(2, cql.AndOrExpression().Args[0].Comparison().Binary().Args.Count);
             Assert.IsType<PropertyRef>(cql.AndOrExpression().Args[0].Comparison().Binary().Args[0]);
             Assert.Equal("id", cql.AndOrExpression().Args[0].Comparison().Binary().Args[0].Char().Property().Property);
-            Assert.Equal("LC08_L1TP_060247_20180905_20180912_01_T1_L1TP", cql.AndOrExpression().Args[0].Comparison().Binary().Args[1].Char().ToString());
+            Assert.Equal("S2A_60HWB_20201111_0_L2A", cql.AndOrExpression().Args[0].Comparison().Binary().Args[1].Char().ToString());
         }
 
         [Fact]
@@ -244,8 +244,8 @@ namespace Stac.Api.Tests
             Assert.Equal(3, cql.Comparison().IsBetweenPredicate().Args.Count);
 
             Assert.Equal("eo:cloud_cover", cql.Comparison().IsBetweenPredicate().Args[0].Char().Property().Property);
-            Assert.Equal(0, cql.Comparison().IsBetweenPredicate().Args[1].Numeric().Value);
-            Assert.Equal(50, cql.Comparison().IsBetweenPredicate().Args[2].Numeric().Value);
+            Assert.Equal(0.0, cql.Comparison().IsBetweenPredicate().Args[1].Numeric().Value);
+            Assert.Equal(50.0, cql.Comparison().IsBetweenPredicate().Args[2].Numeric().Value);
 
         }
 

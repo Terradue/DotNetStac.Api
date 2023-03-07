@@ -1,6 +1,7 @@
 using System.Reflection;
 using GeoJSON.Net.Geometry;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Stac.Api.Clients.Extensions.Filter;
 using Stac.Api.Models.Core;
 using Stac.Api.Models.Cql2;
 
@@ -17,6 +18,12 @@ namespace Stac.Api.WebApi.ModelBinding.Extensions
             if (context.Metadata.ModelType == typeof(CQL2Filter))
             {
                 return new CQL2FilterModelBinder();
+            }
+
+            // FilterSearchBody model binding
+            if (context.Metadata.ModelType == typeof(FilterSearchBody))
+            {
+                return new FilterSearchBodyModelBinder();
             }
 
             return null;

@@ -13,11 +13,12 @@ namespace Stac.Api.Tests.AppTests
     {
         public CollectionsApiTests(StacApiAppFixture fixture, ITestOutputHelper outputHelper) : base(fixture, outputHelper)
         {
-            
+
         }
 
         [Fact]
-        public void DeserializeStacCollections(){
+        public void DeserializeStacCollections()
+        {
             StacCollections colls = new StacCollections();
             string json = JsonConvert.SerializeObject(colls);
             var catalog = JsonConvert.DeserializeObject<StacCollections>(json);
@@ -48,7 +49,7 @@ namespace Stac.Api.Tests.AppTests
 
         }
 
-        [Theory, MemberData(nameof(GetTestCatalogs), new object[] { nameof(CollectionsApiTests) })]
+        [Theory, MemberData(nameof(GetTestCatalogs), new object[] { new string[] { "Catalog1" } })]
         public async Task GetCollectionsByIdAsync(StacApiApplication application)
         {
             var client = application.CreateClient();
