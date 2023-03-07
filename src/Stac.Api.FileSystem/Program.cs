@@ -17,11 +17,12 @@ var configBuilder = new ConfigurationBuilder();
 
 configBuilder.AddJsonFile("codegensettings.json", optional: true, reloadOnChange: true);
 configBuilder.AddCommandLine(args);
+configBuilder.AddEnvironmentVariables(prefix: "STACAPIFS_");
 var configuration = configBuilder.Build();
 
 // Configure the Todo repository and associated services
 builder.Services.AddStacWebApi();
-string catalogRootPath = configuration.GetValue<string>("catalogRootPath") ?? Path.Combine(Path.GetTempPath(), "StacApi");
+string catalogRootPath = configuration.GetValue<string>("CatalogRootPath") ?? Path.Combine(Path.GetTempPath(), "StacApi");
 builder.Services.AddFileSystemData(builder =>
         builder.UseFileSystemProvider(catalogRootPath, true));
 

@@ -11,7 +11,9 @@ namespace Stac.Api.FileSystem.Extensions
         {
             stacBuilder.Services.AddSingleton<IFileSystem>(new System.IO.Abstractions.FileSystem());
             stacBuilder.Services.AddSingleton<StacFileSystemResolver>(sp => {
-                var stacFileSystem = new StacFileSystemResolver(sp.GetRequiredService<IFileSystem>(), rootPath);
+                var stacFileSystem = new StacFileSystemResolver(sp.GetRequiredService<IFileSystem>(),
+                                                                sp.GetRequiredService<ILogger<StacFileSystemResolver>>(),
+                                                                rootPath);
                 if ( createIfNotExists )
                 {
                     stacFileSystem.CreateRootCatalogIfNotExists();

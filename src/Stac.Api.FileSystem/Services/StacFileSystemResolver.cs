@@ -9,13 +9,17 @@ namespace Stac.Api.FileSystem.Services
         public const string NO_COLLECTION_DIR = "__unknown__";
 
         private readonly IFileSystem _fileSystem;
+        private readonly ILogger<StacFileSystemResolver> _logger;
 
         public string RootPath { get; }
         
 
-        public StacFileSystemResolver(IFileSystem fileSystem, string rootPath)
+        public StacFileSystemResolver(IFileSystem fileSystem,
+                                      ILogger<StacFileSystemResolver> logger,
+                                      string rootPath)
         {
             _fileSystem = fileSystem;
+            _logger = logger;
             RootPath = rootPath;
         }
 
@@ -28,12 +32,12 @@ namespace Stac.Api.FileSystem.Services
 
         internal void CreateRootCatalogIfNotExists()
         {
-            if ( ! GetRootDirectory().Exists)
+            _logger.LogInformation("Creating root catalog at {0}", GetRootDirectory().FullName);
+            if ( ! GetRootDirectory().Exists )
             {
                 GetRootDirectory().Create();
             }
             StacCatalog rootCatalog = new StacCatalog("root", "Root catalog");
-            
             _fileSystem.File.WriteAllText(GetRootDirectory().FullName + "/catalog.json", StacConvert.Serialize(rootCatalog));
         }
 

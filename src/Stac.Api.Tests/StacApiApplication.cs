@@ -21,7 +21,7 @@ namespace Stac.Api.Tests
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             // Notice there is no `--` prefix in "config"
-            builder.UseSetting("catalogRootPath", _datadir);
+            builder.UseSetting("CatalogRootPath", _datadir);
         }
 
         protected override IHost CreateHost(IHostBuilder builder)
