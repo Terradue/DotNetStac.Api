@@ -21,5 +21,9 @@ USER ${USER}
 
 RUN dotnet publish ${HOME}/src/
 
+COPY src/Stac.Api.Tests/Resources/TestCatalogs/CatalogS2L2A /data
+# Copy supervisor config
+COPY ./.binder/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 # Set root to notebooks
 WORKDIR ${HOME}/notebooks/
