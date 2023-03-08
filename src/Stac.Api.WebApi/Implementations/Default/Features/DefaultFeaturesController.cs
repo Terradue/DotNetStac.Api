@@ -43,6 +43,9 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
             // Create the context
             IStacApiContext stacApiContext = _stacApiContextFactory.Create();
 
+            // Set the collection
+            stacApiContext.SetCollections(new List<string>() { collectionId });
+
             // Get the data provider
             IItemsProvider itemsProvider = dataServicesProvider.GetItemsProvider();
 
@@ -113,6 +116,9 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
             items = _stacApiContextFactory.ApplyContextPostQueryFilters<StacItem>(stacApiContext, itemsProvider, items);
 
             StacFeatureCollection fc = new StacFeatureCollection(items);
+
+            // Apply Context Result Filters
+            _stacApiContextFactory.ApplyContextResultFilters<StacItem>(stacApiContext, itemsProvider, fc);
 
             // Link the collection
             _stacLinker.Link(fc, stacApiContext);

@@ -9,9 +9,7 @@
             "type": "shell",
             "args": [
                 "build",
-                // Ask dotnet build to generate full paths for file names.
                 "/property:GenerateFullPaths=true",
-                // Do not generate summary otherwise it leads to duplicate errors in Problems panel
                 "/consoleloggerparameters:NoSummary",
                 "src/"
             ],
@@ -27,9 +25,7 @@
             "type": "shell",
             "args": [
                 "build",
-                // Ask dotnet build to generate full paths for file names.
                 "/property:GenerateFullPaths=true",
-                // Do not generate summary otherwise it leads to duplicate errors in Problems panel
                 "/consoleloggerparameters:NoSummary",
                 "src/Stac.Api.CodeGen/"
             ],
@@ -38,6 +34,19 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Copy Sentinel2 Collection to tmp",
+            "command": "cp",
+            "type": "shell",
+            "args": [
+                "-r",
+                "src/Stac.Api.Tests/Resources/TestCatalogs/CatalogS2L2A/collections",
+                "/tmp/StacApi/collections"
+            ],
+            "problemMatcher": [
+                "$eslint-compact"
+            ]
         }
     ]
 }

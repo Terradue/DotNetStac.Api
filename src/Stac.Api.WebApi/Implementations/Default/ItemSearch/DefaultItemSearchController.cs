@@ -81,6 +81,9 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
 
             StacFeatureCollection fc = new StacFeatureCollection(items);
 
+            // Apply Context Result Filters
+            _stacApiContextFactory.ApplyContextResultFilters<StacItem>(stacApiContext, itemsProvider, fc);
+
             // Link the collection
             _stacLinker.Link(fc, stacApiContext);
 

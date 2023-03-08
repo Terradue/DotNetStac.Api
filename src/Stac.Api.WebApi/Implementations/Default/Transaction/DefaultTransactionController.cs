@@ -100,6 +100,9 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Transaction
             // Create a new context for this request
             IStacApiContext stacApiContext = _stacApiContextFactory.Create();
 
+            // Set the collection id
+            stacApiContext.SetCollections(new List<string>() { collectionId });
+
             IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider();
             StacItem existingItem = await itemsProvider.GetItemByIdAsync(body.Id, stacApiContext, cancellationToken);
             if (existingItem != null)

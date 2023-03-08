@@ -109,7 +109,7 @@ namespace Stac.Api.Tests
             return path;
         }
 
-        protected string GetTestCollectionsRootPath()
+        protected string GetTestDatasetsRootPath()
         {
             var path = Path.Combine(AssemblyDirectory, @"../../..", "Resources/TestDatasets");
 

@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 using GeoJSON.Net.Feature;
 using Newtonsoft.Json;
 using Stac.Api.Converters;
+using Stac.Api.Interfaces;
 using Stac.Converters;
 
 namespace Stac.Api.Models
 {
-    public partial class StacFeatureCollection : GeoJSON.Net.Feature.FeatureCollection, ILinksCollectionObject
+    public partial class StacFeatureCollection : GeoJSON.Net.Feature.FeatureCollection, ILinksCollectionObject, IStacResultObject<StacItem>
     {
         public StacFeatureCollection()
         {

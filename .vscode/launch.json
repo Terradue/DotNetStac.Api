@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Stac.Api.FileSystem/bin/Debug/net6.0/Stac.Api.FileSystem.dll",
+            "program": "${workspaceFolder}/src/Stac.Api.FileSystem/bin/Debug/net6.0/stacapi-fs.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,

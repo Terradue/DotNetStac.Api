@@ -26,11 +26,11 @@ namespace Stac.Api.Tests
 
         protected override IHost CreateHost(IHostBuilder builder)
         {
-            builder.ConfigureServices(services =>
-            {
-                services.AddFileSystemData(b =>
-                    b.UseFileSystemProvider(_datadir, true));
-            });
+            // builder.ConfigureServices(services =>
+            // {
+            //     services.AddFileSystemData(b =>
+            //         b.UseFileSystemProvider(_datadir, true));
+            // });
             return base.CreateHost(builder);
         }
     }

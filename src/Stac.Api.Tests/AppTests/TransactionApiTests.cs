@@ -28,9 +28,10 @@ namespace Stac.Api.Tests.AppTests
             var catalog = JsonConvert.DeserializeObject<StacCollections>(json);
         }
 
-        [Theory, MemberData(nameof(GetTestCatalogs), new object[] { new string[] { "Catalog1" }  })]
-        public async Task PostAllCollectionItemsAsync(StacApiApplication application, string collectionPath, string[] itemsPaths)
+        [Theory, MemberData(nameof(GetTestDatasets))]
+        public async Task PostAllCollectionItemsAsync(string collectionPath, string[] itemsPaths)
         {
+            StacApiApplication application = TestCatalogsProvider.CreateTemporaryCatalog(nameof(PostAllCollectionItemsAsync));
             var client = application.CreateClient();
             TransactionClient transactionClient = new TransactionClient(client);
             FeaturesClient featuresClient = new FeaturesClient(client);
@@ -49,7 +50,7 @@ namespace Stac.Api.Tests.AppTests
                 if (post.IsCollection)
                 {
                     totalItemsInCollection += post.StacFeatureCollection.Features.Count();
-                    StacFeatureCollection stacItems = await featuresClient.GetFeaturesAsync(collection.Id, 10, null, null);
+                    StacFeatureCollection stacItems = await featuresClient.GetFeaturesAsync(collection.Id, 100, null, null);
                     int countItemsInCollection = 0;
                     while (true)
                     {
@@ -58,7 +59,8 @@ namespace Stac.Api.Tests.AppTests
                         {
                             break;
                         }
-                        stacItems = JsonConvert.DeserializeObject<StacFeatureCollection>(await client.GetStringAsync(stacItems.NextPage().Uri));
+                        var json = await client.GetStringAsync(stacItems.NextPage().Uri);
+                        stacItems = JsonConvert.DeserializeObject<StacFeatureCollection>(json);
                     }
                     Assert.Equal(totalItemsInCollection, countItemsInCollection);
                 }

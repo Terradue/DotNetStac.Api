@@ -51,6 +51,14 @@ namespace Stac.Api.WebApi.Services.Context
             }
         }
 
+        public void ApplyContextResultFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IStacResultObject<T> result) where T : IStacObject
+        {
+            foreach (IStacApiContextFilter stacApiContextFilter in _stacApiContextFilterProvider.GetFilters<T>())
+            {
+                stacApiContextFilter.ApplyContextResultFilters(stacApiContext, dataProvider, result);
+            }
+        }
+
         public IStacApiContext Create()
         {
             HttpStacApiContext httpStacApiContext = HttpStacApiContext.Create(_httpContextAccessor.HttpContext);

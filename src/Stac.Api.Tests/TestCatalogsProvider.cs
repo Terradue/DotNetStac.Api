@@ -53,6 +53,16 @@ namespace Stac.Api.Tests
             }
         }
 
+        public StacApiApplication CreateTemporaryCatalog(string catalogName)
+        {
+            var tempDir = Path.Combine(GetTempCatalogsPath(), catalogName);
+            if (!Directory.Exists(tempDir))
+            {
+                Directory.CreateDirectory(tempDir);
+            }
+            return new StacApiApplication(tempDir);
+        }
+
         private string[] GetReferenceCatalogsDirectories(string searchPattern = "Catalog*")
         {
             return Directory.GetDirectories(GetTestCatalogsRootPath(), "Catalog*", new EnumerationOptions() { RecurseSubdirectories = false });
@@ -63,20 +73,9 @@ namespace Stac.Api.Tests
             return Directory.GetDirectories(GetTempCatalogsPath(), "Catalog*", new EnumerationOptions() { RecurseSubdirectories = false });
         }
 
-        internal IEnumerable<object[]> GetStacApiApplicationsAndTestDatasets()
+        public IEnumerable<object[]> GetTestDatasets()
         {
-            foreach (var app in GetStacApiApplications())
-            {
-                foreach (var dataset in GetTestCollections())
-                {
-                    yield return new object[] { app[0], dataset[0], dataset[1] };
-                }
-            }
-        }
-
-        private IEnumerable<object[]> GetTestCollections()
-        {
-            foreach (var subdir in Directory.GetDirectories(GetTestCollectionsRootPath(), "Collection*", new EnumerationOptions() { RecurseSubdirectories = false }))
+            foreach (var subdir in Directory.GetDirectories(GetTestDatasetsRootPath(), "Collection*", new EnumerationOptions() { RecurseSubdirectories = false }))
             {
                 var items = Directory.GetFiles(subdir, "*.json", new EnumerationOptions() { RecurseSubdirectories = true });
                 yield return new object[] { subdir + ".json", items };

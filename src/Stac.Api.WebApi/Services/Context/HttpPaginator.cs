@@ -41,8 +41,12 @@ namespace Stac.Api.WebApi.Services.Context
         public IEnumerable<T> ApplyContextPostQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IEnumerable<T> items) where T : IStacObject
         {
             IEnumerable<T> paginatedItems = ApplyPagination(stacApiContext, dataProvider, items);
-            SetLinksInContext(stacApiContext, dataProvider, paginatedItems);
             return paginatedItems;
+        }
+
+        public void ApplyContextResultFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IStacResultObject<T> result) where T : IStacObject
+        {
+            SetLinksInContext(stacApiContext, dataProvider, result);
         }
 
         private IEnumerable<T> ApplyPagination<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IEnumerable<T> items) where T : IStacObject
@@ -81,7 +85,7 @@ namespace Stac.Api.WebApi.Services.Context
             return paginatedItems;
         }
 
-        private void SetLinksInContext<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IEnumerable<T> items) where T : IStacObject
+        private void SetLinksInContext<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IStacResultObject<T> result) where T : IStacObject
         {
             // If provider is a paginator,
             // we ask the data provider to deal with pagination on the collection the way it wants to
@@ -94,23 +98,23 @@ namespace Stac.Api.WebApi.Services.Context
 
             // Add the pagination links
             // We add the next link only if there is a next page
-            ILinkValues nextLink = GetNextLink<T>(paginator, items, stacApiContext);
+            ILinkValues nextLink = GetNextLink<T>(paginator, result, stacApiContext);
             if (nextLink != null)
             {
                 stacApiContext.LinkValues.Add(nextLink);
             }
             // We add the previous link only if there is a previous page
-            ILinkValues previousLink = GetPreviousLink<T>(paginator, items, stacApiContext);
+            ILinkValues previousLink = GetPreviousLink<T>(paginator, result, stacApiContext);
             if (previousLink != null)
             {
                 stacApiContext.LinkValues.Add(previousLink);
             }
         }
 
-        private ILinkValues GetNextLink<T>(IPaginator paginator, IEnumerable<T> items, IStacApiContext stacApiContext) where T : IStacObject
+        private ILinkValues GetNextLink<T>(IPaginator paginator, IStacResultObject<T> result, IStacApiContext stacApiContext) where T : IStacObject
         {
             // Get pagination parameters for next page
-            IPaginationParameters paginationParameters = paginator.GetNextPageParameters<T>(items, stacApiContext);
+            IPaginationParameters paginationParameters = paginator.GetNextPageParameters<T>(result, stacApiContext);
             if (paginationParameters == null)
             {
                 return null;
@@ -134,10 +138,10 @@ namespace Stac.Api.WebApi.Services.Context
             return nextLinkValues;
         }
 
-        private ILinkValues GetPreviousLink<T>(IPaginator paginator, IEnumerable<T> items, IStacApiContext stacApiContext) where T : IStacObject
+        private ILinkValues GetPreviousLink<T>(IPaginator paginator, IStacResultObject<T> result, IStacApiContext stacApiContext) where T : IStacObject
         {
             // Get pagination parameters for previous page
-            IPaginationParameters paginationParameters = paginator.GetPreviousPageParameters<T>(items, stacApiContext);
+            IPaginationParameters paginationParameters = paginator.GetPreviousPageParameters<T>(result, stacApiContext);
             if (paginationParameters == null)
             {
                 return null;
@@ -204,12 +208,12 @@ namespace Stac.Api.WebApi.Services.Context
             return values;
         }
 
-        public IPaginationParameters GetNextPageParameters<T>(IEnumerable<T> items, IStacApiContext stacApiContext) where T : IStacObject
+        public IPaginationParameters GetNextPageParameters<T>(IStacResultObject<T> result, IStacApiContext stacApiContext) where T : IStacObject
         {
             // Simply increment the page by 1 if the number of items is equal to the limit
             // otherwise, there is no next page
             DefaultPaginationParameters nextPageParameters = new DefaultPaginationParameters(GetPaginationParameters(stacApiContext));
-            if (nextPageParameters == null || items.Count() < nextPageParameters.Limit)
+            if (nextPageParameters == null || result.NumberReturned < nextPageParameters.Limit)
             {
                 return null;
             }
@@ -221,7 +225,7 @@ namespace Stac.Api.WebApi.Services.Context
             return nextPageParameters;
         }
 
-        public IPaginationParameters GetPreviousPageParameters<T>(IEnumerable<T> items, IStacApiContext stacApiContext) where T : IStacObject
+        public IPaginationParameters GetPreviousPageParameters<T>(IStacResultObject<T> result, IStacApiContext stacApiContext) where T : IStacObject
         {
             // Simply decrement the page by 1 if the page is greater than 1
             // otherwise, there is no previous page
@@ -312,5 +316,7 @@ namespace Stac.Api.WebApi.Services.Context
             }
             return null;
         }
+
+        
     }
 }

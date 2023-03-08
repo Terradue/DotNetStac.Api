@@ -28,6 +28,11 @@ namespace Stac.Api.Tests
             return TestCatalogsProvider.GetStacApiApplications(catalogNames);
         }
 
+        public static IEnumerable<object[]> GetTestDatasets()
+        {
+            return TestCatalogsProvider.GetTestDatasets();
+        }
+
         protected static TestCatalogsProvider TestCatalogsProvider
         {
             get
