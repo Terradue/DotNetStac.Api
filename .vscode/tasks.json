@@ -36,6 +36,18 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "Create tmp catalog",
+            "command": "mkdir",
+            "type": "shell",
+            "args": [
+                "-p",
+                "/tmp/StacApi"
+            ],
+            "problemMatcher": [
+                "$eslint-compact"
+            ]
+        },
+        {
             "label": "Copy Sentinel2 Collection to tmp",
             "command": "cp",
             "type": "shell",
@@ -46,7 +58,28 @@
             ],
             "problemMatcher": [
                 "$eslint-compact"
+            ],
+            "dependsOn": [
+                "Create tmp catalog"
             ]
+        },
+        {
+            "label": "Build Clients to tmp dir",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "publish",
+                "src/",
+                "-f",
+                "net7.0",
+                "-o",
+                "/tmp/stacapi-build"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
         }
     ]
 }

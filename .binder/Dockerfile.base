@@ -23,7 +23,7 @@ COPY ./.binder/supervisordserverextension.py /opt/conda/lib/python3.10/site-pack
 RUN jupyter serverextension enable --sys-prefix supervisordserverextension
 
 # Build the solution
-RUN dotnet publish ${HOME}/src/ -f net7.0 && \
+RUN dotnet publish ${HOME}/src/ -f net7.0 -o /tmp/stacapi-build && \
     rm -rf ${HOME}/src/*/obj
 
 # Set root to notebooks
