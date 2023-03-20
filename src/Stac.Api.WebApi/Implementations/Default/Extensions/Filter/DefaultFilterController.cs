@@ -49,7 +49,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
             IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider();
 
             // Apply Context Pre Query Filters
-            _stacApiContextFactory.ApplyContextPreQueryFilters<StacItem>(stacApiContext, itemsProvider);
+            _stacApiContextFactory.ApplyContextPreQueryFilters<StacItem>(stacApiContext, itemsProvider, null);
 
             // Query the items
             var items = await itemsProvider.GetItemsAsync(stacApiContext, cancellationToken);
@@ -112,7 +112,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
             IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider();
 
             // Apply Context Pre Query Filters
-            _stacApiContextFactory.ApplyContextPreQueryFilters<StacItem>(stacApiContext, itemsProvider);
+            _stacApiContextFactory.ApplyContextPreQueryFilters<StacItem>(stacApiContext, itemsProvider, body);
 
             // Query the items
             var items = await itemsProvider.GetItemsAsync(stacApiContext, cancellationToken);

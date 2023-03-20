@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Stac.Api.Interfaces;
+using Stac.Api.Services.Pagination;
 using Stac.Api.WebApi.Implementations.Default;
 
 namespace Stac.Api.WebApi.Services.Context
@@ -15,7 +16,9 @@ namespace Stac.Api.WebApi.Services.Context
     /// </summary>
     public class HttpPaginator : IStacApiContextFilter, IPaginator
     {
-        public void ApplyContextPreQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider) where T : IStacObject
+        public int Priority => 20;
+
+        public void ApplyContextPreQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IStacApiRequestBody request) where T : IStacObject
         {
             // If provider is a paginator,
             // we ask the data provider to deal with pagination on the collection the way it wants to
@@ -310,13 +313,9 @@ namespace Stac.Api.WebApi.Services.Context
 
         public IPaginationParameters GetPaginationParameters(IStacApiContext stacApiContext)
         {
-            if (stacApiContext.Properties.ContainsKey(IPaginationParameters.PaginationPropertiesKey))
-            {
-                return stacApiContext.Properties[IPaginationParameters.PaginationPropertiesKey] as IPaginationParameters;
-            }
-            return null;
+            // Use the default pagination parameters accessor to get the pagination parameters
+            return stacApiContext.GetPaginationParameters();
         }
-
         
     }
 }

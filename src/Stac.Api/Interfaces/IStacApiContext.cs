@@ -10,13 +10,12 @@ namespace Stac.Api.Interfaces
 {
     public interface IStacApiContext: IStacPropertiesContainer
     {
+        string Id { get; }
         Uri BaseUri { get; }
         LinkGenerator LinkGenerator { get; }
         HttpContext HttpContext { get; }
         IList<string> Collections { get; }
         void SetCollections(IList<string> collectionId);
         IList<ILinkValues> LinkValues { get; }
-
-
     }
 }

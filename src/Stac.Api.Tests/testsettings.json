@@ -1,0 +1,8 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Stac.Api.Services.Debug": "Debug",
+    }
+  }
+}

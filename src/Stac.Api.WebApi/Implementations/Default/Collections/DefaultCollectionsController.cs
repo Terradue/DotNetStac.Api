@@ -32,7 +32,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Collections
             ICollectionsProvider collectionsProvider = _dataServicesProvider.GetCollectionsProvider();
 
             // Apply Context Pre Query Filters
-            _stacApiContextFactory.ApplyContextPreQueryFilters<StacCollection>(stacApiContext, collectionsProvider);
+            _stacApiContextFactory.ApplyContextPreQueryFilters<StacCollection>(stacApiContext, collectionsProvider, null);
 
             // Get the collection from the provider
             StacCollection collection = await collectionsProvider.GetCollectionByIdAsync(collectionId, stacApiContext, cancellationToken);
@@ -60,7 +60,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Collections
             ICollectionsProvider collectionsProvider = _dataServicesProvider.GetCollectionsProvider();
 
             // Apply Context Pre Query Filters
-            _stacApiContextFactory.ApplyContextPreQueryFilters<StacCollection>(stacApiContext, collectionsProvider);
+            _stacApiContextFactory.ApplyContextPreQueryFilters<StacCollection>(stacApiContext, collectionsProvider, null);
 
             // Get collections from the provider
             var collectionsQueryable = await collectionsProvider.GetCollectionsAsync(stacApiContext, cancellationToken);

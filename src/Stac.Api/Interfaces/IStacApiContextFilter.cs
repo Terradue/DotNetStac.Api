@@ -7,7 +7,7 @@ namespace Stac.Api.Interfaces
 {
     public interface IStacApiContextFilter
     {
-        void ApplyContextPreQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider) where T : IStacObject;
+        void ApplyContextPreQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IStacApiRequestBody request) where T : IStacObject;
 
         T ApplyContextPostQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, T item) where T : IStacObject;
 
@@ -16,5 +16,7 @@ namespace Stac.Api.Interfaces
         void ApplyContextResultFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IStacResultObject<T> result) where T : IStacObject;
 
         bool CanHandle<T>() where T : IStacObject;
+
+        int Priority { get; }
     }
 }

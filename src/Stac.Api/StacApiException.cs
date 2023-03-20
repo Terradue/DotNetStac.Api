@@ -38,7 +38,7 @@ namespace Stac.Api
         {
             get
             {
-                return base.Message + "\n\nStatus: " + StatusCode + "\nResponse: \n" + ((Response == null) ? "(null)" : Response.Substring(0, Response.Length >= 512 ? 512 : Response.Length));
+                return base.Message + "\n\nStatus: " + StatusCode + "\nResponse: \n" + ((Response == null) ? "(null)" : Response.Substring(0, Response.Length >= 1024 ? 1024 : Response.Length));
             }
         }
     }

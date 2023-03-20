@@ -9,7 +9,7 @@ using Stac.Api.WebApi.Extensions;
 
 namespace Stac.Api.WebApi.Controllers.Extensions.Filter
 {
-    [StacExtension]
+    [StacApiControllerExtension]
     public partial class FilterController
     {
     }

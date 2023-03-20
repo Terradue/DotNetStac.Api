@@ -5,6 +5,7 @@ using Stac.Api.Clients.Features;
 using Stac.Api.Extensions.Filters;
 using Stac.Api.Interfaces;
 using Stac.Api.Models;
+using Stac.Api.Services.Pagination;
 using Stac.Api.WebApi.Controllers.Features;
 using Stac.Api.WebApi.Services;
 using Stac.Api.WebApi.Services.Context;
@@ -50,7 +51,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
             IItemsProvider itemsProvider = dataServicesProvider.GetItemsProvider();
 
             // Apply Context Pre Query Filters
-            _stacApiContextFactory.ApplyContextPreQueryFilters<StacItem>(stacApiContext, itemsProvider);
+            _stacApiContextFactory.ApplyContextPreQueryFilters<StacItem>(stacApiContext, itemsProvider, null);
 
             // Query the item           
             var item = await itemsProvider.GetItemByIdAsync(featureId, stacApiContext, cancellationToken);
@@ -90,7 +91,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
             IItemsProvider itemsProvider = dataServicesProvider.GetItemsProvider();
 
             // Apply Context Pre Query Filters
-            _stacApiContextFactory.ApplyContextPreQueryFilters<StacItem>(stacApiContext, itemsProvider);
+            _stacApiContextFactory.ApplyContextPreQueryFilters<StacItem>(stacApiContext, itemsProvider, null);
 
             // Query the items
             var items = await itemsProvider.GetItemsAsync(stacApiContext, cancellationToken);

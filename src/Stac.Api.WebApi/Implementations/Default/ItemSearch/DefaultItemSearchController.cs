@@ -7,6 +7,7 @@ using Stac.Api.Extensions.Filters;
 using Stac.Api.Interfaces;
 using Stac.Api.Models;
 using Stac.Api.Models.Core;
+using Stac.Api.Services.Pagination;
 using Stac.Api.WebApi.Controllers.ItemSearch;
 using Stac.Api.WebApi.Services;
 using Stac.Api.WebApi.Services.Context;
@@ -45,7 +46,7 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
             IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider();
 
             // Apply Context Pre Query Filters
-            _stacApiContextFactory.ApplyContextPreQueryFilters<StacItem>(stacApiContext, itemsProvider);
+            _stacApiContextFactory.ApplyContextPreQueryFilters<StacItem>(stacApiContext, itemsProvider, null);
 
             // Query the items
             var items = await itemsProvider.GetItemsAsync(stacApiContext, cancellationToken);

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Stac.Api.Interfaces
+namespace Stac.Api.Services.Pagination
 {
     public interface IPaginationParameters
     {

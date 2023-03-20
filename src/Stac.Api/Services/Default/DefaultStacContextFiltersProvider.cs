@@ -17,7 +17,7 @@ namespace Stac.Api.Services.Default
 
         public IEnumerable<IStacApiContextFilter> GetFilters<T>() where T : IStacObject
         {
-            return _filters.Where(f => f.CanHandle<T>());
+            return _filters.Where(f => f.CanHandle<T>()).OrderBy(f => f.Priority);
         }
     }
 }

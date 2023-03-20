@@ -12,7 +12,7 @@ namespace Stac.Api.WebApi.ApplicationModels
     {
         public void Apply(ActionModel action)
         {
-            var stacExtension = action.Controller.Attributes.OfType<StacExtensionAttribute>().FirstOrDefault();
+            var stacExtension = action.Controller.Attributes.OfType<StacApiControllerExtensionAttribute>().FirstOrDefault();
 
             // If the action is in an extension controler, 
             if (stacExtension != null)

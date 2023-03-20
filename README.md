@@ -2,7 +2,7 @@
 
 DotNetStac.Api | [DotNetStac](https://github.com/Terradue/DotNetStac)
 
-[![NuGet Version](https://img.shields.io/nuget/v/NSwag.Core.svg)](https://www.nuget.org/packages?q=DotNetStac.Api)
+[![NuGet Version](https://img.shields.io/nuget/vpre/DotNetStac.Api.svg)](https://www.nuget.org/packages?q=DotNetStac.Api)
 [![build](https://github.com/Terradue/DotNetStac.Api/actions/workflows/build.yml/badge.svg)](https://github.com/Terradue/DotNetStac.Api/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/Terradue/DotNetStac.Api/branch/main/graph/badge.svg)](https://codecov.io/gh/Terradue/DotNetStac.Api)
 [![Gitter](https://img.shields.io/gitter/room/SpatioTemporal-Asset-Catalog/Lobby?color=yellow)](https://gitter.im/SpatioTemporal-Asset-Catalog/Lobby)

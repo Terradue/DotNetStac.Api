@@ -46,5 +46,10 @@ namespace Stac.Api.Services.Queryable
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return this.Expression.ToString();
+        }
     }
 }

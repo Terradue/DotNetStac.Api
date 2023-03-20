@@ -2,12 +2,11 @@
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <IsPackable>false</IsPackable>
+    <TargetFrameworks>net7.0</TargetFrameworks>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.*" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.*" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />

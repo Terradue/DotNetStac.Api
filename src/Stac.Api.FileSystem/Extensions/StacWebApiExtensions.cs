@@ -18,6 +18,8 @@ using Stac.Api.WebApi.Patterns.CollectionBased;
 using Stac.Api.WebApi.Implementations.Default.Services;
 using Stac.Api.WebApi.Services.Context;
 using Stac.Api.Services.Default;
+using Stac.Api.Extensions.Sort.Context;
+using Stac.Api.Services.Debug;
 
 namespace Stac.Api.FileSystem.Extensions
 {
@@ -34,10 +36,16 @@ namespace Stac.Api.FileSystem.Extensions
             services.AddSingleton<IStacApiContextFiltersProvider, DefaultStacContextFiltersProvider>();
             // Register the HTTP pagination filter
             services.AddSingleton<IStacApiContextFilter, HttpPaginator>();
+            // Register the sorting filter
+            services.AddSingleton<IStacApiContextFilter, SortContextFilter>();
+            // Register the debug filter
+            services.AddSingleton<IStacApiContextFilter, DebugContextFilter>();
             // The filesystem implements a collection based pattern
             services.AddSingleton<IStacLinker, CollectionBasedStacLinker>();
             // Add the default controllers
             services.AddDefaultControllers();
+            // Add the default extensions
+            services.AddDefaultStacApiExtensions();
             // Let's Configure
             var builder = new StacWebApiBuilder(services);
             configure(builder);

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
 using Stac.Api.Clients.Collections;
 using Stac.Api.Interfaces;
+using Stac.Api.Services.Pagination;
 
 namespace Stac.Api.WebApi.Services
 {

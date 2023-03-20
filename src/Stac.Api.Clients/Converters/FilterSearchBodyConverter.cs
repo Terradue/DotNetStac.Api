@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using GeoJSON.Net.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -17,6 +19,8 @@ namespace Stac.Api.Clients.Converters
             return objectType == typeof(FilterSearchBody);
         }
 
+        public override bool CanWrite => false;
+
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             reader.DateParseHandling = DateParseHandling.None;
@@ -26,22 +30,27 @@ namespace Stac.Api.Clients.Converters
 
         public FilterSearchBody ReadJObject(JObject jo, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            JsonSerializerSettings settings = new JsonSerializerSettings();
-            if (jo.ContainsKey("filter_lang"))
+            FilterLang? filter_lang = null;
+            CQL2FilterConverter cql2FilterConverter = new CQL2FilterConverter();
+            if (jo.ContainsKey("filter-lang"))
             {
-                FilterLang? filter_lang = StacAccessorsHelpers.LazyEnumParse(typeof(FilterLang), jo["filter_lang"].ToString()) as FilterLang?;
-                settings.Converters.Add(new CQL2FilterConverter(filter_lang != null ? Enum.Parse<CQL2FilterConverter.FilterLang>(filter_lang.ToString()) : null));
+                filter_lang = StacAccessorsHelpers.LazyEnumParse(typeof(FilterLang), jo["filter-lang"].ToString()) as FilterLang?;
+                cql2FilterConverter = new CQL2FilterConverter(filter_lang != null ? Enum.Parse<CQL2FilterConverter.FilterLang>(filter_lang.ToString()) : null);
             }
-            else
-            {
-                settings.Converters.Add(new CQL2FilterConverter());
-            }
-            return jo.ToObject<FilterSearchBody>(JsonSerializer.Create(settings));
+            // Read additional properties
+            var additionalProperties = jo.Properties().Where(p => p.Name != "filter" && p.Name != "filter-lang" && p.Name != "filter_crs").ToDictionary(p => p.Name, p => p.Value);
+            
+            return new FilterSearchBody(){
+                FilterLang = filter_lang ?? FilterLang.Cql2Text,
+                Filter =  cql2FilterConverter.ReadJObject(jo["filter"] as JObject, typeof(CQL2Filter), existingValue, serializer),
+                FilterCrs = jo["filter_crs"]?.ToObject<Uri>(),
+                AdditionalProperties = additionalProperties.Select(p => new KeyValuePair<string, object>(p.Key, p.Value.ToObject<object>())).ToDictionary(p => p.Key, p => p.Value)
+            };
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, value);
+            throw new NotImplementedException();
         }
     }
 

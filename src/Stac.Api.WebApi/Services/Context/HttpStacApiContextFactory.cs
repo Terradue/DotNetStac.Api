@@ -43,11 +43,11 @@ namespace Stac.Api.WebApi.Services.Context
             return filteredItem;
         }
 
-        public void ApplyContextPreQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider) where T : IStacObject
+        public void ApplyContextPreQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IStacApiRequestBody body) where T : IStacObject
         {
             foreach (IStacApiContextFilter stacApiContextFilter in _stacApiContextFilterProvider.GetFilters<T>())
             {
-                stacApiContextFilter.ApplyContextPreQueryFilters(stacApiContext, dataProvider);
+                stacApiContextFilter.ApplyContextPreQueryFilters(stacApiContext, dataProvider, body);
             }
         }
 

@@ -28,6 +28,9 @@ using Stac.Api.WebApi.Filters;
 using Stac.Api.WebApi.ModelBinding;
 using Stac.Api.WebApi.ApplicationModels;
 using Stac.Api.WebApi.ModelBinding.Extensions;
+using Stac.Api.Interfaces;
+using Stac.Api.Clients.ItemSearch;
+using Stac.Api.Clients.Extensions.Sort;
 
 namespace Stac.Api.WebApi.Extensions
 {
@@ -40,7 +43,7 @@ namespace Stac.Api.WebApi.Extensions
                     // Json error handling
                     options.Filters.Add<JsonErrorActionFilter>();
                     // Add the STAC API model binder provider to the controller
-                    options.ModelBinderProviders.Insert(0, new StacModelBinderProvider());
+                    options.ModelBinderProviders.Insert(0, new StacApiModelBinderProvider());
                     // Add the STAC API filter extension model binder provider to the controller
                     options.ModelBinderProviders.Insert(1, new FilterExtensionModelBinderProvider());
                     // Add the STAC API extensions convention to the controller
@@ -70,6 +73,12 @@ namespace Stac.Api.WebApi.Extensions
             services.AddSingleton<IFeaturesController, DefaultFeaturesController>();
             services.AddSingleton<IFilterController, DefaultFilterController>();
             services.AddSingleton<ITransactionController, DefaultTransactionController>();
+            return services;
+        }
+
+        public static IServiceCollection AddDefaultStacApiExtensions(this IServiceCollection services)
+        {
+            services.AddSingleton<IStacApiModelExtension, SortStacApiExtension>();
             return services;
         }
 

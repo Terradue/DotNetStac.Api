@@ -15,7 +15,6 @@ namespace Stac.Api.Tests.AppTests
     [Collection(StacApiAppCollectionFixture.Name)]
     public class FilterApiTests : AppTestBase
     {
-
         private readonly JsonSerializerSettings _settings;
 
         public FilterApiTests(StacApiAppFixture fixture, ITestOutputHelper outputHelper) : base(fixture, outputHelper)

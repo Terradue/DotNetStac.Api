@@ -25,6 +25,8 @@ namespace Stac.Api.WebApi.Services.Context
 
         public IStacObject StacObjectContainer => throw new NotImplementedException();
 
+        public string Id => HttpContext.TraceIdentifier;
+
         public static HttpStacApiContext Create(HttpContext httpContext)
         {
             return new HttpStacApiContext
