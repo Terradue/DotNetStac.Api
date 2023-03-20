@@ -19,7 +19,7 @@ using Stac.Api.WebApi.Implementations.Default.Services;
 using Stac.Api.WebApi.Services.Context;
 using Stac.Api.Services.Default;
 using Stac.Api.Extensions.Sort.Context;
-using Stac.Api.Services.Debug;
+using Stac.Api.Services.Debugging;
 
 namespace Stac.Api.FileSystem.Extensions
 {
