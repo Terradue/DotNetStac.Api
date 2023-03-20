@@ -101,7 +101,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
         public async Task<ActionResult<StacFeatureCollection>> PostItemSearchAsync(FilterSearchBody body, CancellationToken cancellationToken = default)
         {
             // If the filter is null, then we get back to the default item search
-            if (body.Filter == null)
+            if (body?.Filter == null)
             {
                 return await _itemSearchController.PostItemSearchAsync(body, cancellationToken);
             }

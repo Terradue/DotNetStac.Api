@@ -141,7 +141,6 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Filter
         [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("search")]
         public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> PostItemSearch([Microsoft.AspNetCore.Mvc.FromBody] FilterSearchBody body, System.Threading.CancellationToken cancellationToken)
         {
-
             return _implementation.PostItemSearchAsync(body, cancellationToken);
         }
 

@@ -137,7 +137,7 @@ namespace Stac.Api.Extensions.Sort.Context
         private ISortParameters FindSortParametersInRequestBody(IStacApiRequestBody request)
         {
             // Get the sort parameters from the request body
-            return request.AdditionalProperties.GetProperty<ISortParameters>(ISortParameters.QuerySortKeyName);
+            return request?.AdditionalProperties?.GetProperty<ISortParameters>(ISortParameters.QuerySortKeyName);
         }
 
         public bool CanHandle<T>() where T : IStacObject
