@@ -15,7 +15,7 @@ namespace Stac.Api.Tests.AppTests
     [Collection(StacApiAppCollectionFixture.Name)]
     public class TransactionApiTests : AppTestBase
     {
-        public TransactionApiTests(StacApiAppFixture fixture, ITestOutputHelper outputHelper) : base(fixture, outputHelper)
+        public TransactionApiTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
 
         }

@@ -13,14 +13,10 @@ namespace Stac.Api.Tests
 {
     public abstract class AppTestBase : TestBase, IDisposable
     {
-        private StacApiAppFixture Fixture;
         protected static TestCatalogsProvider _testCatalogsProvider;
 
-        protected AppTestBase(StacApiAppFixture fixture, ITestOutputHelper outputHelper) : base(outputHelper)
+        protected AppTestBase(ITestOutputHelper outputHelper) : base(outputHelper)
         {
-            Fixture = fixture;
-            // Route output from the fixture's logs to xunit's output
-            Fixture.SetOutputHelper(OutputHelper);
         }
 
         public static IEnumerable<object[]> GetTestCatalogs(string[] catalogNames)

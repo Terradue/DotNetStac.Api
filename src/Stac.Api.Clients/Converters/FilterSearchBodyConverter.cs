@@ -5,6 +5,7 @@ using GeoJSON.Net.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Stac.Api.Clients.Extensions.Filter;
+using Stac.Api.Clients.ItemSearch;
 using Stac.Api.Converters;
 using Stac.Api.Models;
 using Stac.Api.Models.Cql2;
@@ -30,6 +31,9 @@ namespace Stac.Api.Clients.Converters
 
         public FilterSearchBody ReadJObject(JObject jo, Type objectType, object existingValue, JsonSerializer serializer)
         {
+            // Read base object SearchBody
+            SearchBody searchBody = serializer.Deserialize<SearchBody>(jo.CreateReader());
+
             FilterLang? filter_lang = null;
             CQL2FilterConverter cql2FilterConverter = new CQL2FilterConverter();
             if (jo.ContainsKey("filter-lang"))
@@ -39,8 +43,8 @@ namespace Stac.Api.Clients.Converters
             }
             // Read additional properties
             var additionalProperties = jo.Properties().Where(p => p.Name != "filter" && p.Name != "filter-lang" && p.Name != "filter_crs").ToDictionary(p => p.Name, p => p.Value);
-            
-            return new FilterSearchBody(){
+
+            return new FilterSearchBody(searchBody){
                 FilterLang = filter_lang ?? FilterLang.Cql2Text,
                 Filter =  cql2FilterConverter.ReadJObject(jo["filter"] as JObject, typeof(CQL2Filter), existingValue, serializer),
                 FilterCrs = jo["filter_crs"]?.ToObject<Uri>(),

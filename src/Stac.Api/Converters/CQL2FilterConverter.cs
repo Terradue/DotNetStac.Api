@@ -35,7 +35,10 @@ namespace Stac.Api.Converters
 
         public CQL2Filter ReadJObject(JObject jo, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return new CQL2Filter(CreateFilter(_filter_Lang, jo));
+            var booleanExpression = CreateFilter(_filter_Lang, jo);
+            if (booleanExpression == null)
+                return null;
+            return new CQL2Filter(booleanExpression);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -67,7 +70,7 @@ namespace Stac.Api.Converters
 
         private BooleanExpression CreateCqlFilterFromText(JObject filter)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public enum FilterLang

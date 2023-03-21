@@ -12,7 +12,7 @@ namespace Stac.Api.Tests.AppTests
     [Collection(StacApiAppCollectionFixture.Name)]
     public class CoreApiTests : AppTestBase
     {
-        public CoreApiTests(StacApiAppFixture fixture, ITestOutputHelper outputHelper) : base(fixture, outputHelper)
+        public CoreApiTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
 
         }

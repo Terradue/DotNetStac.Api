@@ -14,7 +14,7 @@ namespace Stac.Api.Tests.AppTests
     [Collection(StacApiAppCollectionFixture.Name)]
     public class ItemSearchApiTests : AppTestBase
     {
-        public ItemSearchApiTests(StacApiAppFixture fixture, ITestOutputHelper outputHelper) : base(fixture, outputHelper)
+        public ItemSearchApiTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
 
         }

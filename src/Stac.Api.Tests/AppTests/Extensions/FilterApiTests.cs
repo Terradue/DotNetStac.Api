@@ -17,7 +17,7 @@ namespace Stac.Api.Tests.AppTests
     {
         private readonly JsonSerializerSettings _settings;
 
-        public FilterApiTests(StacApiAppFixture fixture, ITestOutputHelper outputHelper) : base(fixture, outputHelper)
+        public FilterApiTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
             _settings = new JsonSerializerSettings();
             _settings.Converters.Add(new BooleanExpressionConverter());

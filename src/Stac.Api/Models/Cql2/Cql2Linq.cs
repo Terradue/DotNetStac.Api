@@ -22,6 +22,8 @@ namespace Stac.Api.Models.Cql2
 
         public static IEnumerable<TSource> Boolean<TSource>(this IEnumerable<TSource> source, BooleanExpression booleanExpression) where TSource : IStacObject
         {
+            if ( booleanExpression == null)
+                return source;
             return source.AsQueryable().Boolean(booleanExpression);
         }
 

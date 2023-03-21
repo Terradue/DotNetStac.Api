@@ -19,7 +19,7 @@ namespace Stac.Api.Tests.AppTests
 
         private readonly JsonSerializerSettings _settings;
 
-        public SortApiTests(StacApiAppFixture fixture, ITestOutputHelper outputHelper) : base(fixture, outputHelper)
+        public SortApiTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
             _settings = new JsonSerializerSettings();
             _settings.Converters.Add(new BooleanExpressionConverter());
