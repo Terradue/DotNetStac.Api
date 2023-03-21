@@ -12,10 +12,14 @@ namespace Stac.Api.Tests.AppTests
     [Collection(StacApiAppCollectionFixture.Name)]
     public class CoreApiTests : AppTestBase
     {
-        public CoreApiTests(ITestOutputHelper outputHelper) : base(outputHelper)
+        public CoreApiTests(ITestOutputHelper outputHelper,
+                            TestCatalogsProvider testCatalogsProvider) : base(outputHelper)
         {
-
+            TestCatalogsProvider = testCatalogsProvider;
+            TestCatalogsProvider.SetOutputHelper(outputHelper);
         }
+
+        public TestCatalogsProvider TestCatalogsProvider { get; }
 
         [Fact]
         public void DeserializeLandingPageAsync()
@@ -28,9 +32,10 @@ namespace Stac.Api.Tests.AppTests
             LandingPage lp2 = JsonConvert.DeserializeObject<LandingPage>(json);
         }
 
-        [Theory, MemberData(nameof(GetTestCatalogs), new object[] { new string[] { "Catalog1" } })]
-        public async Task GetLandingPageAsync(StacApiApplication application)
+        [Theory, InlineData( "Catalog1" )]
+        public async Task GetLandingPageAsync(string catalogName)
         {
+            StacApiApplication application = TestCatalogsProvider.GetStacApiApplication(catalogName);
             var client = application.CreateClient();
             CoreClient coreClient = new CoreClient(client);
 

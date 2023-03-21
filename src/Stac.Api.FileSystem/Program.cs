@@ -25,7 +25,6 @@ builder.Services.AddFileSystemData(builder =>
 
 builder.Services.AddCodeGenOptions(configuration.GetSection("CodeGen"));
 
-
 // Configure OpenAPI documentation for the Todo API
 builder.Services.AddEndpointsApiExplorer();
 
@@ -38,6 +37,8 @@ builder.Services.AddCors(options =>
                 .AllowAnyHeader();
             });
 });
+
+builder.Services.AddLogging();
 
 // Create the app
 var app = builder.Build();

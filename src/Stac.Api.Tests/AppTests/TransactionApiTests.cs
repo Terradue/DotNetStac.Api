@@ -15,10 +15,14 @@ namespace Stac.Api.Tests.AppTests
     [Collection(StacApiAppCollectionFixture.Name)]
     public class TransactionApiTests : AppTestBase
     {
-        public TransactionApiTests(ITestOutputHelper outputHelper) : base(outputHelper)
+        public TransactionApiTests(ITestOutputHelper outputHelper,
+                                   TestCatalogsProvider testCatalogsProvider) : base(outputHelper)
         {
-
+            TestCatalogsProvider = testCatalogsProvider;
+            TestCatalogsProvider.SetOutputHelper(outputHelper);
         }
+
+        public TestCatalogsProvider TestCatalogsProvider { get; }
 
         [Fact]
         public void DeserializeStacCollections()

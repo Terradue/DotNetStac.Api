@@ -14,14 +14,19 @@ namespace Stac.Api.Tests.AppTests
     [Collection(StacApiAppCollectionFixture.Name)]
     public class ItemSearchApiTests : AppTestBase
     {
-        public ItemSearchApiTests(ITestOutputHelper outputHelper) : base(outputHelper)
+        public ItemSearchApiTests(ITestOutputHelper outputHelper,
+                                  TestCatalogsProvider testCatalogsProvider) : base(outputHelper)
         {
-
+            TestCatalogsProvider = testCatalogsProvider;
+            TestCatalogsProvider.SetOutputHelper(outputHelper);
         }
 
-        [Theory, MemberData(nameof(GetTestCatalogs), new object[] { new string[] { "CatalogS2L2A" } })]
-        public async Task GetItemSearchAsync(StacApiApplication application)
+        public TestCatalogsProvider TestCatalogsProvider { get; }
+
+        [Theory, InlineData( "CatalogS2L2A" )]
+        public async Task GetItemSearchAsync(string catalogName)
         {
+            var application = TestCatalogsProvider.GetStacApiApplication(catalogName);
             var client = application.CreateClient();
             ItemSearchClient itemSearchClient = new ItemSearchClient(client);
 
@@ -66,9 +71,10 @@ namespace Stac.Api.Tests.AppTests
 
         }
 
-        [Theory, MemberData(nameof(GetTestCatalogs), new object[] { new string[] { "CatalogS2L2A" } })]
-        public async Task PostItemSearchAsync(StacApiApplication application)
+        [Theory, InlineData( "CatalogS2L2A" )]
+        public async Task PostItemSearchAsync(string catalogName)
         {
+            var application = TestCatalogsProvider.GetStacApiApplication(catalogName);
             var client = application.CreateClient();
             ItemSearchClient itemSearchClient = new ItemSearchClient(client);
 

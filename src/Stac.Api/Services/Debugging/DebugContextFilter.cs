@@ -31,7 +31,11 @@ namespace Stac.Api.Services.Debugging
 
         public IEnumerable<T> ApplyContextPostQueryFilters<T>(IStacApiContext stacApiContext, IDataProvider<T> dataProvider, IEnumerable<T> items) where T : IStacObject
         {
-            _logger.LogDebug("[{0}] PostQuery {1}", stacApiContext.Id, items);
+            // if items is a queryable, log the expression
+            if (items is IQueryable<T> queryable)
+            {
+                _logger.LogDebug("[{0}] PostQuery {1}", stacApiContext.Id, queryable.Expression);
+            }
             return items;
         }
 

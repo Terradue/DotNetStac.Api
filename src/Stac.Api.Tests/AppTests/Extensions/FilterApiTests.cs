@@ -17,15 +17,21 @@ namespace Stac.Api.Tests.AppTests
     {
         private readonly JsonSerializerSettings _settings;
 
-        public FilterApiTests(ITestOutputHelper outputHelper) : base(outputHelper)
+        public FilterApiTests(ITestOutputHelper outputHelper,
+                              TestCatalogsProvider testCatalogsProvider) : base(outputHelper)
         {
             _settings = new JsonSerializerSettings();
             _settings.Converters.Add(new BooleanExpressionConverter());
+            TestCatalogsProvider = testCatalogsProvider;
+            TestCatalogsProvider.SetOutputHelper(outputHelper);
         }
 
-        [Theory, MemberData(nameof(GetTestCatalogs), new object[] { new string[] { "CatalogS2L2A" } })]
-        public async Task GetItemSearchAsync(StacApiApplication application)
+        public TestCatalogsProvider TestCatalogsProvider { get; }
+
+        [Theory, InlineData( "CatalogS2L2A" )]
+        public async Task GetItemSearchAsync(string catalogName)
         {
+            var application = TestCatalogsProvider.GetStacApiApplication(catalogName);
             var client = application.CreateClient();
             FilterClient filterClient = new FilterClient(client);
             filterClient.ReadResponseAsString = true;

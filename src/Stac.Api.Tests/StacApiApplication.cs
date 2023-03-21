@@ -16,9 +16,10 @@ namespace Stac.Api.Tests
     {
         private string _datadir;
 
-        public StacApiApplication(string datadir)
+        public StacApiApplication(string datadir, ITestOutputHelper outputHelper) : base()
         {
             _datadir = datadir;
+            OutputHelper = outputHelper;
         }
 
         public ITestOutputHelper OutputHelper { get; set; }
@@ -27,16 +28,22 @@ namespace Stac.Api.Tests
         {
             // Notice there is no `--` prefix in "config"
             builder.UseSetting("CatalogRootPath", _datadir);
-            builder.ConfigureLogging(loggingBuilder => loggingBuilder.ClearProviders().AddXUnit(this));
+            builder.ConfigureLogging(loggingBuilder =>
+            {
+                loggingBuilder.ClearProviders().AddXUnit(this, c => c.Filter = (s, l) => l >= LogLevel.Debug);
+            });
+            builder.ConfigureServices(services =>
+            {
+                services.AddLogging(loggingBuilder =>
+                {
+                    loggingBuilder.ClearProviders().AddXUnit(this, c => c.Filter = (s, l) => l >= LogLevel.Debug);
+                });
+            });
         }
 
         protected override IHost CreateHost(IHostBuilder builder)
         {
-            // builder.ConfigureServices(services =>
-            // {
-            //     services.AddFileSystemData(b =>
-            //         b.UseFileSystemProvider(_datadir, true));
-            // });
+            
             return base.CreateHost(builder);
         }
     }

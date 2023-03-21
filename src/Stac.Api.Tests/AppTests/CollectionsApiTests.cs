@@ -11,10 +11,14 @@ namespace Stac.Api.Tests.AppTests
     [Collection(StacApiAppCollectionFixture.Name)]
     public class CollectionsApiTests : AppTestBase
     {
-        public CollectionsApiTests(ITestOutputHelper outputHelper) : base(outputHelper)
+        public CollectionsApiTests(ITestOutputHelper outputHelper,
+                                   TestCatalogsProvider testCatalogsProvider) : base(outputHelper)
         {
-
+            TestCatalogsProvider = testCatalogsProvider;
+            TestCatalogsProvider.SetOutputHelper(outputHelper);
         }
+
+        public TestCatalogsProvider TestCatalogsProvider { get; }
 
         [Fact]
         public void DeserializeStacCollections()
@@ -24,9 +28,10 @@ namespace Stac.Api.Tests.AppTests
             var catalog = JsonConvert.DeserializeObject<StacCollections>(json);
         }
 
-        [Theory, MemberData(nameof(GetTestCatalogs), new object[] { new string[] { "Catalog1" } })]
-        public async Task GetCollectionsAsync(StacApiApplication application)
+        [Theory, InlineData( "Catalog1" )]
+        public async Task GetCollectionsAsync(string catalogName)
         {
+            StacApiApplication application = TestCatalogsProvider.GetStacApiApplication(catalogName);
             var client = application.CreateClient();
             CollectionsClient collectionsClient = new CollectionsClient(client);
 
@@ -49,9 +54,10 @@ namespace Stac.Api.Tests.AppTests
 
         }
 
-        [Theory, MemberData(nameof(GetTestCatalogs), new object[] { new string[] { "Catalog1" } })]
-        public async Task GetCollectionsByIdAsync(StacApiApplication application)
+        [Theory, InlineData( "Catalog1" )]
+        public async Task GetCollectionsByIdAsync(string catalogName)
         {
+            StacApiApplication application = TestCatalogsProvider.GetStacApiApplication(catalogName);
             var client = application.CreateClient();
             CollectionsClient collectionsClient = new CollectionsClient(client);
 

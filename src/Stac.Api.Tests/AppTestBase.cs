@@ -11,44 +11,34 @@ using Xunit.Abstractions;
 
 namespace Stac.Api.Tests
 {
-    public abstract class AppTestBase : TestBase, IDisposable
+    public abstract class AppTestBase : TestBase
     {
-        protected static TestCatalogsProvider _testCatalogsProvider;
 
         protected AppTestBase(ITestOutputHelper outputHelper) : base(outputHelper)
         {
         }
 
-        public static IEnumerable<object[]> GetTestCatalogs(string[] catalogNames)
-        {
-            return TestCatalogsProvider.GetStacApiApplications(catalogNames);
-        }
-
         public static IEnumerable<object[]> GetTestDatasets()
         {
-            return TestCatalogsProvider.GetTestDatasets();
-        }
-
-        protected static TestCatalogsProvider TestCatalogsProvider
-        {
-            get
+            foreach (var subdir in Directory.GetDirectories(GetTestDatasetsRootPath(), "Collection*", new EnumerationOptions() { RecurseSubdirectories = false }))
             {
-                if (_testCatalogsProvider == null)
-                {
-                    _testCatalogsProvider = new TestCatalogsProvider();
-                    _testCatalogsProvider.Init();
-                }
-                return _testCatalogsProvider;
+                var items = Directory.GetFiles(subdir, "*.json", new EnumerationOptions() { RecurseSubdirectories = true });
+                yield return new object[] { subdir + ".json", items };
             }
         }
 
-        public void Dispose()
+        protected static string GetTestDatasetsRootPath()
         {
-            if (_testCatalogsProvider != null)
+            var path = Path.Combine(TestBase.AssemblyDirectory, @"../../..", "Resources/TestDatasets");
+
+            if (!Directory.Exists(path))
             {
-                _testCatalogsProvider.Dispose();
-                _testCatalogsProvider = null;
+                throw new DirectoryNotFoundException("Directory not found at " + path);
             }
+
+            return path;
         }
+
+       
     }
 }

@@ -2,14 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using MartinCostello.Logging.XUnit;
 using Xunit.Abstractions;
 
 namespace Stac.Api.Tests
 {
-    public class TestCatalogsProvider : TestBase, IDisposable
+    public class TestCatalogsProvider : IDisposable
     {
-        public TestCatalogsProvider() : base(null)
+        private ITestOutputHelper _outputHelper;
+
+        public TestCatalogsProvider()
         {
+            Init();
+        }
+
+        public void SetOutputHelper(ITestOutputHelper outputHelper)
+        {
+            _outputHelper = outputHelper;
         }
 
         public void Init()
@@ -41,7 +50,7 @@ namespace Stac.Api.Tests
         {
             foreach (var subdir in GetTempCatalogsDirectories())
             {
-                yield return new object[] { new StacApiApplication(subdir) };
+                yield return new object[] { new StacApiApplication(subdir, _outputHelper) };
             }
         }
 
@@ -49,9 +58,15 @@ namespace Stac.Api.Tests
         {
             foreach (var name in catalogNames)
             {
-                yield return new object[] { new StacApiApplication(Path.Combine(GetTestCatalogsRootPath(), name)) };
+                yield return new object[] { GetStacApiApplication(name) };
             }
         }
+
+        public StacApiApplication GetStacApiApplication(string name)
+        {
+            return new StacApiApplication(Path.Combine(GetTestCatalogsRootPath(), name), _outputHelper);
+        }
+
 
         public StacApiApplication CreateTemporaryCatalog(string catalogName)
         {
@@ -60,7 +75,7 @@ namespace Stac.Api.Tests
             {
                 Directory.CreateDirectory(tempDir);
             }
-            return new StacApiApplication(tempDir);
+            return new StacApiApplication(tempDir, _outputHelper);
         }
 
         private string[] GetReferenceCatalogsDirectories(string searchPattern = "Catalog*")
@@ -73,14 +88,21 @@ namespace Stac.Api.Tests
             return Directory.GetDirectories(GetTempCatalogsPath(), "Catalog*", new EnumerationOptions() { RecurseSubdirectories = false });
         }
 
-        public IEnumerable<object[]> GetTestDatasets()
+        
+
+        protected string GetTestCatalogsRootPath()
         {
-            foreach (var subdir in Directory.GetDirectories(GetTestDatasetsRootPath(), "Collection*", new EnumerationOptions() { RecurseSubdirectories = false }))
+            var path = Path.Combine(TestBase.AssemblyDirectory, @"../../..", "Resources/TestCatalogs");
+
+            if (!Directory.Exists(path))
             {
-                var items = Directory.GetFiles(subdir, "*.json", new EnumerationOptions() { RecurseSubdirectories = true });
-                yield return new object[] { subdir + ".json", items };
+                throw new DirectoryNotFoundException("Directory not found at " + path);
             }
+
+            return path;
         }
+
+        
 
         public void Dispose()
         {
