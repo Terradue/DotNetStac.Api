@@ -3,18 +3,23 @@ using System.Net.Http;
 
 namespace Stac.Api.Clients
 {
-    public abstract class ApiClient
+    public sealed partial class ApiClient
     {
         private readonly HttpClient _client;
 
-        protected ApiClient(HttpClient client)
+        public ApiClient(HttpClient client)
         {
             _client = client;
         }
 
-        protected ApiClient(string baseUrl)
+        public ApiClient(string baseUrl)
         {
             _client = CreateHttpClient(baseUrl);
+        }
+
+        public ApiClient(Uri baseUri)
+        {
+            _client = CreateHttpClient(baseUri);
         }
 
         private static HttpClient? CreateHttpClient(string baseUrl)
@@ -34,5 +39,6 @@ namespace Stac.Api.Clients
         {
             get => _client.BaseAddress?.ToString() ?? string.Empty;
         }
+
     }
 }
