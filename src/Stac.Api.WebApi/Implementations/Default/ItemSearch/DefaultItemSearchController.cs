@@ -70,7 +70,7 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
 
             if (!string.IsNullOrEmpty(datetime))
             {
-                var datetimeValue = DateTime.Parse(datetime);
+                var datetimeValue = ParseDateTime(datetime);
                 items = items.Where(i => i.DateTime.HasInside(datetimeValue));
             }
 
@@ -93,6 +93,39 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
                 fc.NumberMatched = stacApiContext.Properties.GetProperty<int?>(DefaultConventions.MatchedCountPropertiesKey).Value;
 
             return fc;
+        }
+
+        private Itenso.TimePeriod.ITimeRange ParseDateTime(string datetime)
+        {
+            // Either a date-time or an interval, open or closed. Date and time expressions
+            // here to RFC 3339. Open intervals are expressed using double-dots.
+            // Examples:
+            // * A date-time: "2018-02-12T23:20:50Z"
+            // * A closed interval: "2018-02-12T00:00:00Z/2018-03-18T12:31:12Z"
+            // * Open intervals: "2018-02-12T00:00:00Z/.." or "../2018-03-18T12:31:12Z"
+            // Only features that have a temporal property that intersects the value of
+            // `datetime` are selected.
+
+            if (datetime.Contains("/"))
+            {
+                string[] dates = datetime.Split('/');
+                if (dates[0] == "..")
+                {
+                    return new Itenso.TimePeriod.TimeRange(DateTime.Parse(dates[1]));
+                }
+                else if (dates[1] == "..")
+                {
+                    return new Itenso.TimePeriod.TimeRange(DateTime.Parse(dates[0]));
+                }
+                else
+                {
+                    return new Itenso.TimePeriod.TimeRange(DateTime.Parse(dates[0]), DateTime.Parse(dates[1]));
+                }
+            }
+            else
+            {
+                return new Itenso.TimePeriod.TimeRange(DateTime.Parse(datetime));
+            }
         }
 
         private void SetQueryParametersInContext(IStacApiContext stacApiContext, string bbox, IGeometryObject? intersects, string datetime, int? limit, IEnumerable<string>? ids, IEnumerable<string> collections)

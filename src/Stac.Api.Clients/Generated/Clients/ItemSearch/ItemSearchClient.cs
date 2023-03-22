@@ -8,6 +8,7 @@ using Stac;
 using Stac.Common;
 using Stac.Api.Models;
 using Stac.Api.Interfaces;
+using System.Collections.Generic;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -516,7 +517,6 @@ namespace Stac.Api.Clients.ItemSearch
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Ids : System.Collections.ObjectModel.Collection<string>
     {
-
     }
 
     /// <summary>

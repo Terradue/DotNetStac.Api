@@ -49,7 +49,7 @@ namespace Stac.Api.Tests.AppTests
 
         }
 
-        private void ValidateLandingPage(LandingPage landingPage)
+        public static void ValidateLandingPage(LandingPage landingPage)
         {
             Assert.Contains("https://api.stacspec.org/v1.0.0-rc.2/core", landingPage.ConformanceClasses);
             Assert.Contains("https://api.stacspec.org/v1.0.0-rc.2/browseable", landingPage.ConformanceClasses);
