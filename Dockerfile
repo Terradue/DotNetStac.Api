@@ -8,9 +8,8 @@ COPY src/Stac.Api/*.csproj ./Stac.Api/
 COPY src/Stac.Api.Clients/*.csproj ./Stac.Api.Clients/
 COPY src/Stac.Api.CodeGen/*.csproj ./Stac.Api.CodeGen/
 COPY src/Stac.Api.FileSystem/*.csproj ./Stac.Api.FileSystem/
-COPY src/Stac.Api.Tests/*.csproj ./Stac.Api.Tests/
 COPY src/Stac.Api.WebApi/*.csproj ./Stac.Api.WebApi/
-RUN dotnet restore -r linux-x64 /p:PublishReadyToRun=true
+RUN dotnet restore -r linux-x64 /p:PublishReadyToRun=true ./Stac.Api.FileSystem/Stac.Api.FileSystem.csproj
 
 # copy everything else and build app
 COPY src/Stac.Api ./Stac.Api
