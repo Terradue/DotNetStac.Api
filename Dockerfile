@@ -17,7 +17,7 @@ COPY src/Stac.Api.Clients ./Stac.Api.Clients
 COPY src/Stac.Api.CodeGen ./Stac.Api.CodeGen
 COPY src/Stac.Api.FileSystem ./Stac.Api.FileSystem
 COPY src/Stac.Api.WebApi ./Stac.Api.WebApi
-RUN dotnet publish ./Stac.Api.FileSystem/Stac.Api.FileSystem.csproj -c release -o /app -r linux-x64 --self-contained true
+RUN dotnet publish ./Stac.Api.FileSystem/Stac.Api.FileSystem.csproj -f net7.0 -c release -o /app -r linux-x64 --self-contained true
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/runtime-deps:6.0-bullseye-slim-amd64
