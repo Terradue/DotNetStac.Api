@@ -3,9 +3,6 @@ name: Cache Docker image for dotnet interactive
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
 jobs:
 
   build:

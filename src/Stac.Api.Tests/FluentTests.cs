@@ -66,5 +66,7 @@ namespace Stac.Api.Tests
                 Assert.True(feature.Geometry.Intersects(polygon));
             }
         }
+
+        
     }
 }

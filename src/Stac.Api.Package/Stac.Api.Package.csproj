@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Version>1.0.0</Version>
+        <VersionSuffix>rc1</VersionSuffix>
+        <PackageTags>STAC;Terradue;Geo;Json;API</PackageTags>
+        <PackageIcon>stac_logo_128.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\..\LICENSE" Pack="true" PackagePath=""/>
+        <None Include="..\..\docs\images\stac_logo_128.png" Pack="true" PackagePath=""/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Stac.Api.Clients\Stac.Api.Clients.csproj" />
+        <ProjectReference Include="..\Stac.Api.WebApi\Stac.Api.WebApi.csproj" />
+        <ProjectReference Include="..\Stac.Api.FileSystem\Stac.Api.FileSystem.csproj" />
+    </ItemGroup>
+
+</Project>

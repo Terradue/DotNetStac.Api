@@ -17,6 +17,8 @@ namespace Stac.Api.WebApi.Services
 
         void Link(StacFeatureCollection collection, IStacApiContext stacApiContext);
 
+        StacApiLink GetSelfLink(IStacObject stacObject, IStacApiContext stacApiContext);
+
         
     }
 }

@@ -170,5 +170,29 @@ namespace Stac.Api.WebApi.Patterns.CollectionBased
                 linkValue.MediaType);
             return stacApiLink;
         }
+
+        public StacApiLink GetSelfLink(IStacObject stacObject, IStacApiContext stacApiContext)
+        {
+            if (stacObject is StacItem stacItem)
+            {
+                return GetSelfLink(stacItem, stacApiContext);
+            }
+            else if (stacObject is StacCollection stacCollection)
+            {
+                return GetSelfLink(stacCollection, stacApiContext);
+            }
+            else if (stacObject is StacFeatureCollection stacFeatureCollection)
+            {
+                return GetSelfLink(stacFeatureCollection, stacApiContext);
+            }
+            else if (stacObject is StacCollections stacCollections)
+            {
+                return GetSelfLink(stacCollections, stacApiContext);
+            }
+            else
+            {
+                throw new InvalidOperationException($"Cannot get self link for {stacObject.GetType().Name}");
+            }
+        }
     }
 }

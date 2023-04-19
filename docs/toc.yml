@@ -1,0 +1,5 @@
+- name: Library Documentation
+  href: lib/
+  homepage: lib/index.md
+- name: Tutorials
+  href: tutorials/

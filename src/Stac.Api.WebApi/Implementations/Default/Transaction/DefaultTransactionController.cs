@@ -86,12 +86,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Transaction
                 {
                     return new AcceptedResult();
                 }
-                var result = task.Result;
-                return new ContentResult()
-                {
-                    Content = StacConvert.Serialize(result.Value.FirstOrDefault()),
-                    StatusCode = 201
-                };
+                return task.Result;
             }
         }
 
@@ -115,7 +110,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Transaction
             return new CreatedResult(createdItem.Links.FirstOrDefault(i => i.RelationshipType == "self").Uri, createdItem);
         }
 
-        private async Task<ActionResult<IEnumerable<StacItem>>> PostFeaturesAsync(StacFeatureCollection collection, string collectionId, CancellationToken cancellationToken = default)
+        private async Task<ActionResult<StacItem>> PostFeaturesAsync(StacFeatureCollection collection, string collectionId, CancellationToken cancellationToken = default)
         {
             // Create a new context for this request
             IStacApiContext stacApiContext = _stacApiContextFactory.Create();
@@ -140,9 +135,9 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Transaction
             }
 
             // Update the collection in the background
-            itemsBroker.RefreshStacCollectionAsync(stacApiContext, cancellationToken).ConfigureAwait(false);
+            var collections = await itemsBroker.RefreshStacCollectionsAsync(stacApiContext, cancellationToken).ConfigureAwait(false);
 
-            return items;
+            return new CreatedResult(_stacLinker.GetSelfLink(collections.First(), stacApiContext).Uri, items.FirstOrDefault());
         }
 
         public async Task<ActionResult<StacItem>> UpdateFeatureAsync(string if_Match, StacItem body, string collectionId, string featureId, CancellationToken cancellationToken = default)
@@ -157,7 +152,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Transaction
             // stacApiContext.SetPaginationParameters(null);
 
             // Update the collection in the background
-            itemsBroker.RefreshStacCollectionAsync(stacApiContext, cancellationToken).ConfigureAwait(false);
+            itemsBroker.RefreshStacCollectionsAsync(stacApiContext, cancellationToken).ConfigureAwait(false);
 
             return update;
         }

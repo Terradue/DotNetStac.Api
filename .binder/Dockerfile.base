@@ -11,7 +11,7 @@ COPY ./.binder/NuGet.config ${HOME}/nuget.config
 # Copy project source
 COPY --chown=${NB_USER} ./src/ ${HOME}/src/
 # Copy notebooks
-COPY --chown=${NB_USER} ./notebooks/ ${HOME}/notebooks/
+COPY --chown=${NB_USER} ./notebooks/ ${HOME}/docs/notebooks/
 
 # Copy Catalog to data folder
 COPY --chown=${NB_USER}  src/Stac.Api.Tests/Resources/TestCatalogs/CatalogS2L2A /data

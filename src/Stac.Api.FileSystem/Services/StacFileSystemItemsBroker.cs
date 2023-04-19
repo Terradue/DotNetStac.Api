@@ -50,8 +50,9 @@ namespace Stac.Api.FileSystem.Services
             linksCollectionObject.Links.Where(l => l.RelationshipType == "collection").ToList().ForEach(l => linksCollectionObject.Links.Remove(l));
         }
 
-        public async Task RefreshStacCollectionAsync(IStacApiContext stacApiContext, CancellationToken cancellationToken)
+        public async Task<IEnumerable<StacCollection>> RefreshStacCollectionsAsync(IStacApiContext stacApiContext, CancellationToken cancellationToken)
         {
+            var collections = new List<StacCollection>();
             foreach (var collectionId in stacApiContext.Collections)
             {
                 StacCollection existingCollection = await GetStacCollectionAsync(collectionId, stacApiContext, cancellationToken);
@@ -84,7 +85,9 @@ namespace Stac.Api.FileSystem.Services
                     collection.Links.AddRange(existingCollection.Links);
                 }
                 UpdateStacCollection(collection);
+                collections.Add(collection);
             }
+            return collections;
         }
 
         private async Task<StacCollection> GetStacCollectionAsync(string collection, IStacApiContext stacApiContext, CancellationToken cancellationToken)

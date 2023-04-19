@@ -86,5 +86,35 @@ namespace Stac.Api.Tests.AppTests
             // When collection edit API ready, uncomment this line
             //JsonAssert.AreEqual(collectionJson, collection2Json);
         }
+
+        [Theory, MemberData(nameof(GetTestDatasets))]
+        public async Task PostAllCollectionItemsAgainAsync(string collectionPath, string[] itemsPaths)
+        {
+            StacApiApplication application = TestCatalogsProvider.CreateTemporaryCatalog(nameof(PostAllCollectionItemsAsync));
+            var client = application.CreateClient();
+            TransactionClient transactionClient = new TransactionClient(client);
+            FeaturesClient featuresClient = new FeaturesClient(client);
+            CollectionsClient collectionsClient = new CollectionsClient(client);
+
+            var collectionJson = File.ReadAllText(collectionPath);
+            StacCollection collection = StacConvert.Deserialize<StacCollection>(collectionJson);
+
+            foreach (var itemPath in itemsPaths)
+            {
+                var itemJson = File.ReadAllText(itemPath);
+                var post = JsonConvert.DeserializeObject<PostStacItemOrCollection>(itemJson);
+                var result = await transactionClient.PostFeatureAsync(post, collection.Id + "again");
+                // Check that the exception is a 409 Conflict
+                try
+                {
+                    await transactionClient.PostFeatureAsync(post, collection.Id + "again");
+                }
+                catch (Stac.Api.StacApiException e)
+                {
+                    Assert.Equal(409, e.StatusCode);
+                }
+            }
+
+        }
     }
 }
