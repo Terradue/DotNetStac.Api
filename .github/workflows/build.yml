@@ -26,14 +26,14 @@ jobs:
       run: dotnet build --no-restore src/
     - name: Test
       run: dotnet test --collect:"XPlat Code Coverage" --settings:src/Stac.Api.Tests/coverlet.runsettings --results-directory:TestResults src
-    - uses: codecov/codecov-action@v1
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
         directory: TestResults
         fail_ci_if_error: false # optional (default = false)
         verbose: true # optional (default = false)
         flags: unittests
-        name: ${{ matrix.platform }}-${{ matrix.dotnet-version }}
     - name: Upload test results
       uses: actions/upload-artifact@v2
       with:
