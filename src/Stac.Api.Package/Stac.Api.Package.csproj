@@ -13,7 +13,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <VersionPrefix>1.0.0</VersionPrefix>
-        <VersionSuffix>rc1</VersionSuffix>
+        <VersionSuffix>beta.1</VersionSuffix>
+        <PackageId>DotNetStac.Api</PackageId>
         <PackageTags>STAC;Terradue;Geo;Json;API</PackageTags>
         <PackageIcon>stac_logo_128.png</PackageIcon>
         <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
