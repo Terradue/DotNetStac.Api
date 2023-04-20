@@ -32,8 +32,9 @@ The project is developed and maintained by [Emmanuel Mathot](https://github.com/
 - In [Stars](https://github.com/Terradue/Stars) CLI tool using the API commands
 - Starting the docker image [Terradue/DotNetStac.Api](https://hub.docker.com/r/terradue/dotnetstac.api) with a file system or in memory catalog.
 
-**Tutorials:**
+**Getting Started:**
 
 - [Query STAC API compliant service with the client](docs/notebooks/query-stac-api-with-clients.ipynb)
+- [Start a file system based STAC API compliant service](docs/tutorials/start-a-file-system-based-stac-api-compliant-service.md)
 - [Integrate the STAC API controllers into your ASP.NET Web API project](docs/notebooks/integrate-stac-api-controllers-into-aspnet-web-api-project.ipynb)
 - [Implement your own STAC data service provider and expose it via STAC API](docs/notebooks/implement-your-own-stac-data-service-provider-and-expose-it-via-stac-api.ipynb)

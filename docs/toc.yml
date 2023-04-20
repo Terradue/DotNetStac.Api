@@ -1,5 +1,7 @@
 - name: Library Documentation
   href: lib/
   homepage: lib/index.md
+- name: Design & Concepts
+  href: design/
 - name: Tutorials
   href: tutorials/
