@@ -25,7 +25,7 @@ namespace Stac.Api.Tests.AppTests
         public void DeserializeLandingPageAsync()
         {
             LandingPage lp = new LandingPage("sentinel", "Copernicus Sentinel Imagery");
-            lp.ConformanceClasses.Add("https://api.stacspec.org/v1.0.0-rc.2/core");
+            lp.ConformanceClasses.Add("https://api.stacspec.org/v1.0.0/core");
             string json = JsonConvert.SerializeObject(lp);
             ValidateJson(json);
             var catalog = JsonConvert.DeserializeObject<StacCatalog>(json);
@@ -51,8 +51,8 @@ namespace Stac.Api.Tests.AppTests
 
         public static void ValidateLandingPage(LandingPage landingPage)
         {
-            Assert.Contains("https://api.stacspec.org/v1.0.0-rc.2/core", landingPage.ConformanceClasses);
-            Assert.Contains("https://api.stacspec.org/v1.0.0-rc.2/browseable", landingPage.ConformanceClasses);
+            Assert.Contains("https://api.stacspec.org/v1.0.0/core", landingPage.ConformanceClasses);
+            Assert.Contains("https://api.stacspec.org/v1.0.0/browseable", landingPage.ConformanceClasses);
             Assert.NotNull(landingPage.Links.FirstOrDefault(l => l.RelationshipType == "self"));
             Assert.NotNull(landingPage.Links.FirstOrDefault(l => l.RelationshipType == "root"));
         }

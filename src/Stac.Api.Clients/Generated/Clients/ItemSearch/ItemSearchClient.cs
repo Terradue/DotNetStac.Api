@@ -8,7 +8,6 @@ using Stac;
 using Stac.Common;
 using Stac.Api.Models;
 using Stac.Api.Interfaces;
-using System.Collections.Generic;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -252,6 +251,7 @@ namespace Stac.Api.Clients.ItemSearch
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ >= 400 && status_ <= 499)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
@@ -259,6 +259,21 @@ namespace Stac.Api.Clients.ItemSearch
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ >= 500 && status_ <= 599)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new StacApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -339,6 +354,7 @@ namespace Stac.Api.Clients.ItemSearch
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ >= 400 && status_ <= 499)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
@@ -346,6 +362,21 @@ namespace Stac.Api.Clients.ItemSearch
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ >= 500 && status_ <= 599)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Core.ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new StacApiException<Stac.Api.Clients.Core.ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new StacApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -517,6 +548,7 @@ namespace Stac.Api.Clients.ItemSearch
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Ids : System.Collections.ObjectModel.Collection<string>
     {
+
     }
 
     /// <summary>

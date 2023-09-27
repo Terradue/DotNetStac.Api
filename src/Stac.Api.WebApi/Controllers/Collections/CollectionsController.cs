@@ -8,7 +8,7 @@ using Stac.Api.Attributes;
 namespace Stac.Api.WebApi.Controllers.Collections
 {
     [EnableCors("All")]
-    [ConformanceClass("https://api.stacspec.org/v1.0.0-rc.2/collections")]
+    [ConformanceClass("https://api.stacspec.org/v1.0.0/collections")]
     [LandingPageAction("GetCollections", "data", "application/json")]
     public partial class CollectionsController: Stac.Api.WebApi.StacApiController
     {

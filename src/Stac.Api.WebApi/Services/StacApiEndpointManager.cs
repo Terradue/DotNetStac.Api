@@ -22,8 +22,6 @@ namespace Stac.Api.WebApi.Services
 
         public IReadOnlyCollection<string> GetConformanceClasses(bool OgcApiOnly = false)
         {
-            
-
             var conformanceClasses = new List<string>();
             var stacapiControllers = GetRegisteredStacApiControllers();
             foreach (var controller in stacapiControllers)

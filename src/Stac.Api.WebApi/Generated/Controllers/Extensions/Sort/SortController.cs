@@ -10,6 +10,9 @@ using Stac.Api.Models;
 using Stac.Api.Interfaces;
 using Stac.Api.Clients.Collections;
 using Stac.Api.Clients.Core;
+using Stac.Api.Clients.Extensions.Filter;
+using Stac.Api.Clients.Extensions.Query;
+using Stac.Api.Clients.Extensions.Sort;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -20,49 +23,11 @@ using Stac.Api.Clients.Core;
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 
-namespace Stac.Api.WebApi.Controllers.Core
+namespace Stac.Api.WebApi.Controllers.Extensions.Sort
 {
     using System = global::System;
 
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public interface ICoreController
-    {
-
-        /// <summary>
-        /// landing page
-        /// </summary>
-
-        /// <returns>The landing page provides links to the API definition
-        /// <br/>(link relations `service-desc` and `service-doc`).</returns>
-
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<LandingPage>> GetLandingPageAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-
-    public partial class CoreController : Stac.Api.WebApi.StacApiController
-    {
-        private ICoreController _implementation;
-
-        public CoreController(ICoreController implementation)
-        {
-            _implementation = implementation;
-        }
-
-        /// <summary>
-        /// landing page
-        /// </summary>
-        /// <returns>The landing page provides links to the API definition
-        /// <br/>(link relations `service-desc` and `service-doc`).</returns>
-        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<LandingPage>> GetLandingPage(System.Threading.CancellationToken cancellationToken)
-        {
-
-            return _implementation.GetLandingPageAsync(cancellationToken);
-        }
-
-    }
+    
 
     
 

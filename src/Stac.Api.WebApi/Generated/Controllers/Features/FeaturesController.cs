@@ -12,6 +12,7 @@ using Stac.Api.Clients.Collections;
 using Stac.Api.Clients.Core;
 using Stac.Api.Clients.Extensions.Filter;
 using Stac.Api.Clients.Extensions.Query;
+using Stac.Api.Clients.Extensions.Sort;
 using Stac.Api.Clients.Extensions;
 using Stac.Api.Clients.Features;
 

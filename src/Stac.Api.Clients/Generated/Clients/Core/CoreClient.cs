@@ -53,9 +53,7 @@ namespace Stac.Api.Clients.Core
         /// landing page
         /// </summary>
         /// <returns>The landing page provides links to the API definition
-        /// <br/>(link relations `service-desc` and `service-doc`)
-        /// <br/>and the Feature Collection (path `/collections`, link relation
-        /// <br/>`data`).</returns>
+        /// <br/>(link relations `service-desc` and `service-doc`).</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<LandingPage> GetLandingPageAsync()
         {
@@ -67,9 +65,7 @@ namespace Stac.Api.Clients.Core
         /// landing page
         /// </summary>
         /// <returns>The landing page provides links to the API definition
-        /// <br/>(link relations `service-desc` and `service-doc`)
-        /// <br/>and the Feature Collection (path `/collections`, link relation
-        /// <br/>`data`).</returns>
+        /// <br/>(link relations `service-desc` and `service-doc`).</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<LandingPage> GetLandingPageAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -116,7 +112,17 @@ namespace Stac.Api.Clients.Core
                             return objectResponse_.Object;
                         }
                         else
-                        if (status_ == 500)
+                        if (status_ >= 400 && status_ <= 499)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new StacApiException<ExceptionInfo>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ >= 500 && status_ <= 599)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ExceptionInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
@@ -269,6 +275,15 @@ namespace Stac.Api.Clients.Core
             get { return _additionalProperties; }
             set { _additionalProperties = value; }
         }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CatalogType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Catalog")]
+        Catalog = 0,
 
     }
 

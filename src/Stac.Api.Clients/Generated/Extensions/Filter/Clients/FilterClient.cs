@@ -319,22 +319,22 @@ namespace Stac.Api.Clients.Extensions.Filter
                         else
                         if (status_ >= 400 && status_ <= 499)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Features.ServerError>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Features.Error>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.Clients.Features.ServerError>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Features.Error>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ >= 500 && status_ <= 599)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Features.ServerError>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Features.Error>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.Clients.Features.ServerError>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Features.Error>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -422,22 +422,22 @@ namespace Stac.Api.Clients.Extensions.Filter
                         else
                         if (status_ >= 400 && status_ <= 499)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Features.ServerError>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Features.Error>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.Clients.Features.ServerError>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Features.Error>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ >= 500 && status_ <= 599)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Features.ServerError>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Stac.Api.Clients.Features.Error>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StacApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new StacApiException<Stac.Api.Clients.Features.ServerError>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new StacApiException<Stac.Api.Clients.Features.Error>("An error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
