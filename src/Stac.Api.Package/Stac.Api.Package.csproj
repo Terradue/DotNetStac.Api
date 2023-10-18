@@ -27,14 +27,20 @@
     </Target>
 
     <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.*"/>
+        <PackageReference Include="DotNetStac" Version="1.7.*"/>
+        <PackageReference Include="Terradue.Stars" Version="2.8.*" />
+      </ItemGroup>
+
+    <ItemGroup>
         <None Include="..\..\LICENSE" Pack="true" PackagePath=""/>
         <None Include="..\..\docs\images\stac_logo_128.png" Pack="true" PackagePath=""/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Stac.Api.Clients\Stac.Api.Clients.csproj" />
-        <ProjectReference Include="..\Stac.Api.WebApi\Stac.Api.WebApi.csproj" />
-        <ProjectReference Include="..\Stac.Api.FileSystem\Stac.Api.FileSystem.csproj" />
+        <ProjectReference Include="..\Stac.Api.Clients\Stac.Api.Clients.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\Stac.Api.WebApi\Stac.Api.WebApi.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\Stac.Api.FileSystem\Stac.Api.FileSystem.csproj" PrivateAssets="All" />
     </ItemGroup>
 
 
