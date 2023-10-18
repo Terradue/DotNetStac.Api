@@ -46,7 +46,7 @@ namespace Stac.Api.Clients.Converters
 
             return new FilterSearchBody(searchBody){
                 FilterLang = filter_lang ?? FilterLang.Cql2Text,
-                Filter =  cql2FilterConverter.ReadJObject(jo["filter"] as JObject, typeof(CQL2Filter), existingValue, serializer),
+                Filter =  cql2FilterConverter.ReadJObject(jo["filter"] as JObject, typeof(CQL2Expression), existingValue, serializer),
                 FilterCrs = jo["filter_crs"]?.ToObject<Uri>(),
                 AdditionalProperties = additionalProperties.Select(p => new KeyValuePair<string, object>(p.Key, p.Value.ToObject<object>())).ToDictionary(p => p.Key, p => p.Value)
             };

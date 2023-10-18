@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Stac.Api.Interfaces
 {
-    public interface IFilter
+    public interface ISearchFilter
     {
         
     }

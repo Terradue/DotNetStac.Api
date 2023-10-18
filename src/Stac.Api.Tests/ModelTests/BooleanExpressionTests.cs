@@ -47,7 +47,7 @@ namespace Stac.Api.Tests
             filter.Op = SpatialPredicateOp.S_intersects;
             filter.Args.Add(new PropertyRef("geometry"));
             filter.Args.Add(new GeometryLiteral(polygon));
-            CQL2Filter cql2Filter = new CQL2Filter(filter);
+            CQL2Expression cql2Filter = new CQL2Expression(filter);
 
             var cql2json = System.Convert.ToString(cql2Filter);
             var result = JsonConvert.DeserializeObject<BooleanExpression>(cql2json, _settings);

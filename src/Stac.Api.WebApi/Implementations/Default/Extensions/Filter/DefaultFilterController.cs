@@ -41,7 +41,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
 
         }
 
-        public async Task<ActionResult<StacFeatureCollection>> GetItemSearchAsync(CQL2Filter filter, FilterLang? filter_lang, Uri filter_crs, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<StacFeatureCollection>> GetItemSearchAsync(CQL2Expression filter, FilterLang? filter_lang, Uri filter_crs, CancellationToken cancellationToken = default)
         {
             // Create the context
             IStacApiContext stacApiContext = _stacApiContextFactory.Create();
@@ -145,7 +145,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
 
 
 
-        private void SetQueryParametersInContext(IStacApiContext stacApiContext, IFilter filter)
+        private void SetQueryParametersInContext(IStacApiContext stacApiContext, ISearchFilter filter)
         {
             DefaultQueryParameters queryParameters = new DefaultQueryParameters();
             if (filter != null)

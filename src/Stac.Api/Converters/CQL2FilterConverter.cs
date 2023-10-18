@@ -23,7 +23,7 @@ namespace Stac.Api.Converters
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(CQL2Filter);
+            return objectType == typeof(CQL2Expression);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -33,17 +33,17 @@ namespace Stac.Api.Converters
             return ReadJObject(jo, objectType, existingValue, serializer);
         }
 
-        public CQL2Filter ReadJObject(JObject jo, Type objectType, object existingValue, JsonSerializer serializer)
+        public CQL2Expression ReadJObject(JObject jo, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var booleanExpression = CreateFilter(_filter_Lang, jo);
             if (booleanExpression == null)
                 return null;
-            return new CQL2Filter(booleanExpression);
+            return new CQL2Expression(booleanExpression);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, (value as CQL2Filter).Expression);
+            serializer.Serialize(writer, (value as CQL2Expression).Expression);
         }
 
         private BooleanExpression CreateFilter(FilterLang? filter_lang, JObject filterParameter)

@@ -61,7 +61,7 @@ namespace Stac.Api.Tests.AppTests
             spatialFilter.Op = SpatialPredicateOp.S_intersects;
             spatialFilter.Args.Add(new PropertyRef("geometry"));
             spatialFilter.Args.Add(new GeometryLiteral(polygon));
-            CQL2Filter filter = new CQL2Filter(spatialFilter);
+            CQL2Expression filter = new CQL2Expression(spatialFilter);
 
             FilterSearchBody body = new FilterSearchBody();
             body.Filter = filter;

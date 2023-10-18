@@ -238,7 +238,7 @@ namespace Stac.Api.Clients.Extensions.Filter
         /// <br/>is 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.</param>
         /// <returns>A feature collection.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(Models.Cql2.CQL2Filter filter, FilterLang? filter_lang, System.Uri filter_crs)
+        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(Models.Cql2.CQL2Expression filter, FilterLang? filter_lang, System.Uri filter_crs)
         {
             return GetItemSearchAsync(filter, filter_lang, filter_crs, System.Threading.CancellationToken.None);
         }
@@ -259,7 +259,7 @@ namespace Stac.Api.Clients.Extensions.Filter
         /// <br/>is 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.</param>
         /// <returns>A feature collection.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(Models.Cql2.CQL2Filter filter, FilterLang? filter_lang, System.Uri filter_crs, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(Models.Cql2.CQL2Expression filter, FilterLang? filter_lang, System.Uri filter_crs, System.Threading.CancellationToken cancellationToken)
         {
             if (filter == null)
                 throw new System.ArgumentNullException("filter");
@@ -571,7 +571,7 @@ namespace Stac.Api.Clients.Extensions.Filter
     public partial class FilterSearchBody : Stac.Api.Clients.ItemSearch.SearchBody
     {
         [Newtonsoft.Json.JsonProperty("filter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Models.Cql2.CQL2Filter Filter { get; set; }
+        public Models.Cql2.CQL2Expression Filter { get; set; }
 
         [Newtonsoft.Json.JsonProperty("filter-lang", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]

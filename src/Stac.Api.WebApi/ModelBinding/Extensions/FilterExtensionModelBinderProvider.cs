@@ -15,7 +15,7 @@ namespace Stac.Api.WebApi.ModelBinding.Extensions
         public IModelBinder? GetBinder(ModelBinderProviderContext context)
         {
             // CQL2 BooleanExpression model binding
-            if (context.Metadata.ModelType == typeof(CQL2Filter))
+            if (context.Metadata.ModelType == typeof(CQL2Expression))
             {
                 return new CQL2FilterModelBinder();
             }
