@@ -5,6 +5,8 @@ namespace Stac.Api.WebApi.Services.Context
 {
     internal class DefaultPaginationParameters : IPaginationParameters
     {
+        
+
         public DefaultPaginationParameters()
         {
         }

@@ -20,7 +20,7 @@ namespace Stac.Api.Extensions.Filters
             string start = stringInterval;
             string end = stringInterval;
             if (stringInterval.Contains("/")){
-                string[] split = stringInterval.Split("/");
+                string[] split = stringInterval.Split('/');
                 if (split.Length == 2){
                    start = split[0];
                    end = split[1];

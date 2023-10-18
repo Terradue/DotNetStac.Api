@@ -253,7 +253,7 @@ namespace Stac.Api.WebApi.Services.Context
                     // The existing ones take precedence
                     BodyPaginationParameters newPaginationParameters = new BodyPaginationParameters(paginationParameters);
                     Merge(newPaginationParameters, existingPaginationParameters);
-                    stacApiContext.SetProperty(IPaginationParameters.PaginationPropertiesKey, newPaginationParameters);
+                    stacApiContext.SetProperty(PaginationExtensions.PaginationPropertiesKey, newPaginationParameters);
                 }
                 else
                 {
@@ -261,7 +261,7 @@ namespace Stac.Api.WebApi.Services.Context
                     // The new ones take precedence
                     QueryStringPaginationParameters newPaginationParameters = new QueryStringPaginationParameters(paginationParameters);
                     Merge(newPaginationParameters, existingPaginationParameters);
-                    stacApiContext.SetProperty(IPaginationParameters.PaginationPropertiesKey, newPaginationParameters);
+                    stacApiContext.SetProperty(PaginationExtensions.PaginationPropertiesKey, newPaginationParameters);
                 }
             }
         }

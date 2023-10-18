@@ -9,9 +9,8 @@
         <Company>Terradue</Company>
         <RepositoryUrl>https://github.com/Terradue/DotNetStac.Api</RepositoryUrl>
         <Copyright>Copyright (c) by Terradue Srl. All Rights Reserved.\nLicense under the AGPL, Version 3.0.</Copyright>
-        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <TargetFrameworks>netstandard2.0;net6.0;net7.0</TargetFrameworks>
+        <!-- <ImplicitUsings>enable</ImplicitUsings> -->
         <VersionPrefix>1.0.0</VersionPrefix>
         <VersionSuffix>beta.2</VersionSuffix>
         <PackageId>DotNetStac.Api</PackageId>
@@ -37,10 +36,13 @@
         <None Include="..\..\docs\images\stac_logo_128.png" Pack="true" PackagePath=""/>
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0'">
         <ProjectReference Include="..\Stac.Api.Clients\Stac.Api.Clients.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\Stac.Api.WebApi\Stac.Api.WebApi.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\Stac.Api.FileSystem\Stac.Api.FileSystem.csproj" PrivateAssets="All" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+        <ProjectReference Include="..\Stac.Api.Clients\Stac.Api.Clients.csproj" PrivateAssets="All" />
     </ItemGroup>
 
 

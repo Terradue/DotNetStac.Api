@@ -31,12 +31,47 @@ namespace Stac.Api.Models.Cql2
             set { _additionalProperties = value; }
         }
 
-        public AndOrExpression AndOrExpression() => this as AndOrExpression;
-        public NotExpression NotExpression() => this as NotExpression;
-        public ComparisonPredicate Comparison() => this as ComparisonPredicate;
-        public SpatialPredicate Spatial() => this as SpatialPredicate;
-        public TemporalPredicate Temporal() => this as TemporalPredicate;
-        public ArrayPredicate Array() => this as ArrayPredicate;
+        public abstract AndOrExpression AsAndOrExpression();
+        public abstract NotExpression AsNotExpression();
+        public abstract ComparisonPredicate AsComparison();
+        public abstract SpatialPredicate AsSpatialPredicate();
+        public abstract TemporalPredicate AsTemporalPredicate();
+        public abstract ArrayPredicate AsArrayPredicate();
+
+        public CharExpression AsChar()
+        {
+            return null;
+        }
+
+        public Number AsNumeric()
+        {
+            return null;
+        }
+
+        ITemporalExpression IIsNullOperand.AsTemporalExpression()
+        {
+            return null;
+        }
+
+        public BooleanExpression AsBooleanExpression()
+        {
+            return this;
+        }
+
+        public IGeomExpression AsGeomExpression()
+        {
+            return null;
+        }
+
+        public ITemporalInstantExpression AsTemporalInstant()
+        {
+            return null;
+        }
+
+        INumericExpression IScalarExpression.AsNumericExpression()
+        {
+            return null;
+        }
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -53,6 +88,35 @@ namespace Stac.Api.Models.Cql2
         [System.ComponentModel.DataAnnotations.MaxLength(2)]
         public System.Collections.Generic.List<BooleanExpression> Args { get; set; } = new System.Collections.Generic.List<BooleanExpression>();
 
+        public override AndOrExpression AsAndOrExpression()
+        {
+            return this;
+        }
+
+        public override ArrayPredicate AsArrayPredicate()
+        {
+            return null;
+        }
+
+        public override ComparisonPredicate AsComparison()
+        {
+            return null;
+        }
+
+        public override NotExpression AsNotExpression()
+        {
+            return null;
+        }
+
+        public override SpatialPredicate AsSpatialPredicate()
+        {
+            return null;
+        }
+
+        public override TemporalPredicate AsTemporalPredicate()
+        {
+            return null;
+        }
     }
 
     public class NotExpression : BooleanExpression
@@ -68,18 +132,45 @@ namespace Stac.Api.Models.Cql2
         [System.ComponentModel.DataAnnotations.MaxLength(1)]
         public System.Collections.Generic.List<BooleanExpression> Args { get; set; } = new System.Collections.Generic.List<BooleanExpression>();
 
+        public override AndOrExpression AsAndOrExpression()
+        {
+            return null;
+        }
+
+        public override ArrayPredicate AsArrayPredicate()
+        {
+            return null;
+        }
+
+        public override ComparisonPredicate AsComparison()
+        {
+            return null;
+        }
+
+        public override NotExpression AsNotExpression()
+        {
+            return this;
+        }
+
+        public override SpatialPredicate AsSpatialPredicate()
+        {
+            return null;
+        }
+
+        public override TemporalPredicate AsTemporalPredicate()
+        {
+            return null;
+        }
     }
 
     [JsonConverter(typeof(ComparisonPredicateConverter))]
-    public class ComparisonPredicate : BooleanExpression
+    public abstract class ComparisonPredicate : BooleanExpression
     {
-        public BinaryComparisonPredicate Binary() => this as BinaryComparisonPredicate;
-        public IsLikePredicate IsLike() => this as IsLikePredicate;
-        public IsBetweenPredicate IsBetweenPredicate() => this as IsBetweenPredicate;
-        public IsInListPredicate IsInList() => this as IsInListPredicate;
-        public IsNullPredicate IsNull() => this as IsNullPredicate;
-        public SpatialPredicate SpatialPredicate() => this as SpatialPredicate;
-        public TemporalPredicate TemporalPredicate() => this as TemporalPredicate;
+        public abstract BinaryComparisonPredicate AsBinaryComparison();
+        public abstract IsLikePredicate AsIsLike();
+        public abstract IsBetweenPredicate AsIsBetweenPredicate();
+        public abstract IsInListPredicate AsIsInListPredicate();
+        public abstract IsNullPredicate AsIsNullPredicate();
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -96,6 +187,61 @@ namespace Stac.Api.Models.Cql2
         [System.ComponentModel.DataAnnotations.MaxLength(2)]
         public ScalarOperands Args { get; set; } = new ScalarOperands(new List<IScalarExpression>());
 
+        public override AndOrExpression AsAndOrExpression()
+        {
+            return null;
+        }
+
+        public override ArrayPredicate AsArrayPredicate()
+        {
+            return null;
+        }
+
+        public override BinaryComparisonPredicate AsBinaryComparison()
+        {
+            return this;
+        }
+
+        public override ComparisonPredicate AsComparison()
+        {
+            return this;
+        }
+
+        public override IsBetweenPredicate AsIsBetweenPredicate()
+        {
+            return null;
+        }
+
+        public override IsInListPredicate AsIsInListPredicate()
+        {
+            return null;
+        }
+
+        public override IsLikePredicate AsIsLike()
+        {
+            return null;
+        }
+
+        public override IsNullPredicate AsIsNullPredicate()
+        {
+            return null;
+        }
+
+        public override NotExpression AsNotExpression()
+        {
+            return null;
+        }
+
+        public override SpatialPredicate AsSpatialPredicate()
+        {
+            return null;
+        }
+
+        public override TemporalPredicate AsTemporalPredicate()
+        {
+            return null;
+        }
+
     }
 
     [JsonConverter(typeof(ScalarOperandsConverter))]
@@ -108,12 +254,46 @@ namespace Stac.Api.Models.Cql2
 
     public abstract class CharExpression : IScalarExpression, IIsNullOperand
     {
-        public CaseiExpression Casei() => this as CaseiExpression;
-        public AccentiExpression Accenti() => this as AccentiExpression;
-        public String String() => this as String;
-        public PropertyRef Property() => this as PropertyRef;
-        public FunctionRef Function() => this as FunctionRef;
+        public abstract CaseiExpression AsCasei();
+        public abstract AccentiExpression AsAccenti();
+        public abstract String AsString();
+        public abstract PropertyRef AsPropertyRef();
+        public abstract FunctionRef AsFunctionRef();
 
+        public CharExpression AsChar()
+        {
+            return this;
+        }
+
+        public ITemporalInstantExpression AsTemporalInstant()
+        {
+            return null;
+        }
+
+        public INumericExpression AsNumericExpression()
+        {
+            return null;
+        }
+
+        public BooleanExpression AsBooleanExpression()
+        {
+            return null;
+        }
+
+        Number IIsNullOperand.AsNumeric()
+        {
+            return null;
+        }
+
+        public ITemporalExpression AsTemporalExpression()
+        {
+            return null;
+        }
+
+        public IGeomExpression AsGeomExpression()
+        {
+            return null;
+        }
     }
 
     public class CaseiExpression : CharExpression, IPatternExpression
@@ -122,6 +302,30 @@ namespace Stac.Api.Models.Cql2
         [System.ComponentModel.DataAnnotations.Required]
         public CharExpression Casei { get; set; }
 
+        public override AccentiExpression AsAccenti()
+        {
+            return null;
+        }
+
+        public override CaseiExpression AsCasei()
+        {
+            return this;
+        }
+
+        public override FunctionRef AsFunctionRef()
+        {
+            return null;
+        }
+
+        public override PropertyRef AsPropertyRef()
+        {
+            return null;
+        }
+
+        public override String AsString()
+        {
+            return null;
+        }
     }
 
     [JsonConverter(typeof(StringExpressionConverter))]
@@ -135,6 +339,31 @@ namespace Stac.Api.Models.Cql2
         public string Str { get; set; }
 
         public IComparable Value => Str;
+
+        public override AccentiExpression AsAccenti()
+        {
+            return null;
+        }
+
+        public override CaseiExpression AsCasei()
+        {
+            return null;
+        }
+
+        public override FunctionRef AsFunctionRef()
+        {
+            return null;
+        }
+
+        public override PropertyRef AsPropertyRef()
+        {
+            return null;
+        }
+
+        public override String AsString()
+        {
+            return this;
+        }
 
         public override string ToString()
         {
@@ -156,13 +385,73 @@ namespace Stac.Api.Models.Cql2
         public abstract DateTimeOffset DateTime { get; }
 
         public IComparable Value => DateTime;
+
+        public BooleanExpression AsBooleanExpression()
+        {
+            return null;
+        }
+
+        public CharExpression AsChar()
+        {
+            return null;
+        }
+
+        public FunctionRef AsFunctionRef()
+        {
+            return null;
+        }
+
+        public IGeomExpression AsGeomExpression()
+        {
+            return null;
+        }
+
+        public IntervalLiteral AsIntervalLiteral()
+        {
+            return null;
+        }
+
+        public INumericExpression AsNumericExpression()
+        {
+            return null;
+        }
+
+        public PropertyRef AsPropertyRef()
+        {
+            return null;
+        }
+
+        public ITemporalExpression AsTemporalExpression()
+        {
+            return this;
+        }
+
+        public ITemporalInstantExpression AsTemporalInstant()
+        {
+            return this;
+        }
+
+        public ITemporalLiteral AsTemporalLiteral()
+        {
+            return this;
+        }
+
+        InstantLiteral ITemporalLiteral.AsInstantLiteral()
+        {
+            return this;
+        }
+
+        Number IIsNullOperand.AsNumeric()
+        {
+            return null;
+        }
     }
 
     [JsonConverter(typeof(ITemporalLiteralConverter))]
     public interface ITemporalLiteral : ITemporalExpression
     {
-        public InstantLiteral InstantLiteral() => this as InstantLiteral;
-        public IntervalLiteral IntervalLiteral() => this as IntervalLiteral;
+        InstantLiteral AsInstantLiteral();
+        IntervalLiteral AsIntervalLiteral();
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -178,6 +467,61 @@ namespace Stac.Api.Models.Cql2
         [System.ComponentModel.DataAnnotations.MinLength(2)]
         [System.ComponentModel.DataAnnotations.MaxLength(2)]
         public IsLikeOperands Args { get; set; } = new IsLikeOperands();
+
+        public override AndOrExpression AsAndOrExpression()
+        {
+            return null;
+        }
+
+        public override ArrayPredicate AsArrayPredicate()
+        {
+            return null;
+        }
+
+        public override BinaryComparisonPredicate AsBinaryComparison()
+        {
+            return null;
+        }
+
+        public override ComparisonPredicate AsComparison()
+        {
+            return this;
+        }
+
+        public override IsBetweenPredicate AsIsBetweenPredicate()
+        {
+            return null;
+        }
+
+        public override IsInListPredicate AsIsInListPredicate()
+        {
+            return null;
+        }
+
+        public override IsLikePredicate AsIsLike()
+        {
+            return this;
+        }
+
+        public override IsNullPredicate AsIsNullPredicate()
+        {
+            return null;
+        }
+
+        public override NotExpression AsNotExpression()
+        {
+            return null;
+        }
+
+        public override SpatialPredicate AsSpatialPredicate()
+        {
+            return null;
+        }
+
+        public override TemporalPredicate AsTemporalPredicate()
+        {
+            return null;
+        }
 
     }
 
@@ -204,6 +548,60 @@ namespace Stac.Api.Models.Cql2
         [System.ComponentModel.DataAnnotations.MaxLength(3)]
         public IsBetweenOperands Args { get; set; } = new IsBetweenOperands();
 
+        public override AndOrExpression AsAndOrExpression()
+        {
+            return null;
+        }
+
+        public override ArrayPredicate AsArrayPredicate()
+        {
+            return null;
+        }
+
+        public override BinaryComparisonPredicate AsBinaryComparison()
+        {
+            return null;
+        }
+
+        public override ComparisonPredicate AsComparison()
+        {
+            return this;
+        }
+
+        public override IsBetweenPredicate AsIsBetweenPredicate()
+        {
+            return this;
+        }
+
+        public override IsInListPredicate AsIsInListPredicate()
+        {
+            return null;
+        }
+
+        public override IsLikePredicate AsIsLike()
+        {
+            return null;
+        }
+
+        public override IsNullPredicate AsIsNullPredicate()
+        {
+            return null;
+        }
+
+        public override NotExpression AsNotExpression()
+        {
+            return null;
+        }
+
+        public override SpatialPredicate AsSpatialPredicate()
+        {
+            return null;
+        }
+
+        public override TemporalPredicate AsTemporalPredicate()
+        {
+            return null;
+        }
     }
 
     public class IsBetweenOperands : System.Collections.ObjectModel.Collection<INumericExpression>
@@ -219,8 +617,8 @@ namespace Stac.Api.Models.Cql2
     public static class INumericExpressionExtensions
     {
         public static Number AsNumber(this INumericExpression expr) => expr as Number;
-        public static PropertyRef Property(this INumericExpression expr) => expr as PropertyRef;
-        public static FunctionRef Function(this INumericExpression expr) => expr as FunctionRef;
+        public static PropertyRef AsPropertyRef(this INumericExpression expr) => expr as PropertyRef;
+        public static FunctionRef AsFunctionRef(this INumericExpression expr) => expr as FunctionRef;
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -235,6 +633,60 @@ namespace Stac.Api.Models.Cql2
         [System.ComponentModel.DataAnnotations.Required]
         public InListOperands Args { get; set; } = new InListOperands();
 
+        public override AndOrExpression AsAndOrExpression()
+        {
+            return null;
+        }
+
+        public override ArrayPredicate AsArrayPredicate()
+        {
+            return null;
+        }
+
+        public override BinaryComparisonPredicate AsBinaryComparison()
+        {
+            return null;
+        }
+
+        public override ComparisonPredicate AsComparison()
+        {
+            return this;
+        }
+
+        public override IsBetweenPredicate AsIsBetweenPredicate()
+        {
+            return null;
+        }
+
+        public override IsInListPredicate AsIsInListPredicate()
+        {
+            return this;
+        }
+
+        public override IsLikePredicate AsIsLike()
+        {
+            return null;
+        }
+
+        public override IsNullPredicate AsIsNullPredicate()
+        {
+            return null;
+        }
+
+        public override NotExpression AsNotExpression()
+        {
+            return null;
+        }
+
+        public override SpatialPredicate AsSpatialPredicate()
+        {
+            return null;
+        }
+
+        public override TemporalPredicate AsTemporalPredicate()
+        {
+            return null;
+        }
     }
 
     public class InListOperands : System.Collections.ObjectModel.Collection<IInListOperand>
@@ -258,16 +710,70 @@ namespace Stac.Api.Models.Cql2
         [Newtonsoft.Json.JsonProperty("args", Required = Newtonsoft.Json.Required.Always)]
         public IIsNullOperand Args { get; set; }
 
+        public override AndOrExpression AsAndOrExpression()
+        {
+            return null;
+        }
+
+        public override ArrayPredicate AsArrayPredicate()
+        {
+            return null;
+        }
+
+        public override BinaryComparisonPredicate AsBinaryComparison()
+        {
+            return null;
+        }
+
+        public override ComparisonPredicate AsComparison()
+        {
+            return this;
+        }
+
+        public override IsBetweenPredicate AsIsBetweenPredicate()
+        {
+            return null;
+        }
+
+        public override IsInListPredicate AsIsInListPredicate()
+        {
+            return null;
+        }
+
+        public override IsLikePredicate AsIsLike()
+        {
+            return null;
+        }
+
+        public override IsNullPredicate AsIsNullPredicate()
+        {
+            return this;
+        }
+
+        public override NotExpression AsNotExpression()
+        {
+            return null;
+        }
+
+        public override SpatialPredicate AsSpatialPredicate()
+        {
+            return null;
+        }
+
+        public override TemporalPredicate AsTemporalPredicate()
+        {
+            return null;
+        }
     }
 
     [JsonConverter(typeof(IIsNullOperandConverter))]
     public interface IIsNullOperand
     {
-        public CharExpression Char() => this as CharExpression;
-        public Number Numeric() => this as Number;
-        public ITemporalExpression Temporal() => this as ITemporalExpression;
-        public BooleanExpression Boolean() => this as BooleanExpression;
-        public IGeomExpression Geom() => this as IGeomExpression;
+        public CharExpression AsChar();
+        public Number AsNumeric();
+        public ITemporalExpression AsTemporalExpression();
+        public BooleanExpression AsBooleanExpression();
+        public IGeomExpression AsGeomExpression();
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -284,6 +790,60 @@ namespace Stac.Api.Models.Cql2
         [System.ComponentModel.DataAnnotations.MaxLength(2)]
         public SpatialOperands Args { get; set; } = new SpatialOperands();
 
+        public override AndOrExpression AsAndOrExpression()
+        {
+            return null;
+        }
+
+        public override ArrayPredicate AsArrayPredicate()
+        {
+            return null;
+        }
+
+        public override BinaryComparisonPredicate AsBinaryComparison()
+        {
+            return null;
+        }
+
+        public override ComparisonPredicate AsComparison()
+        {
+            return this;
+        }
+
+        public override IsBetweenPredicate AsIsBetweenPredicate()
+        {
+            return null;
+        }
+
+        public override IsInListPredicate AsIsInListPredicate()
+        {
+            return null;
+        }
+
+        public override IsLikePredicate AsIsLike()
+        {
+            return null;
+        }
+
+        public override IsNullPredicate AsIsNullPredicate()
+        {
+            return null;
+        }
+
+        public override NotExpression AsNotExpression()
+        {
+            return null;
+        }
+
+        public override SpatialPredicate AsSpatialPredicate()
+        {
+            return this;
+        }
+
+        public override TemporalPredicate AsTemporalPredicate()
+        {
+            return null;
+        }
     }
 
     public class SpatialOperands : System.Collections.ObjectModel.Collection<IGeomExpression>
@@ -291,11 +851,11 @@ namespace Stac.Api.Models.Cql2
 
     }
 
-    [JsonConverter(typeof(ISpatialLiteralConverter))]
+    [JsonConverter(typeof(SpatialLiteralConverter))]
     public interface ISpatialLiteral : IGeomExpression
     {
-        public GeometryLiteral GeometryLiteral() => this as GeometryLiteral;
-        public EnvelopeLiteral EnvelopeLiteral() => this as EnvelopeLiteral;
+        public GeometryLiteral AsGeometryLiteral();
+        public EnvelopeLiteral AsEnvelopeLiteral();
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -312,6 +872,60 @@ namespace Stac.Api.Models.Cql2
         [System.ComponentModel.DataAnnotations.MaxLength(2)]
         public TemporalOperands Args { get; set; } = new TemporalOperands();
 
+        public override AndOrExpression AsAndOrExpression()
+        {
+            return null;
+        }
+
+        public override ArrayPredicate AsArrayPredicate()
+        {
+            return null;
+        }
+
+        public override BinaryComparisonPredicate AsBinaryComparison()
+        {
+            return null;
+        }
+
+        public override ComparisonPredicate AsComparison()
+        {
+            return this;
+        }
+
+        public override IsBetweenPredicate AsIsBetweenPredicate()
+        {
+            return null;
+        }
+
+        public override IsInListPredicate AsIsInListPredicate()
+        {
+            return null;
+        }
+
+        public override IsLikePredicate AsIsLike()
+        {
+            return null;
+        }
+
+        public override IsNullPredicate AsIsNullPredicate()
+        {
+            return null;
+        }
+
+        public override NotExpression AsNotExpression()
+        {
+            return null;
+        }
+
+        public override SpatialPredicate AsSpatialPredicate()
+        {
+            return null;
+        }
+
+        public override TemporalPredicate AsTemporalPredicate()
+        {
+            return this;
+        }
     }
 
     public partial class TemporalOperands : System.Collections.ObjectModel.Collection<ITemporalExpression>
@@ -340,6 +954,35 @@ namespace Stac.Api.Models.Cql2
         [System.ComponentModel.DataAnnotations.MaxLength(2)]
         public ArrayExpression Args { get; set; } = new ArrayExpression();
 
+        public override AndOrExpression AsAndOrExpression()
+        {
+            return null;
+        }
+
+        public override ArrayPredicate AsArrayPredicate()
+        {
+            return this;
+        }
+
+        public override ComparisonPredicate AsComparison()
+        {
+            return null;
+        }
+
+        public override NotExpression AsNotExpression()
+        {
+            return null;
+        }
+
+        public override SpatialPredicate AsSpatialPredicate()
+        {
+            return null;
+        }
+
+        public override TemporalPredicate AsTemporalPredicate()
+        {
+            return null;
+        }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -371,6 +1014,26 @@ namespace Stac.Api.Models.Cql2
         public bool Bool { get; set; }
 
         public IComparable Value => Bool;
+
+        public BooleanExpression AsBooleanExpression()
+        {
+            return null;
+        }
+
+        public CharExpression AsChar()
+        {
+            return new String(Bool.ToString());
+        }
+
+        public INumericExpression AsNumericExpression()
+        {
+            return new Number(Bool ? 1 : 0); 
+        }
+
+        public ITemporalInstantExpression AsTemporalInstant()
+        {
+            return null;
+        }
     }
 
     [JsonConverter(typeof(NumberConverter))]
@@ -385,6 +1048,40 @@ namespace Stac.Api.Models.Cql2
 
         public IComparable Value => Num;
 
+        public BooleanExpression AsBooleanExpression()
+        {
+            return null;
+        }
+
+        public CharExpression AsChar()
+        {
+            return null;
+        }
+
+        public IGeomExpression AsGeomExpression()
+        {
+            return null;
+        }
+
+        public INumericExpression AsNumericExpression()
+        {
+            return this;
+        }
+
+        public ITemporalExpression AsTemporalExpression()
+        {
+            return null;
+        }
+
+        public ITemporalInstantExpression AsTemporalInstant()
+        {
+            return null;
+        }
+
+        Number IIsNullOperand.AsNumeric()
+        {
+            return this;
+        }
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -403,6 +1100,50 @@ namespace Stac.Api.Models.Cql2
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Property { get; set; }
 
+        public override AccentiExpression AsAccenti()
+        {
+            return null;
+        }
+
+        public override CaseiExpression AsCasei()
+        {
+            return null;
+        }
+
+        public override FunctionRef AsFunctionRef()
+        {
+            return null;
+        }
+
+        PropertyRef IGeomExpression.AsPropertyRef()
+        {
+            return this;
+        }
+
+        PropertyRef ITemporalExpression.AsPropertyRef()
+        {
+            return this;
+        }
+
+        public ISpatialLiteral AsSpatialLiteral()
+        {
+            return null;
+        }
+
+        public override String AsString()
+        {
+            return null;
+        }
+
+        public ITemporalLiteral AsTemporalLiteral()
+        {
+            return null;
+        }
+
+        public override PropertyRef AsPropertyRef()
+        {
+            return this;
+        }
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -411,6 +1152,30 @@ namespace Stac.Api.Models.Cql2
         [Newtonsoft.Json.JsonProperty("accenti", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public CharExpression Accenti { get; set; }
 
+        public override AccentiExpression AsAccenti()
+        {
+            return this;
+        }
+
+        public override CaseiExpression AsCasei()
+        {
+            return null;
+        }
+
+        public override FunctionRef AsFunctionRef()
+        {
+            return null;
+        }
+
+        public override PropertyRef AsPropertyRef()
+        {
+            return null;
+        }
+
+        public override String AsString()
+        {
+            return null;
+        }
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -421,6 +1186,41 @@ namespace Stac.Api.Models.Cql2
         public Function Function { get; set; } = new Function();
 
         public double? Number => null;
+
+        public override AccentiExpression AsAccenti()
+        {
+            return null;
+        }
+
+        public override CaseiExpression AsCasei()
+        {
+            return null;
+        }
+
+        public override FunctionRef AsFunctionRef()
+        {
+            return this;
+        }
+
+        public override PropertyRef AsPropertyRef()
+        {
+            return null;
+        }
+
+        public ISpatialLiteral AsSpatialLiteral()
+        {
+            return null;
+        }
+
+        public override String AsString()
+        {
+            return null;
+        }
+
+        public ITemporalLiteral AsTemporalLiteral()
+        {
+            return null;
+        }
     }
 
     public class Function
@@ -459,6 +1259,56 @@ namespace Stac.Api.Models.Cql2
         public GeoJSONObjectType Type => GeometryObject.Type;
 
         public IGeometryObject GeometryObject { get; private set; }
+
+        public BooleanExpression AsBooleanExpression()
+        {
+            return null;
+        }
+
+        public CharExpression AsChar()
+        {
+            return null;
+        }
+
+        public EnvelopeLiteral AsEnvelopeLiteral()
+        {
+            return null;
+        }
+
+        public FunctionRef AsFunctionRef()
+        {
+            return null;
+        }
+
+        public IGeomExpression AsGeomExpression()
+        {
+            return null;
+        }
+
+        public Number AsNumeric()
+        {
+            return null;
+        }
+
+        public PropertyRef AsPropertyRef()
+        {
+            return null;
+        }
+
+        public ISpatialLiteral AsSpatialLiteral()
+        {
+            return this;
+        }
+
+        public ITemporalExpression AsTemporalExpression()
+        {
+            return null;
+        }
+
+        GeometryLiteral ISpatialLiteral.AsGeometryLiteral()
+        {
+            return this;
+        }
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -468,6 +1318,55 @@ namespace Stac.Api.Models.Cql2
         [System.ComponentModel.DataAnnotations.Required]
         public Bbox Bbox { get; set; }
 
+        public BooleanExpression AsBooleanExpression()
+        {
+            return null;
+        }
+
+        public CharExpression AsChar()
+        {
+            return null;
+        }
+
+        public FunctionRef AsFunctionRef()
+        {
+            return null;
+        }
+
+        public IGeomExpression AsGeomExpression()
+        {
+            return null;
+        }
+
+        public GeometryLiteral AsGeometryLiteral()
+        {
+            return null;
+        }
+
+        public Number AsNumeric()
+        {
+            return null;
+        }
+
+        public PropertyRef AsPropertyRef()
+        {
+            return null;
+        }
+
+        public ISpatialLiteral AsSpatialLiteral()
+        {
+            return this;
+        }
+
+        public ITemporalExpression AsTemporalExpression()
+        {
+            return null;
+        }
+
+        EnvelopeLiteral ISpatialLiteral.AsEnvelopeLiteral()
+        {
+            return this;
+        }
     }
 
     [JsonConverter(typeof(BboxConverter))]
@@ -591,6 +1490,55 @@ namespace Stac.Api.Models.Cql2
             }
         }
 
+        public InstantLiteral AsInstantLiteral()
+        {
+            return null;
+        }
+
+        IntervalLiteral ITemporalLiteral.AsIntervalLiteral()
+        {
+            return this;
+        }
+
+        public ITemporalLiteral AsTemporalLiteral()
+        {
+            return this;
+        }
+
+        public PropertyRef AsPropertyRef()
+        {
+            return null;
+        }
+
+        public FunctionRef AsFunctionRef()
+        {
+            return null;
+        }
+
+        public CharExpression AsChar()
+        {
+            return null;
+        }
+
+        public Number AsNumeric()
+        {
+            return null;
+        }
+
+        public ITemporalExpression AsTemporalExpression()
+        {
+            return null;
+        }
+
+        public BooleanExpression AsBooleanExpression()
+        {
+            return null;
+        }
+
+        public IGeomExpression AsGeomExpression()
+        {
+            return null;
+        }
     }
 
     public partial class IntervalArray : System.Collections.ObjectModel.Collection<IIntervalItem>
@@ -672,12 +1620,11 @@ namespace Stac.Api.Models.Cql2
     [JsonConverter(typeof(ScalarExpressionConverter))]
     public interface IScalarExpression : IInListOperand
     {
-        public CharExpression Char() => this as CharExpression;
-        public ITemporalInstantExpression TemporalInstant() => this as ITemporalInstantExpression;
-        public INumericExpression Numeric() => this as INumericExpression;
-        public BooleanExpression Boolean() => this as BooleanExpression;
-
-        public string ToString() => this.ToString();
+        public CharExpression AsChar();
+        public ITemporalInstantExpression AsTemporalInstant();
+        public INumericExpression AsNumericExpression();
+        public BooleanExpression AsBooleanExpression();
+        public string ToString();
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -770,9 +1717,9 @@ namespace Stac.Api.Models.Cql2
     [JsonConverter(typeof(IGeomExpressionConverter))]
     public interface IGeomExpression : IIsNullOperand
     {
-        public ISpatialLiteral SpatialLiteral() => this as ISpatialLiteral;
-        public PropertyRef Property() => this as PropertyRef;
-        public FunctionRef Function() => this as FunctionRef;
+        public ISpatialLiteral AsSpatialLiteral();
+        public PropertyRef AsPropertyRef();
+        public FunctionRef AsFunctionRef();
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -829,9 +1776,9 @@ namespace Stac.Api.Models.Cql2
     [JsonConverter(typeof(ITemporalExpressionConverter))]
     public interface ITemporalExpression : IIsNullOperand
     {
-        public ITemporalLiteral TemporalLiteral() => this as ITemporalLiteral;
-        public PropertyRef Property() => this as PropertyRef;
-        public FunctionRef Function() => this as FunctionRef;
+        public ITemporalLiteral AsTemporalLiteral();
+        public PropertyRef AsPropertyRef();
+        public FunctionRef AsFunctionRef();
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]

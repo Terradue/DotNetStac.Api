@@ -147,7 +147,7 @@ namespace Stac.Api.FileSystem.Services
             }
         }
 
-        public async Task<ActionResult<StacItem>> UpdateItemAsync(StacItem newItem, string featureId, IStacApiContext stacApiContext, CancellationToken cancellationToken)
+        public async Task<StacItem> UpdateItemAsync(StacItem newItem, string featureId, IStacApiContext stacApiContext, CancellationToken cancellationToken)
         {
             await DeleteItemAsync(newItem.Id, stacApiContext, cancellationToken);
             return await CreateItemAsync(newItem, stacApiContext, cancellationToken);

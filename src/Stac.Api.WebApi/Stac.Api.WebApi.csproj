@@ -1,41 +1,41 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);1591</NoWarn>
-    <IncludeSymbols>true</IncludeSymbols>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <InvariantGlobalization>true</InvariantGlobalization>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+        <IncludeSymbols>true</IncludeSymbols>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <InvariantGlobalization>true</InvariantGlobalization>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="NSwag.AspNetCore" Version="13.16.*" />
-    <PackageReference Include="NSwag.Core.Yaml" Version="13.16.*" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.*" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.*"/>
-    <PackageReference Include="System.IO.Abstractions" Version="17.0.*" />
-    <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="5.4.0" />
-    <PackageReference Include="NetTopologySuite.IO.GeoJSON" Version="3.0.0" />
-    <PackageReference Include="Terradue.Stars" Version="2.8.*" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="NSwag.AspNetCore" Version="13.16.*" />
+        <PackageReference Include="NSwag.Core.Yaml" Version="13.16.*" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.*" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.*"/>
+        <PackageReference Include="System.IO.Abstractions" Version="17.0.*" />
+        <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="5.4.0" />
+        <PackageReference Include="NetTopologySuite.IO.GeoJSON" Version="3.0.0" />
+        <PackageReference Include="Terradue.Stars" Version="2.8.*" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Stac.Api.Clients\Stac.Api.Clients.csproj" />
-    <ProjectReference Include="..\Stac.Api.CodeGen\Stac.Api.CodeGen.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Stac.Api.Clients\Stac.Api.Clients.csproj" />
+        <ProjectReference Include="..\Stac.Api.CodeGen\Stac.Api.CodeGen.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <!-- <ProjectReference Include="../../../../systems/Stars/src/Stars.Interface/Terradue.Stars.Interface.csproj" />
+    <ItemGroup>
+        <!-- <ProjectReference Include="../../../../systems/Stars/src/Stars.Interface/Terradue.Stars.Interface.csproj" />
     <ProjectReference Include="../../../../systems/Stars/src/Stars.Services/Terradue.Stars.Services.csproj" />
     <ProjectReference Include="../../../../systems/Stars/src/Stars.Geometry/Terradue.Stars.Geometry.csproj" /> -->
-  </ItemGroup>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="..\..\data\examples\**" LinkBase="examples\" CopyToOutputDirectory="Always" />
-    <Content Include="..\Stac.Api.CodeGen\appsettings.json" Link="codegensettings.json"  CopyToOutputDirectory="Always" />
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="..\..\data\examples\**" LinkBase="examples\" CopyToOutputDirectory="Always" />
+        <Content Include="..\Stac.Api.CodeGen\appsettings.json" Link="codegensettings.json" CopyToOutputDirectory="Always" />
+    </ItemGroup>
 
 </Project>

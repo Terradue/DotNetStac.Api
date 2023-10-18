@@ -9,6 +9,8 @@ namespace Stac.Api.WebApi.Services
 {
     public class QueryStringPaginationParameters : IPaginationParameters
     {
+        
+
         public QueryStringPaginationParameters()
         {
         }

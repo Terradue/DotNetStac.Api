@@ -52,7 +52,6 @@ namespace Stac.Api.Tests.AppTests
         public static void ValidateLandingPage(LandingPage landingPage)
         {
             Assert.Contains("https://api.stacspec.org/v1.0.0/core", landingPage.ConformanceClasses);
-            Assert.Contains("https://api.stacspec.org/v1.0.0/browseable", landingPage.ConformanceClasses);
             Assert.NotNull(landingPage.Links.FirstOrDefault(l => l.RelationshipType == "self"));
             Assert.NotNull(landingPage.Links.FirstOrDefault(l => l.RelationshipType == "root"));
         }

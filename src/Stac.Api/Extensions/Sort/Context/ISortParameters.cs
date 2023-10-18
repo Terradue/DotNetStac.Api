@@ -7,9 +7,7 @@ namespace Stac.Api.Extensions.Sort.Context
 {
     public interface ISortParameters : IEnumerable<ISortByItem>
     {
-        const string QuerySortKeyName = "sortby";
-
-        const string SortingPropertiesKey = "SortingParameters";
+        
 
     }
 }

@@ -16,6 +16,11 @@ namespace Stac.Api.Converters
         {
         }
 
+        public CQL2FilterConverter(FilterLang value)
+        {
+            _filter_Lang = value;
+        }
+
         public CQL2FilterConverter(FilterLang? filter_lang)
         {
             _filter_Lang = filter_lang;

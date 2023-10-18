@@ -8,9 +8,11 @@ namespace Stac.Api.Services.Pagination
 {
     public static class PaginationExtensions
     {
+        public const string PaginationPropertiesKey = "PaginationProperties";
+
         public static IPaginationParameters GetPaginationParameters(this IStacApiContext stacApiContext)
         {
-            return stacApiContext.GetProperty<IPaginationParameters>(IPaginationParameters.PaginationPropertiesKey);
+            return stacApiContext.GetProperty<IPaginationParameters>(PaginationPropertiesKey);
         }
     }
 }

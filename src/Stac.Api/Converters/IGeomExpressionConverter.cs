@@ -7,7 +7,7 @@ namespace Stac.Api.Converters
 {
     internal class IGeomExpressionConverter : JsonConverter
     {
-        ISpatialLiteralConverter spatialLiteralConverter = new ISpatialLiteralConverter();
+        SpatialLiteralConverter spatialLiteralConverter = new SpatialLiteralConverter();
 
         public override bool CanConvert(Type objectType)
         {

@@ -34,7 +34,7 @@ namespace Stac.Api.WebApi.ModelBinding.Extensions
             try
             {
                 // Get filter lang from query string
-                FilterLang? filter_lang = StacAccessorsHelpers.LazyEnumParse(typeof(FilterLang), bindingContext.HttpContext.Request.Query["filter-lang"].ToString()) as FilterLang?;
+                Api.Converters.CQL2FilterConverter.FilterLang? filter_lang = StacAccessorsHelpers.LazyEnumParse(typeof(Api.Converters.CQL2FilterConverter.FilterLang), bindingContext.HttpContext.Request.Query["filter-lang"].ToString()) as Api.Converters.CQL2FilterConverter.FilterLang?;
                 var cql2FilterConverter = new CQL2FilterConverter(filter_lang != null ? Enum.Parse<CQL2FilterConverter.FilterLang>(filter_lang.ToString()) : null);
                 CQL2Expression cql2Filter = cql2FilterConverter.ReadJson(new JsonTextReader(new StringReader(value)), typeof(CQL2Expression), null, new JsonSerializer()) as CQL2Expression;
                 bindingContext.Result = ModelBindingResult.Success(cql2Filter);

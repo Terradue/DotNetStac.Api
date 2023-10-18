@@ -23,7 +23,7 @@ namespace Stac.Api.Clients.Extensions.Sort
         {
             var searchBody = (bindingContext.Result.Model as SearchBody);
             // Read the sort parameter from the additional properties
-            searchBody.AdditionalProperties.TryGetValue(ISortParameters.QuerySortKeyName, out var sortValue);
+            searchBody.AdditionalProperties.TryGetValue(DefaultSortBy.QuerySortKeyName, out var sortValue);
             if (sortValue == null)
             {
                 return Task.CompletedTask;
@@ -33,8 +33,8 @@ namespace Stac.Api.Clients.Extensions.Sort
             {
                 var sortValueString = JsonConvert.SerializeObject(sortValue);
                 Sortby sortby = JsonConvert.DeserializeObject<Sortby>(sortValueString);
-                searchBody.AdditionalProperties.Remove(ISortParameters.QuerySortKeyName);
-                searchBody.AdditionalProperties.Add(ISortParameters.QuerySortKeyName, sortby);
+                searchBody.AdditionalProperties.Remove(DefaultSortBy.QuerySortKeyName);
+                searchBody.AdditionalProperties.Add(DefaultSortBy.QuerySortKeyName, sortby);
             }
             catch (Exception ex)
             {

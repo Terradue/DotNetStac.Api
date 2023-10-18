@@ -62,17 +62,17 @@ namespace Stac.Api.Models.Cql2
 
         public static Expression CQL2BooleanToExpression<TSource>(BooleanExpression booleanExpression, ParameterExpression itemParameter, ParameterExpression providerParameter) where TSource : IStacObject
         {
-            AndOrExpression andOrExpression = booleanExpression.AndOrExpression();
+            AndOrExpression andOrExpression = booleanExpression.AsAndOrExpression();
             if (andOrExpression != null)
             {
                 return CQL2AndOrToExpression<TSource>(andOrExpression, itemParameter, providerParameter);
             }
-            NotExpression notExpression = booleanExpression.NotExpression();
+            NotExpression notExpression = booleanExpression.AsNotExpression();
             if (notExpression != null)
             {
                 return CQL2NotToExpression<TSource>(notExpression, itemParameter, providerParameter);
             }
-            ComparisonPredicate comparisonPredicate = booleanExpression.Comparison();
+            ComparisonPredicate comparisonPredicate = booleanExpression.AsComparison();
             if (comparisonPredicate != null)
             {
                 return CQL2ComparisonToExpression<TSource>(comparisonPredicate, itemParameter, providerParameter);
@@ -397,7 +397,7 @@ namespace Stac.Api.Models.Cql2
 
         public static Expression CQL2ToExpression<TSource>(CharExpression charExpression, ParameterExpression item, ParameterExpression providerParameter) where TSource : IStacObject
         {
-            PropertyRef propertyRef = charExpression.Property();
+            PropertyRef propertyRef = charExpression.AsPropertyRef();
             if (propertyRef != null)
             {
                 var method = typeof(IStacQueryProvider).GetMethod("GetStacObjectProperty").MakeGenericMethod(typeof(TSource));
@@ -406,7 +406,7 @@ namespace Stac.Api.Models.Cql2
                                        item, Expression.Constant(propertyRef.Property));
             }
 
-            String str = charExpression.String();
+            String str = charExpression.AsString();
             if (str != null)
             {
                 return Expression.Constant(str.Str, typeof(IComparable));

@@ -9,7 +9,7 @@ namespace Stac.Api.Interfaces
     {
         Task<StacItem> CreateItemAsync(StacItem stacItem, IStacApiContext stacApiContext, CancellationToken cancellationToken);
         Task DeleteItemAsync(string featureId, IStacApiContext stacApiContext, CancellationToken cancellationToken);
-        Task<ActionResult<StacItem>> UpdateItemAsync(StacItem newItem, string featureId, IStacApiContext stacApiContext, CancellationToken cancellationToken);
+        Task<StacItem> UpdateItemAsync(StacItem newItem, string featureId, IStacApiContext stacApiContext, CancellationToken cancellationToken);
         Task<IEnumerable<StacCollection>> RefreshStacCollectionsAsync(IStacApiContext stacApiContext, CancellationToken cancellationToken);
     }
 }

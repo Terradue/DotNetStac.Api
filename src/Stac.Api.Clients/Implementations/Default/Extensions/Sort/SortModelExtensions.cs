@@ -15,7 +15,7 @@ namespace Stac.Api.Clients.Extensions.Sort
     {
         public static SearchBody SortBy(this SearchBody searchBody, Sortby sortby)
         {
-            searchBody.AdditionalProperties.Add(ISortParameters.QuerySortKeyName, sortby);
+            searchBody.AdditionalProperties.Add(DefaultSortBy.QuerySortKeyName, sortby);
             return searchBody;
         }
     }

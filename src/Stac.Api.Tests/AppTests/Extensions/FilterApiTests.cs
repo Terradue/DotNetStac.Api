@@ -63,7 +63,7 @@ namespace Stac.Api.Tests.AppTests
 
             StacFeatureCollection result = await filterClient.GetItemSearchAsync(
                 filter,
-                FilterLang.Cql2Json,
+                Converters.CQL2FilterConverter.FilterLang.Cql2Json,
                 null
             );
 

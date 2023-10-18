@@ -133,15 +133,15 @@ namespace Stac.Api.Tests
             JObject jObject = JObject.Parse(json);
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             Assert.IsType<TemporalPredicate>(cql);
-            Assert.NotNull(cql.Comparison().Temporal());
-            Assert.Equal(TemporalPredicateOp.T_intersects, cql.Comparison().Temporal().Op);
-            Assert.Equal(2, cql.Comparison().Temporal().Args.Count);
+            Assert.NotNull(cql.AsComparison().AsTemporalPredicate());
+            Assert.Equal(TemporalPredicateOp.T_intersects, cql.AsComparison().AsTemporalPredicate().Op);
+            Assert.Equal(2, cql.AsComparison().AsTemporalPredicate().Args.Count);
 
-            Assert.Equal("datetime", cql.Comparison().Temporal().Args[0].Property().Property);
+            Assert.Equal("datetime", cql.AsComparison().AsTemporalPredicate().Args[0].AsPropertyRef().Property);
             var date1 = DateTimeOffset.Parse("2020-11-11T00:00:00Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
             var date2 = DateTimeOffset.Parse("2020-11-12T00:00:00Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
             Itenso.TimePeriod.TimeInterval interval = new Itenso.TimePeriod.TimeInterval(date1.Date, date2.Date);
-            Assert.Equal(interval, cql.Comparison().Temporal().Args[1].TemporalLiteral().IntervalLiteral().TimeInterval);
+            Assert.Equal(interval, cql.AsComparison().AsTemporalPredicate().Args[1].AsTemporalLiteral().AsIntervalLiteral().TimeInterval);
 
             json = GetJson("CQL2", "SampleItem", "CQL2Tests");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
@@ -161,12 +161,12 @@ namespace Stac.Api.Tests
             JObject jObject = JObject.Parse(json);
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             Assert.IsType<SpatialPredicate>(cql);
-            Assert.NotNull(cql.Comparison().Spatial());
-            Assert.Equal(SpatialPredicateOp.S_intersects, cql.Comparison().Spatial().Op);
-            Assert.Equal(2, cql.Comparison().Spatial().Args.Count);
+            Assert.NotNull(cql.AsComparison().AsSpatialPredicate());
+            Assert.Equal(SpatialPredicateOp.S_intersects, cql.AsComparison().AsSpatialPredicate().Op);
+            Assert.Equal(2, cql.AsComparison().AsSpatialPredicate().Args.Count);
 
-            Assert.Equal("geometry", cql.Comparison().Spatial().Args[0].Property().Property);
-            Assert.IsType<Polygon>(cql.Comparison().Spatial().Args[1].SpatialLiteral().GeometryLiteral().GeometryObject);
+            Assert.Equal("geometry", cql.AsComparison().AsSpatialPredicate().Args[0].AsPropertyRef().Property);
+            Assert.IsType<Polygon>(cql.AsComparison().AsSpatialPredicate().Args[1].AsSpatialLiteral().AsGeometryLiteral().GeometryObject);
 
             json = GetJson("CQL2", "SampleItem", "CQL2Tests");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
@@ -186,17 +186,17 @@ namespace Stac.Api.Tests
             JObject jObject = JObject.Parse(json);
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             Assert.IsType<AndOrExpression>(cql);
-            Assert.NotNull(cql.AndOrExpression());
-            Assert.Equal(AndOrExpressionOp.Or, cql.AndOrExpression().Op);
-            Assert.Equal(2, cql.AndOrExpression().Args.Count);
+            Assert.NotNull(cql.AsAndOrExpression());
+            Assert.Equal(AndOrExpressionOp.Or, cql.AsAndOrExpression().Op);
+            Assert.Equal(2, cql.AsAndOrExpression().Args.Count);
 
-            Assert.Equal(SpatialPredicateOp.S_intersects, cql.AndOrExpression().Args[0].Comparison().Spatial().Op);
-            Assert.Equal("geometry", cql.AndOrExpression().Args[0].Comparison().Spatial().Args[0].Property().Property);
-            Assert.IsType<Polygon>(cql.AndOrExpression().Args[0].Comparison().Spatial().Args[1].SpatialLiteral().GeometryLiteral().GeometryObject);
+            Assert.Equal(SpatialPredicateOp.S_intersects, cql.AsAndOrExpression().Args[0].AsComparison().AsSpatialPredicate().Op);
+            Assert.Equal("geometry", cql.AsAndOrExpression().Args[0].AsComparison().AsSpatialPredicate().Args[0].AsPropertyRef().Property);
+            Assert.IsType<Polygon>(cql.AsAndOrExpression().Args[0].AsComparison().AsSpatialPredicate().Args[1].AsSpatialLiteral().AsGeometryLiteral().GeometryObject);
 
-            Assert.Equal(SpatialPredicateOp.S_intersects, cql.AndOrExpression().Args[1].Comparison().Spatial().Op);
-            Assert.Equal("geometry", cql.AndOrExpression().Args[1].Comparison().Spatial().Args[0].Property().Property);
-            Assert.IsType<Polygon>(cql.AndOrExpression().Args[1].Comparison().Spatial().Args[1].SpatialLiteral().GeometryLiteral().GeometryObject);
+            Assert.Equal(SpatialPredicateOp.S_intersects, cql.AsAndOrExpression().Args[1].AsComparison().AsSpatialPredicate().Op);
+            Assert.Equal("geometry", cql.AsAndOrExpression().Args[1].AsComparison().AsSpatialPredicate().Args[0].AsPropertyRef().Property);
+            Assert.IsType<Polygon>(cql.AsAndOrExpression().Args[1].AsComparison().AsSpatialPredicate().Args[1].AsSpatialLiteral().AsGeometryLiteral().GeometryObject);
 
             json = GetJson("CQL2", "SampleItem", "CQL2Tests");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
@@ -216,23 +216,23 @@ namespace Stac.Api.Tests
             JObject jObject = JObject.Parse(json);
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             Assert.IsType<AndOrExpression>(cql);
-            Assert.NotNull(cql.AndOrExpression());
-            Assert.Equal(AndOrExpressionOp.Or, cql.AndOrExpression().Op);
-            Assert.Equal(3, cql.AndOrExpression().Args.Count);
+            Assert.NotNull(cql.AsAndOrExpression());
+            Assert.Equal(AndOrExpressionOp.Or, cql.AsAndOrExpression().Op);
+            Assert.Equal(3, cql.AsAndOrExpression().Args.Count);
 
-            Assert.Equal(ComparisonPredicateOp.Gt, cql.AndOrExpression().Args[0].Comparison().Binary().Op);
-            Assert.Equal("sentinel:data_coverage", cql.AndOrExpression().Args[0].Comparison().Binary().Args[0].Char().Property().Property);
-            Assert.Equal(50, cql.AndOrExpression().Args[0].Comparison().Binary().Args[1].Numeric().AsNumber().Num);
+            Assert.Equal(ComparisonPredicateOp.Gt, cql.AsAndOrExpression().Args[0].AsComparison().AsBinaryComparison().Op);
+            Assert.Equal("sentinel:data_coverage", cql.AsAndOrExpression().Args[0].AsComparison().AsBinaryComparison().Args[0].AsChar().AsPropertyRef().Property);
+            Assert.Equal(50, cql.AsAndOrExpression().Args[0].AsComparison().AsBinaryComparison().Args[1].AsNumericExpression().AsNumber().Num);
 
-            Assert.Equal(ComparisonPredicateOp.Lt, cql.AndOrExpression().Args[1].Comparison().Binary().Op);
-            Assert.Equal("landsat:coverage_percent", cql.AndOrExpression().Args[1].Comparison().Binary().Args[0].Char().Property().Property);
-            Assert.Equal(10, cql.AndOrExpression().Args[1].Comparison().Binary().Args[1].Numeric().AsNumber().Num);
+            Assert.Equal(ComparisonPredicateOp.Lt, cql.AsAndOrExpression().Args[1].AsComparison().AsBinaryComparison().Op);
+            Assert.Equal("landsat:coverage_percent", cql.AsAndOrExpression().Args[1].AsComparison().AsBinaryComparison().Args[0].AsChar().AsPropertyRef().Property);
+            Assert.Equal(10, cql.AsAndOrExpression().Args[1].AsComparison().AsBinaryComparison().Args[1].AsNumericExpression().AsNumber().Num);
 
-            Assert.Equal(AndOrExpressionOp.And, cql.AndOrExpression().Args[2].AndOrExpression().Op);
-            Assert.IsType<IsNullPredicate>(cql.AndOrExpression().Args[2].AndOrExpression().Args[0]);
-            Assert.IsType<IsNullPredicate>(cql.AndOrExpression().Args[2].AndOrExpression().Args[1]);
-            Assert.Equal("sentinel:data_coverage", cql.AndOrExpression().Args[2].AndOrExpression().Args[0].Comparison().IsNull().Args.Char().Property().Property);
-            Assert.Equal("landsat:coverage_percent", cql.AndOrExpression().Args[2].AndOrExpression().Args[1].Comparison().IsNull().Args.Char().Property().Property);
+            Assert.Equal(AndOrExpressionOp.And, cql.AsAndOrExpression().Args[2].AsAndOrExpression().Op);
+            Assert.IsType<IsNullPredicate>(cql.AsAndOrExpression().Args[2].AsAndOrExpression().Args[0]);
+            Assert.IsType<IsNullPredicate>(cql.AsAndOrExpression().Args[2].AsAndOrExpression().Args[1]);
+            Assert.Equal("sentinel:data_coverage", cql.AsAndOrExpression().Args[2].AsAndOrExpression().Args[0].AsComparison().AsIsNullPredicate().Args.AsChar().AsPropertyRef().Property);
+            Assert.Equal("landsat:coverage_percent", cql.AsAndOrExpression().Args[2].AsAndOrExpression().Args[1].AsComparison().AsIsNullPredicate().Args.AsChar().AsPropertyRef().Property);
 
             json = GetJson("CQL2", "SampleItem", "CQL2Tests");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
@@ -252,13 +252,13 @@ namespace Stac.Api.Tests
             JObject jObject = JObject.Parse(json);
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             Assert.IsType<IsBetweenPredicate>(cql);
-            Assert.NotNull(cql.Comparison().IsBetweenPredicate());
-            Assert.Equal(IsBetweenPredicateOp.Between, cql.Comparison().IsBetweenPredicate().Op);
-            Assert.Equal(3, cql.Comparison().IsBetweenPredicate().Args.Count);
+            Assert.NotNull(cql.AsComparison().AsIsBetweenPredicate());
+            Assert.Equal(IsBetweenPredicateOp.Between, cql.AsComparison().AsIsBetweenPredicate().Op);
+            Assert.Equal(3, cql.AsComparison().AsIsBetweenPredicate().Args.Count);
 
-            Assert.Equal("eo:cloud_cover", cql.Comparison().IsBetweenPredicate().Args[0].Char().Property().Property);
-            Assert.Equal((double)0, cql.Comparison().IsBetweenPredicate().Args[1].Numeric().Value);
-            Assert.Equal((double)50, cql.Comparison().IsBetweenPredicate().Args[2].Numeric().Value);
+            Assert.Equal("eo:cloud_cover", cql.AsComparison().AsIsBetweenPredicate().Args[0].AsChar().AsPropertyRef().Property);
+            Assert.Equal((double)0, cql.AsComparison().AsIsBetweenPredicate().Args[1].AsNumeric().Value);
+            Assert.Equal((double)50, cql.AsComparison().AsIsBetweenPredicate().Args[2].AsNumeric().Value);
 
             json = GetJson("CQL2", "SampleItem", "CQL2Tests");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
@@ -278,13 +278,13 @@ namespace Stac.Api.Tests
             JObject jObject = JObject.Parse(json);
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             Assert.IsType<IsLikePredicate>(cql);
-            Assert.NotNull(cql.Comparison().IsLike());
-            Assert.Equal(IsLikePredicateOp.Like, cql.Comparison().IsLike().Op);
-            Assert.Equal(2, cql.Comparison().IsLike().Args.Count);
+            Assert.NotNull(cql.AsComparison().AsIsLike());
+            Assert.Equal(IsLikePredicateOp.Like, cql.AsComparison().AsIsLike().Op);
+            Assert.Equal(2, cql.AsComparison().AsIsLike().Args.Count);
 
-            Assert.Equal("mission", cql.Comparison().IsLike().Args[0].Property().Property);
-            Assert.IsType<Models.Cql2.String>(cql.Comparison().IsLike().Args[1]);
-            Assert.Equal("sentinel%", cql.Comparison().IsLike().Args[1].ToString());
+            Assert.Equal("mission", cql.AsComparison().AsIsLike().Args[0].AsPropertyRef().Property);
+            Assert.IsType<Models.Cql2.String>(cql.AsComparison().AsIsLike().Args[1]);
+            Assert.Equal("sentinel%", cql.AsComparison().AsIsLike().Args[1].ToString());
 
             json = GetJson("CQL2", "SampleItem", "CQL2Tests");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);

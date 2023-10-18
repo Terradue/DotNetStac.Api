@@ -41,7 +41,7 @@ namespace Stac.Api.WebApi.Implementations.Default.ItemSearch
             stacApiContext.SetCollections(collections.ToList());
 
             // Set the Limit as a Pagination Parameter
-            stacApiContext.Properties.Add(IPaginationParameters.PaginationPropertiesKey, new DefaultPaginationParameters() { Limit = limit });
+            stacApiContext.Properties.Add(PaginationExtensions.PaginationPropertiesKey, new DefaultPaginationParameters() { Limit = limit });
 
             IItemsProvider itemsProvider = _dataServicesProvider.GetItemsProvider();
 

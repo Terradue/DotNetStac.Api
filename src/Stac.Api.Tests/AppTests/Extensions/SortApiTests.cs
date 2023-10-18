@@ -65,7 +65,7 @@ namespace Stac.Api.Tests.AppTests
 
             FilterSearchBody body = new FilterSearchBody();
             body.Filter = filter;
-            body.FilterLang = FilterLang.Cql2Json;
+            body.FilterLang = Api.Converters.CQL2FilterConverter.FilterLang.Cql2Json;
             body.AdditionalProperties.Add("sortby", new Sortby(){
                     new SortByItem(){
                         Field = "id",

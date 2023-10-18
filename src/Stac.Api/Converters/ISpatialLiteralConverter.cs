@@ -5,7 +5,7 @@ using Stac.Api.Models.Cql2;
 
 namespace Stac.Api.Converters
 {
-    internal class ISpatialLiteralConverter : JsonConverter
+    internal class SpatialLiteralConverter : JsonConverter
     {
         GeometryStringConverter geometryLiteralConverter = new GeometryStringConverter();
 

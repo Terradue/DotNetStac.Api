@@ -76,7 +76,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Features
             stacApiContext.SetCollections(new List<string>() { collectionId });
 
             // Set the Limit
-            stacApiContext.Properties.Add(IPaginationParameters.PaginationPropertiesKey, new DefaultPaginationParameters() { Limit = limit });
+            stacApiContext.Properties.Add(PaginationExtensions.PaginationPropertiesKey, new DefaultPaginationParameters() { Limit = limit });
 
             // Get the collections provider
             ICollectionsProvider collectionsProvider = dataServicesProvider.GetCollectionsProvider();

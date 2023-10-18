@@ -64,7 +64,7 @@ namespace Stac.Api.Extensions.Sort.Context
             ISortParameters sortParameters = null;
             try
             {
-                sortParameters = stacApiContext.GetProperty<ISortParameters>(ISortParameters.SortingPropertiesKey);
+                sortParameters = stacApiContext.GetProperty<ISortParameters>(DefaultSortBy.SortingPropertiesKey);
             }
             catch (Exception e)
             {
@@ -105,7 +105,7 @@ namespace Stac.Api.Extensions.Sort.Context
                 return null;
             }
             // Find the sort parameter in the query string
-            var sorts = queryString[ISortParameters.QuerySortKeyName];
+            var sorts = queryString[DefaultSortBy.QuerySortKeyName];
             if (!sorts.Any())
             {
                 return null;
@@ -130,14 +130,14 @@ namespace Stac.Api.Extensions.Sort.Context
             // Set the sort parameters in the StacApiContext
             if (sortParameters != null && sortParameters.Any())
             {
-                stacApiContext.SetProperty(ISortParameters.SortingPropertiesKey, sortParameters);
+                stacApiContext.SetProperty(DefaultSortBy.SortingPropertiesKey, sortParameters);
             }
         }
 
         private ISortParameters FindSortParametersInRequestBody(IStacApiRequestBody request)
         {
             // Get the sort parameters from the request body
-            return request?.AdditionalProperties?.GetProperty<ISortParameters>(ISortParameters.QuerySortKeyName);
+            return request?.AdditionalProperties?.GetProperty<ISortParameters>(DefaultSortBy.QuerySortKeyName);
         }
 
         public bool CanHandle<T>() where T : IStacObject
