@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Stac.Api.Services.Queryable;
 
-namespace Stac.Api.Extensions.Sort.Context
+namespace Stac.Api.Models.Extensions.Sort.Context
 {
     public class DefaultSortByItem : ISortByItem
     {

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Stac.Api.Extensions.Sort.Context;
+using Stac.Api.Models.Extensions.Sort.Context;
 using Stac.Api.Services.Queryable;
 
 namespace Stac.Api.Clients.Extensions.Sort

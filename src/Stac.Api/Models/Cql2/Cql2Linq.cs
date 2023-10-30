@@ -9,11 +9,11 @@ using System.Text.RegularExpressions;
 using GeoJSON.Net.Geometry;
 using Itenso.TimePeriod;
 using NetTopologySuite.Geometries;
+using Stac.Api.Extensions;
 using Stac.Api.Interfaces;
 using Stac.Api.Models.Cql2;
 using Stac.Api.Services.Filtering;
 using Stac.Api.Services.Queryable;
-using Stars.Geometry.NTS;
 
 namespace Stac.Api.Models.Cql2
 {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Stac.Api.Extensions.Sort.Context
+namespace Stac.Api.Models.Extensions.Sort.Context
 {
     public interface ISortByItem
     {

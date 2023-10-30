@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeoJSON.Net.Geometry;
 using NetTopologySuite.Geometries;
-using Stars.Geometry.NTS;
 
 namespace Stac.Api.Extensions.Filters
 {

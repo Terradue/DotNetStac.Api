@@ -6,7 +6,7 @@ using Stac.Api.Interfaces;
 namespace Stac.Api.Models.Cql2
 {
     [JsonConverter(typeof(CQL2FilterConverter))]
-    public class CQL2Expression : ISearchFilter, IConvertible
+    public class CQL2Expression : ISearchExpression, IConvertible
     {
         public CQL2Expression(BooleanExpression expression)
         {

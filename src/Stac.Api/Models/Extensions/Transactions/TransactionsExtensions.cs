@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Stac.Api.Models;
 
-namespace Stac.Api.Extensions.Transactions
+namespace Stac.Api.Models.Extensions.Transactions
 {
     public static class TransactionsExtensions
     {

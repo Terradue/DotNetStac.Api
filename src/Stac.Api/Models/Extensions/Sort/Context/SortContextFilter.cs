@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Stac.Api.Interfaces;
 
-namespace Stac.Api.Extensions.Sort.Context
+namespace Stac.Api.Models.Extensions.Sort.Context
 {
     /// <summary>
     /// HTTP Paginator

@@ -38,7 +38,7 @@ namespace Stac.Api.Models.Cql2
         public abstract TemporalPredicate AsTemporalPredicate();
         public abstract ArrayPredicate AsArrayPredicate();
 
-        public CharExpression AsChar()
+        public CharExpression AsCharExpression()
         {
             return null;
         }
@@ -72,6 +72,16 @@ namespace Stac.Api.Models.Cql2
         {
             return null;
         }
+
+        public IScalarExpression AsScalarExpression()
+        {
+            return this;
+        }
+
+        public ScalarExpressionCollection AsScalarExpressionCollection()
+        {
+            return null;
+        }
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -85,7 +95,6 @@ namespace Stac.Api.Models.Cql2
         [Newtonsoft.Json.JsonProperty("args", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
         [System.ComponentModel.DataAnnotations.MinLength(2)]
-        [System.ComponentModel.DataAnnotations.MaxLength(2)]
         public System.Collections.Generic.List<BooleanExpression> Args { get; set; } = new System.Collections.Generic.List<BooleanExpression>();
 
         public override AndOrExpression AsAndOrExpression()
@@ -167,7 +176,7 @@ namespace Stac.Api.Models.Cql2
     public abstract class ComparisonPredicate : BooleanExpression
     {
         public abstract BinaryComparisonPredicate AsBinaryComparison();
-        public abstract IsLikePredicate AsIsLike();
+        public abstract IsLikePredicate AsIsLikePredicate();
         public abstract IsBetweenPredicate AsIsBetweenPredicate();
         public abstract IsInListPredicate AsIsInListPredicate();
         public abstract IsNullPredicate AsIsNullPredicate();
@@ -217,7 +226,7 @@ namespace Stac.Api.Models.Cql2
             return null;
         }
 
-        public override IsLikePredicate AsIsLike()
+        public override IsLikePredicate AsIsLikePredicate()
         {
             return null;
         }
@@ -260,7 +269,7 @@ namespace Stac.Api.Models.Cql2
         public abstract PropertyRef AsPropertyRef();
         public abstract FunctionRef AsFunctionRef();
 
-        public CharExpression AsChar()
+        public CharExpression AsCharExpression()
         {
             return this;
         }
@@ -291,6 +300,16 @@ namespace Stac.Api.Models.Cql2
         }
 
         public IGeomExpression AsGeomExpression()
+        {
+            return null;
+        }
+
+        public IScalarExpression AsScalarExpression()
+        {
+            return this;
+        }
+
+        public ScalarExpressionCollection AsScalarExpressionCollection()
         {
             return null;
         }
@@ -375,6 +394,10 @@ namespace Stac.Api.Models.Cql2
     {
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
 
+        protected InstantLiteral()
+        {
+        }
+
         [Newtonsoft.Json.JsonExtensionData]
         public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
         {
@@ -391,7 +414,7 @@ namespace Stac.Api.Models.Cql2
             return null;
         }
 
-        public CharExpression AsChar()
+        public CharExpression AsCharExpression()
         {
             return null;
         }
@@ -417,6 +440,16 @@ namespace Stac.Api.Models.Cql2
         }
 
         public PropertyRef AsPropertyRef()
+        {
+            return null;
+        }
+
+        public IScalarExpression AsScalarExpression()
+        {
+            return this;
+        }
+
+        public ScalarExpressionCollection AsScalarExpressionCollection()
         {
             return null;
         }
@@ -498,7 +531,7 @@ namespace Stac.Api.Models.Cql2
             return null;
         }
 
-        public override IsLikePredicate AsIsLike()
+        public override IsLikePredicate AsIsLikePredicate()
         {
             return this;
         }
@@ -578,7 +611,7 @@ namespace Stac.Api.Models.Cql2
             return null;
         }
 
-        public override IsLikePredicate AsIsLike()
+        public override IsLikePredicate AsIsLikePredicate()
         {
             return null;
         }
@@ -663,7 +696,7 @@ namespace Stac.Api.Models.Cql2
             return this;
         }
 
-        public override IsLikePredicate AsIsLike()
+        public override IsLikePredicate AsIsLikePredicate()
         {
             return null;
         }
@@ -691,12 +724,17 @@ namespace Stac.Api.Models.Cql2
 
     public class InListOperands : System.Collections.ObjectModel.Collection<IInListOperand>
     {
+        public IInListOperand Left => this[0];
 
+        public IInListOperand Right => this[1];
     }
 
+    [JsonConverter(typeof(IIsInListOperandConverter))]
     public interface IInListOperand
     {
+        IScalarExpression AsScalarExpression();
 
+        ScalarExpressionCollection AsScalarExpressionCollection();
     }
 
     [JsonConverter(typeof(NoConverter))]
@@ -740,7 +778,7 @@ namespace Stac.Api.Models.Cql2
             return null;
         }
 
-        public override IsLikePredicate AsIsLike()
+        public override IsLikePredicate AsIsLikePredicate()
         {
             return null;
         }
@@ -769,7 +807,7 @@ namespace Stac.Api.Models.Cql2
     [JsonConverter(typeof(IIsNullOperandConverter))]
     public interface IIsNullOperand
     {
-        public CharExpression AsChar();
+        public CharExpression AsCharExpression();
         public Number AsNumeric();
         public ITemporalExpression AsTemporalExpression();
         public BooleanExpression AsBooleanExpression();
@@ -820,7 +858,7 @@ namespace Stac.Api.Models.Cql2
             return null;
         }
 
-        public override IsLikePredicate AsIsLike()
+        public override IsLikePredicate AsIsLikePredicate()
         {
             return null;
         }
@@ -902,7 +940,7 @@ namespace Stac.Api.Models.Cql2
             return null;
         }
 
-        public override IsLikePredicate AsIsLike()
+        public override IsLikePredicate AsIsLikePredicate()
         {
             return null;
         }
@@ -1020,7 +1058,7 @@ namespace Stac.Api.Models.Cql2
             return null;
         }
 
-        public CharExpression AsChar()
+        public CharExpression AsCharExpression()
         {
             return new String(Bool.ToString());
         }
@@ -1028,6 +1066,16 @@ namespace Stac.Api.Models.Cql2
         public INumericExpression AsNumericExpression()
         {
             return new Number(Bool ? 1 : 0); 
+        }
+
+        public IScalarExpression AsScalarExpression()
+        {
+            return this;
+        }
+
+        public ScalarExpressionCollection AsScalarExpressionCollection()
+        {
+            return null;
         }
 
         public ITemporalInstantExpression AsTemporalInstant()
@@ -1048,12 +1096,17 @@ namespace Stac.Api.Models.Cql2
 
         public IComparable Value => Num;
 
+        public string ToString()
+        {
+            return Num.ToString();
+        }
+
         public BooleanExpression AsBooleanExpression()
         {
             return null;
         }
 
-        public CharExpression AsChar()
+        public CharExpression AsCharExpression()
         {
             return null;
         }
@@ -1066,6 +1119,16 @@ namespace Stac.Api.Models.Cql2
         public INumericExpression AsNumericExpression()
         {
             return this;
+        }
+
+        public IScalarExpression AsScalarExpression()
+        {
+            return this;
+        }
+
+        public ScalarExpressionCollection AsScalarExpressionCollection()
+        {
+            return null;
         }
 
         public ITemporalExpression AsTemporalExpression()
@@ -1265,7 +1328,7 @@ namespace Stac.Api.Models.Cql2
             return null;
         }
 
-        public CharExpression AsChar()
+        public CharExpression AsCharExpression()
         {
             return null;
         }
@@ -1323,7 +1386,7 @@ namespace Stac.Api.Models.Cql2
             return null;
         }
 
-        public CharExpression AsChar()
+        public CharExpression AsCharExpression()
         {
             return null;
         }
@@ -1366,6 +1429,11 @@ namespace Stac.Api.Models.Cql2
         EnvelopeLiteral ISpatialLiteral.AsEnvelopeLiteral()
         {
             return this;
+        }
+
+        public string ToString()
+        {
+            return $"{Bbox[0]},{Bbox[1]},{Bbox[2]},{Bbox[3]}";
         }
     }
 
@@ -1515,7 +1583,7 @@ namespace Stac.Api.Models.Cql2
             return null;
         }
 
-        public CharExpression AsChar()
+        public CharExpression AsCharExpression()
         {
             return null;
         }
@@ -1614,13 +1682,25 @@ namespace Stac.Api.Models.Cql2
 
     public class ScalarExpressionCollection : System.Collections.ObjectModel.Collection<IScalarExpression>, IInListOperand
     {
+        public ScalarExpressionCollection(IList<IScalarExpression> list) : base(list)
+        {
+        }
 
+        public IScalarExpression AsScalarExpression()
+        {
+            return null;
+        }
+
+        public ScalarExpressionCollection AsScalarExpressionCollection()
+        {
+            return this;
+        }
     }
 
     [JsonConverter(typeof(ScalarExpressionConverter))]
     public interface IScalarExpression : IInListOperand
     {
-        public CharExpression AsChar();
+        public CharExpression AsCharExpression();
         public ITemporalInstantExpression AsTemporalInstant();
         public INumericExpression AsNumericExpression();
         public BooleanExpression AsBooleanExpression();

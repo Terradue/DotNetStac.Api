@@ -1,0 +1,16 @@
+{
+    "filter-lang": "cql2-json",
+    "filter": {
+        "op": "in",
+        "args": [
+            {
+                "property": "keywords"
+            },
+            [
+                "fire",
+                "forest",
+                "wildfire"
+            ]
+        ]
+    }
+}

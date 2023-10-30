@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Stac.Api.Extensions.Sort.Context
+namespace Stac.Api.Models.Extensions.Sort.Context
 {
     public class DefaultSortBy : List<ISortByItem>, ISortParameters
     {

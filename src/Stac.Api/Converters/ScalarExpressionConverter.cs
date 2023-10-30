@@ -53,7 +53,33 @@ namespace Stac.Api.Converters
             throw new JsonSerializationException($"Could not convert {reader.Value} to ScalarExpression"); 
         }
 
-        private IScalarExpression ReadJObject(JObject jo, Type objectType, object existingValue, JsonSerializer serializer)
+        public object ReadJToken(JToken jt, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            if ( jt.Type == JTokenType.Object)
+                return ReadJObject((JObject)jt, objectType, existingValue, serializer);
+
+            try
+            {
+                return new Number(jt.Value<double>());
+            }
+            catch { }
+
+            try
+            {
+                return new BoolExpression(jt.Value<bool>());
+            }
+            catch { }
+            
+            try
+            {
+                return new Models.Cql2.String(jt.Value<string>());
+            }
+            catch { }
+
+            throw new JsonSerializationException($"Could not convert {jt.ToString()} to ScalarExpression"); 
+        }
+
+        public IScalarExpression ReadJObject(JObject jo, Type objectType, object existingValue, JsonSerializer serializer)
         {
             // numeric
             try

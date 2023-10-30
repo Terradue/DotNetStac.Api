@@ -1,4 +1,4 @@
-namespace Stac.Api.Extensions.Sort.Context
+namespace Stac.Api.Models.Extensions.Sort.Context
 {
     public enum SortDirection
     {

@@ -3,7 +3,7 @@ using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NJsonSchema;
-using Stac.Api.Extensions.Transactions;
+using Stac.Api.Models.Extensions.Transactions;
 using Stac.Api.Interfaces;
 using Stac.Api.Models;
 using Stac.Api.WebApi.Controllers.Collections;

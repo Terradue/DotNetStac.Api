@@ -145,7 +145,7 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
 
 
 
-        private void SetQueryParametersInContext(IStacApiContext stacApiContext, ISearchFilter filter)
+        private void SetQueryParametersInContext(IStacApiContext stacApiContext, ISearchExpression filter)
         {
             DefaultQueryParameters queryParameters = new DefaultQueryParameters();
             if (filter != null)

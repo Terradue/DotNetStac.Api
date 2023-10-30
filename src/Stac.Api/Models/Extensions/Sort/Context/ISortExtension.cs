@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Stac.Api.Interfaces;
 
-namespace Stac.Api.Extensions.Sort.Context
+namespace Stac.Api.Models.Extensions.Sort.Context
 {
     public interface ISortExtension
     {

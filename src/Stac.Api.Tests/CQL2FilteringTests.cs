@@ -221,18 +221,18 @@ namespace Stac.Api.Tests
             Assert.Equal(3, cql.AsAndOrExpression().Args.Count);
 
             Assert.Equal(ComparisonPredicateOp.Gt, cql.AsAndOrExpression().Args[0].AsComparison().AsBinaryComparison().Op);
-            Assert.Equal("sentinel:data_coverage", cql.AsAndOrExpression().Args[0].AsComparison().AsBinaryComparison().Args[0].AsChar().AsPropertyRef().Property);
+            Assert.Equal("sentinel:data_coverage", cql.AsAndOrExpression().Args[0].AsComparison().AsBinaryComparison().Args[0].AsCharExpression().AsPropertyRef().Property);
             Assert.Equal(50, cql.AsAndOrExpression().Args[0].AsComparison().AsBinaryComparison().Args[1].AsNumericExpression().AsNumber().Num);
 
             Assert.Equal(ComparisonPredicateOp.Lt, cql.AsAndOrExpression().Args[1].AsComparison().AsBinaryComparison().Op);
-            Assert.Equal("landsat:coverage_percent", cql.AsAndOrExpression().Args[1].AsComparison().AsBinaryComparison().Args[0].AsChar().AsPropertyRef().Property);
+            Assert.Equal("landsat:coverage_percent", cql.AsAndOrExpression().Args[1].AsComparison().AsBinaryComparison().Args[0].AsCharExpression().AsPropertyRef().Property);
             Assert.Equal(10, cql.AsAndOrExpression().Args[1].AsComparison().AsBinaryComparison().Args[1].AsNumericExpression().AsNumber().Num);
 
             Assert.Equal(AndOrExpressionOp.And, cql.AsAndOrExpression().Args[2].AsAndOrExpression().Op);
             Assert.IsType<IsNullPredicate>(cql.AsAndOrExpression().Args[2].AsAndOrExpression().Args[0]);
             Assert.IsType<IsNullPredicate>(cql.AsAndOrExpression().Args[2].AsAndOrExpression().Args[1]);
-            Assert.Equal("sentinel:data_coverage", cql.AsAndOrExpression().Args[2].AsAndOrExpression().Args[0].AsComparison().AsIsNullPredicate().Args.AsChar().AsPropertyRef().Property);
-            Assert.Equal("landsat:coverage_percent", cql.AsAndOrExpression().Args[2].AsAndOrExpression().Args[1].AsComparison().AsIsNullPredicate().Args.AsChar().AsPropertyRef().Property);
+            Assert.Equal("sentinel:data_coverage", cql.AsAndOrExpression().Args[2].AsAndOrExpression().Args[0].AsComparison().AsIsNullPredicate().Args.AsCharExpression().AsPropertyRef().Property);
+            Assert.Equal("landsat:coverage_percent", cql.AsAndOrExpression().Args[2].AsAndOrExpression().Args[1].AsComparison().AsIsNullPredicate().Args.AsCharExpression().AsPropertyRef().Property);
 
             json = GetJson("CQL2", "SampleItem", "CQL2Tests");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
@@ -256,7 +256,7 @@ namespace Stac.Api.Tests
             Assert.Equal(IsBetweenPredicateOp.Between, cql.AsComparison().AsIsBetweenPredicate().Op);
             Assert.Equal(3, cql.AsComparison().AsIsBetweenPredicate().Args.Count);
 
-            Assert.Equal("eo:cloud_cover", cql.AsComparison().AsIsBetweenPredicate().Args[0].AsChar().AsPropertyRef().Property);
+            Assert.Equal("eo:cloud_cover", cql.AsComparison().AsIsBetweenPredicate().Args[0].AsCharExpression().AsPropertyRef().Property);
             Assert.Equal((double)0, cql.AsComparison().AsIsBetweenPredicate().Args[1].AsNumeric().Value);
             Assert.Equal((double)50, cql.AsComparison().AsIsBetweenPredicate().Args[2].AsNumeric().Value);
 
@@ -278,13 +278,13 @@ namespace Stac.Api.Tests
             JObject jObject = JObject.Parse(json);
             var cql = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
             Assert.IsType<IsLikePredicate>(cql);
-            Assert.NotNull(cql.AsComparison().AsIsLike());
-            Assert.Equal(IsLikePredicateOp.Like, cql.AsComparison().AsIsLike().Op);
-            Assert.Equal(2, cql.AsComparison().AsIsLike().Args.Count);
+            Assert.NotNull(cql.AsComparison().AsIsLikePredicate());
+            Assert.Equal(IsLikePredicateOp.Like, cql.AsComparison().AsIsLikePredicate().Op);
+            Assert.Equal(2, cql.AsComparison().AsIsLikePredicate().Args.Count);
 
-            Assert.Equal("mission", cql.AsComparison().AsIsLike().Args[0].AsPropertyRef().Property);
-            Assert.IsType<Models.Cql2.String>(cql.AsComparison().AsIsLike().Args[1]);
-            Assert.Equal("sentinel%", cql.AsComparison().AsIsLike().Args[1].ToString());
+            Assert.Equal("mission", cql.AsComparison().AsIsLikePredicate().Args[0].AsPropertyRef().Property);
+            Assert.IsType<Models.Cql2.String>(cql.AsComparison().AsIsLikePredicate().Args[1]);
+            Assert.Equal("sentinel%", cql.AsComparison().AsIsLikePredicate().Args[1].ToString());
 
             json = GetJson("CQL2", "SampleItem", "CQL2Tests");
             StacItem item = JsonConvert.DeserializeObject<StacItem>(json);
