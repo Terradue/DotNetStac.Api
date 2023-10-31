@@ -405,7 +405,7 @@ namespace Stac.Api.Models.Cql2
             set { _additionalProperties = value; }
         }
 
-        public abstract DateTimeOffset DateTime { get; }
+        public abstract DateTimeOffset DateTime { get; set; }
 
         public IComparable Value => DateTime;
 
@@ -1465,9 +1465,7 @@ namespace Stac.Api.Models.Cql2
     {
         [Newtonsoft.Json.JsonProperty("date", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.DateTimeOffset Date { get; set; }
-
-        public override DateTimeOffset DateTime => Date;
+        public override DateTimeOffset DateTime { get; set; }
     }
 
     [JsonConverter(typeof(DateStringConverter))]
@@ -1498,9 +1496,7 @@ namespace Stac.Api.Models.Cql2
     {
         [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public TimestampString Timestamp { get; set; }
-
-        public override DateTimeOffset DateTime => Timestamp.Timestamp;
+        public override DateTimeOffset DateTime { get; set; }
     }
 
     [JsonConverter(typeof(TimestampStringConverter))]
