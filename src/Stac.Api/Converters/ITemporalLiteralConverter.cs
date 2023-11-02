@@ -28,7 +28,7 @@ namespace Stac.Api.Converters
 
         internal ITemporalLiteral ReadJObject(JObject jo, Type type, object existingValue, JsonSerializer serializer)
         {
-            // envelope
+            // interval
             if (jo.ContainsKey("interval"))
             {
                 return jo.ToObject<IntervalLiteral>(serializer);

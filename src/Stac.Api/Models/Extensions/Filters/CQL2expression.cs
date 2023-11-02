@@ -15,6 +15,8 @@ namespace Stac.Api.Models.Cql2
 
         public BooleanExpression Expression { get; }
 
+        public FilterLang FilterLang { get; set; }
+
         public TypeCode GetTypeCode()
         {
             return TypeCode.Object;
@@ -82,9 +84,9 @@ namespace Stac.Api.Models.Cql2
 
         public object ToType(Type conversionType, IFormatProvider provider)
         {
-            if ( conversionType == typeof(string) )
+            if ( FilterLang == FilterLang.Cql2Json && conversionType == typeof(BooleanExpression) )
             {
-                return Expression.ToString();
+                return Expression;
             }
             else
             {

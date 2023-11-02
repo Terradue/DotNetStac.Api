@@ -18,7 +18,7 @@ namespace Stac.Api.WebApi.Controllers.ItemSearch
             }
             else if (actionName == "PostItemSearch")
             {
-                return new { intersebodycts = default(SearchBody) };
+                return new { body = default(SearchBody) };
             }
 
             return null;

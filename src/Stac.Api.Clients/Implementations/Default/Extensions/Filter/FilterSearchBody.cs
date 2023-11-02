@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Stac.Api.Clients.Converters;
 using Stac.Api.Clients.ItemSearch;
+using Stac.Api.Interfaces;
 
 namespace Stac.Api.Clients.Extensions.Filter
 {
     [JsonConverter(typeof(FilterSearchBodyConverter))]
-    public partial class FilterSearchBody
+    public partial class FilterSearchBody : ISearchExpression
     {
         public FilterSearchBody() { }
 

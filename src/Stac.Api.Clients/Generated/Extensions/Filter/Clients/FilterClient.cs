@@ -6,7 +6,6 @@
 
 using Stac;
 using Stac.Common;
-using Stac.Api.Converters;
 using Stac.Api.Models;
 using Stac.Api.Interfaces;
 
@@ -21,7 +20,6 @@ using Stac.Api.Interfaces;
 
 namespace Stac.Api.Clients.Extensions.Filter
 {
-    
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -240,7 +238,7 @@ namespace Stac.Api.Clients.Extensions.Filter
         /// <br/>is 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.</param>
         /// <returns>A feature collection.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(Models.Cql2.CQL2Expression filter, CQL2FilterConverter.FilterLang? filter_lang, System.Uri filter_crs)
+        public virtual System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(Api.Interfaces.IFilterExpression filter, Api.Models.Cql2.FilterLang? filter_lang, System.Uri filter_crs)
         {
             return GetItemSearchAsync(filter, filter_lang, filter_crs, System.Threading.CancellationToken.None);
         }
@@ -261,7 +259,7 @@ namespace Stac.Api.Clients.Extensions.Filter
         /// <br/>is 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.</param>
         /// <returns>A feature collection.</returns>
         /// <exception cref="StacApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(Models.Cql2.CQL2Expression filter, CQL2FilterConverter.FilterLang? filter_lang, System.Uri filter_crs, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<StacFeatureCollection> GetItemSearchAsync(Api.Interfaces.IFilterExpression filter, Api.Models.Cql2.FilterLang? filter_lang, System.Uri filter_crs, System.Threading.CancellationToken cancellationToken)
         {
             if (filter == null)
                 throw new System.ArgumentNullException("filter");
@@ -573,11 +571,11 @@ namespace Stac.Api.Clients.Extensions.Filter
     public partial class FilterSearchBody : Stac.Api.Clients.ItemSearch.SearchBody
     {
         [Newtonsoft.Json.JsonProperty("filter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Models.Cql2.CQL2Expression Filter { get; set; }
+        public Api.Interfaces.IFilterExpression Filter { get; set; }
 
         [Newtonsoft.Json.JsonProperty("filter-lang", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public CQL2FilterConverter.FilterLang FilterLang { get; set; }
+        public Api.Models.Cql2.FilterLang FilterLang { get; set; }
 
         [Newtonsoft.Json.JsonProperty("filter-crs", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Uri FilterCrs { get; set; }

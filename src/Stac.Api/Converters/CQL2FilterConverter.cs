@@ -10,20 +10,9 @@ namespace Stac.Api.Converters
     public class CQL2FilterConverter : JsonConverter
     {
         ComparisonPredicateConverter comparisonPredicateConverter = new ComparisonPredicateConverter();
-        private FilterLang? _filter_Lang;
 
         public CQL2FilterConverter()
         {
-        }
-
-        public CQL2FilterConverter(FilterLang value)
-        {
-            _filter_Lang = value;
-        }
-
-        public CQL2FilterConverter(FilterLang? filter_lang)
-        {
-            _filter_Lang = filter_lang;
         }
 
         public override bool CanConvert(Type objectType)
@@ -40,7 +29,13 @@ namespace Stac.Api.Converters
 
         public CQL2Expression ReadJObject(JObject jo, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var booleanExpression = CreateFilter(_filter_Lang, jo);
+            // find the filter-lang. Default to cql2-text
+            FilterLang? filter_Lang = FilterLang.Cql2Text;
+            if (jo.ContainsKey("filter-lang"))
+            {
+                filter_Lang = StacAccessorsHelpers.LazyEnumParse(typeof(FilterLang), jo["filter-lang"].ToString()) as FilterLang?;
+            }
+            var booleanExpression = CreateFilter(jo["filter"] as JObject, filter_Lang);
             if (booleanExpression == null)
                 return null;
             return new CQL2Expression(booleanExpression);
@@ -56,7 +51,7 @@ namespace Stac.Api.Converters
             writer.WriteEndObject();
         }
 
-        private BooleanExpression CreateFilter(FilterLang? filter_lang, JObject filterParameter)
+        public BooleanExpression CreateFilter(JObject filterParameter, FilterLang? filter_lang = FilterLang.Cql2Text )
         {
             if (filter_lang == null || filter_lang == FilterLang.Cql2Text)
             {
@@ -80,19 +75,10 @@ namespace Stac.Api.Converters
 
         private BooleanExpression CreateCqlFilterFromText(JObject filter)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
-        public enum FilterLang
-        {
-
-            [System.Runtime.Serialization.EnumMember(Value = @"cql2-text")]
-            Cql2Text = 0,
-
-            [System.Runtime.Serialization.EnumMember(Value = @"cql2-json")]
-            Cql2Json = 1,
-
-        }
+        
     }
 
 

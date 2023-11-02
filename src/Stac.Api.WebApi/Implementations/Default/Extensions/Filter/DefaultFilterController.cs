@@ -41,8 +41,14 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
 
         }
 
-        public async Task<ActionResult<StacFeatureCollection>> GetItemSearchAsync(CQL2Expression filter, Api.Converters.CQL2FilterConverter.FilterLang? filter_lang, Uri filter_crs, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<StacFeatureCollection>> GetItemSearchAsync(IFilterExpression filter, Api.Models.Cql2.FilterLang? filter_lang, Uri filter_crs, CancellationToken cancellationToken = default)
         {
+            // Only Support BooleanExpression
+            if (!(filter is BooleanExpression))
+                throw new NotImplementedException();
+
+            BooleanExpression be = filter as BooleanExpression;
+
             // Create the context
             IStacApiContext stacApiContext = _stacApiContextFactory.Create();
 
@@ -55,13 +61,13 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
             var items = await itemsProvider.GetItemsAsync(stacApiContext, cancellationToken);
 
             // Apply the filter
-            items = items.Boolean<StacItem>(filter.Expression);
+            items = items.Boolean<StacItem>(be);
 
             // Log the filter expression
             stacApiContext.Properties.SetProperty(DefaultConventions.DebugExpressionTreePropertiesKey, items.AsQueryable().Expression.ToString());
 
             // Save the query parameters in the context
-            SetQueryParametersInContext(stacApiContext, filter);
+            SetQueryParametersInContext(stacApiContext, new CQL2Expression(be));
 
             // Apply Context Post Query Filters
             items = _stacApiContextFactory.ApplyContextPostQueryFilters<StacItem>(stacApiContext, itemsProvider, items);
@@ -106,6 +112,12 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
                 return await _itemSearchController.PostItemSearchAsync(body, cancellationToken);
             }
 
+            // Only Support BooleanExpression
+            if (!(body.Filter is BooleanExpression))
+                throw new NotImplementedException();
+
+            BooleanExpression be = body.Filter as BooleanExpression;
+
             // Create the context
             IStacApiContext stacApiContext = _stacApiContextFactory.Create();
 
@@ -118,13 +130,13 @@ namespace Stac.Api.WebApi.Implementations.Default.Extensions.Filter
             var items = await itemsProvider.GetItemsAsync(stacApiContext, cancellationToken);
 
             // Apply the filter
-            items = items.Boolean<StacItem>(body.Filter.Expression);
+            items = items.Boolean<StacItem>(be);
 
             // Log the filter expression
             stacApiContext.Properties.SetProperty(DefaultConventions.DebugExpressionTreePropertiesKey, items.AsQueryable().Expression.ToString());
 
             // Save the query parameters in the context
-            SetQueryParametersInContext(stacApiContext, body.Filter);
+            SetQueryParametersInContext(stacApiContext, body);
 
             // Apply Context Post Query Filters
             items = _stacApiContextFactory.ApplyContextPostQueryFilters<StacItem>(stacApiContext, itemsProvider, items);

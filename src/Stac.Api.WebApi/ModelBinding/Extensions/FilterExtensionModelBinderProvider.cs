@@ -2,6 +2,7 @@ using System.Reflection;
 using GeoJSON.Net.Geometry;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Stac.Api.Clients.Extensions.Filter;
+using Stac.Api.Interfaces;
 using Stac.Api.Models.Core;
 using Stac.Api.Models.Cql2;
 
@@ -15,7 +16,7 @@ namespace Stac.Api.WebApi.ModelBinding.Extensions
         public IModelBinder? GetBinder(ModelBinderProviderContext context)
         {
             // CQL2 BooleanExpression model binding
-            if (context.Metadata.ModelType == typeof(CQL2Expression))
+            if (context.Metadata.ModelType == typeof(IFilterExpression))
             {
                 return new CQL2FilterModelBinder();
             }

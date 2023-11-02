@@ -59,11 +59,10 @@ namespace Stac.Api.Tests.AppTests
             spatialFilter.Op = SpatialPredicateOp.S_intersects;
             spatialFilter.Args.Add(new PropertyRef("geometry"));
             spatialFilter.Args.Add(new GeometryLiteral(polygon));
-            CQL2Expression filter = new CQL2Expression(spatialFilter);
 
             StacFeatureCollection result = await filterClient.GetItemSearchAsync(
-                filter,
-                Converters.CQL2FilterConverter.FilterLang.Cql2Json,
+                spatialFilter,
+                FilterLang.Cql2Json,
                 null
             );
 

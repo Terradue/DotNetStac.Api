@@ -66,7 +66,7 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Filter
 
         /// <returns>A feature collection.</returns>
 
-        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearchAsync(Models.Cql2.CQL2Expression filter, Api.Converters.CQL2FilterConverter.FilterLang? filter_lang, System.Uri filter_crs, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearchAsync(Api.Interfaces.IFilterExpression filter, Api.Models.Cql2.FilterLang? filter_lang, System.Uri filter_crs, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// Search STAC items with full-featured filtering.
@@ -128,7 +128,7 @@ namespace Stac.Api.WebApi.Controllers.Extensions.Filter
         /// <br/>is 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.</param>
         /// <returns>A feature collection.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("search")]
-        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearch([Microsoft.AspNetCore.Mvc.FromQuery] [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] Models.Cql2.CQL2Expression filter, [Microsoft.AspNetCore.Mvc.FromQuery(Name = "filter-lang")] Api.Converters.CQL2FilterConverter.FilterLang? filter_lang, [Microsoft.AspNetCore.Mvc.FromQuery(Name = "filter-crs")] System.Uri filter_crs, System.Threading.CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<StacFeatureCollection>> GetItemSearch([Microsoft.AspNetCore.Mvc.FromQuery] [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] Api.Interfaces.IFilterExpression filter, [Microsoft.AspNetCore.Mvc.FromQuery(Name = "filter-lang")] Api.Models.Cql2.FilterLang? filter_lang, [Microsoft.AspNetCore.Mvc.FromQuery(Name = "filter-crs")] System.Uri filter_crs, System.Threading.CancellationToken cancellationToken)
         {
 
             return _implementation.GetItemSearchAsync(filter, filter_lang, filter_crs, cancellationToken);

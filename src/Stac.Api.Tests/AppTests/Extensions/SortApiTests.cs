@@ -61,11 +61,10 @@ namespace Stac.Api.Tests.AppTests
             spatialFilter.Op = SpatialPredicateOp.S_intersects;
             spatialFilter.Args.Add(new PropertyRef("geometry"));
             spatialFilter.Args.Add(new GeometryLiteral(polygon));
-            CQL2Expression filter = new CQL2Expression(spatialFilter);
 
             FilterSearchBody body = new FilterSearchBody();
-            body.Filter = filter;
-            body.FilterLang = Api.Converters.CQL2FilterConverter.FilterLang.Cql2Json;
+            body.Filter = spatialFilter;
+            body.FilterLang = Api.Models.Cql2.FilterLang.Cql2Json;
             body.AdditionalProperties.Add("sortby", new Sortby(){
                     new SortByItem(){
                         Field = "id",

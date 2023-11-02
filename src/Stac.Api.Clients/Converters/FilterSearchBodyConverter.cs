@@ -34,26 +34,19 @@ namespace Stac.Api.Clients.Converters
             // Read base object SearchBody
             SearchBody searchBody = serializer.Deserialize<SearchBody>(jo.CreateReader());
 
-            Api.Converters.CQL2FilterConverter.FilterLang? filter_lang = null;
+            // If there is no filter-lang nor filter, return the base object
+            if (!jo.ContainsKey("filter-lang") && !jo.ContainsKey("filter"))
+                return new FilterSearchBody(searchBody);
+
             CQL2FilterConverter cql2FilterConverter = new CQL2FilterConverter();
-            if (jo.ContainsKey("filter-lang"))
-            {
-                filter_lang = StacAccessorsHelpers.LazyEnumParse(typeof(Api.Converters.CQL2FilterConverter.FilterLang), jo["filter-lang"].ToString()) as Api.Converters.CQL2FilterConverter.FilterLang?;
-                if (filter_lang != null)
-                {
-                    cql2FilterConverter = new CQL2FilterConverter(filter_lang.Value);
-                }
-                else
-                {
-                    cql2FilterConverter = new CQL2FilterConverter();
-                }
-            }
+            CQL2Expression cQL2Expression = cql2FilterConverter.ReadJObject(jo, typeof(CQL2Expression), existingValue, serializer);
+            
             // Read additional properties
             var additionalProperties = jo.Properties().Where(p => p.Name != "filter" && p.Name != "filter-lang" && p.Name != "filter_crs").ToDictionary(p => p.Name, p => p.Value);
 
             return new FilterSearchBody(searchBody){
-                FilterLang = filter_lang ?? Api.Converters.CQL2FilterConverter.FilterLang.Cql2Text,
-                Filter =  cql2FilterConverter.ReadJObject(jo["filter"] as JObject, typeof(CQL2Expression), existingValue, serializer),
+                FilterLang = cQL2Expression.FilterLang,
+                Filter =  cQL2Expression.Expression,
                 FilterCrs = jo["filter_crs"]?.ToObject<Uri>(),
                 AdditionalProperties = additionalProperties.Select(p => new KeyValuePair<string, object>(p.Key, p.Value.ToObject<object>())).ToDictionary(p => p.Key, p => p.Value)
             };

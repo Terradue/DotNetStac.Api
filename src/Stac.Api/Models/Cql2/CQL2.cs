@@ -13,14 +13,28 @@ namespace Stac.Api.Models.Cql2
     using System.Collections.Generic;
     using GeoJSON.Net;
     using GeoJSON.Net.Geometry;
+    using Itenso.TimePeriod;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
     using Stac;
     using Stac.Api.Converters;
+    using Stac.Api.Interfaces;
     using System = global::System;
 
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum FilterLang
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"cql2-text")]
+        Cql2Text = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"cql2-json")]
+        Cql2Json = 1,
+
+    }
+
     [JsonConverter(typeof(BooleanExpressionConverter))]
-    public abstract partial class BooleanExpression : IIsNullOperand, IScalarExpression
+    public abstract partial class BooleanExpression : IIsNullOperand, IScalarExpression, IFilterExpression
     {
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
@@ -262,6 +276,7 @@ namespace Stac.Api.Models.Cql2
         }
     }
 
+    [JsonConverter(typeof(CharExpressionConverter))]
     public abstract class CharExpression : IScalarExpression, IIsNullOperand
     {
         public abstract CaseiExpression AsCasei();
@@ -489,7 +504,7 @@ namespace Stac.Api.Models.Cql2
         IntervalLiteral AsIntervalLiteral();
     }
 
-    [JsonConverter(typeof(NoConverter))]
+    [JsonConverter(typeof(IsLikePredicateConverter))]
     public class IsLikePredicate : ComparisonPredicate
     {
         [Newtonsoft.Json.JsonProperty("op", Required = Newtonsoft.Json.Required.Always)]
@@ -569,7 +584,7 @@ namespace Stac.Api.Models.Cql2
     {
     }
 
-    [JsonConverter(typeof(NoConverter))]
+    [JsonConverter(typeof(IsBetweenPredicateConverter))]
     public class IsBetweenPredicate : ComparisonPredicate
     {
         [Newtonsoft.Json.JsonProperty("op", Required = Newtonsoft.Json.Required.Always)]
@@ -656,7 +671,7 @@ namespace Stac.Api.Models.Cql2
         public static FunctionRef AsFunctionRef(this INumericExpression expr) => expr as FunctionRef;
     }
 
-    [JsonConverter(typeof(NoConverter))]
+    [JsonConverter(typeof(IsInListPredicateConverter))]
     public class IsInListPredicate : ComparisonPredicate
     {
         [Newtonsoft.Json.JsonProperty("op", Required = Newtonsoft.Json.Required.Always)]
@@ -739,7 +754,7 @@ namespace Stac.Api.Models.Cql2
         ScalarExpressionCollection AsScalarExpressionCollection();
     }
 
-    [JsonConverter(typeof(NoConverter))]
+    [JsonConverter(typeof(IsNullPredicateConverter))]
     public class IsNullPredicate : ComparisonPredicate
     {
         [Newtonsoft.Json.JsonProperty("op", Required = Newtonsoft.Json.Required.Always)]
@@ -816,7 +831,7 @@ namespace Stac.Api.Models.Cql2
         public IGeomExpression AsGeomExpression();
     }
 
-    [JsonConverter(typeof(NoConverter))]
+    [JsonConverter(typeof(SpatialPredicateConverter))]
     public class SpatialPredicate : ComparisonPredicate
     {
         [Newtonsoft.Json.JsonProperty("op", Required = Newtonsoft.Json.Required.Always)]
@@ -898,7 +913,7 @@ namespace Stac.Api.Models.Cql2
         public EnvelopeLiteral AsEnvelopeLiteral();
     }
 
-    [JsonConverter(typeof(NoConverter))]
+    [JsonConverter(typeof(TemporalPredicateConverter))]
     public class TemporalPredicate : ComparisonPredicate
     {
         [Newtonsoft.Json.JsonProperty("op", Required = Newtonsoft.Json.Required.Always)]
@@ -1067,7 +1082,7 @@ namespace Stac.Api.Models.Cql2
 
         public INumericExpression AsNumericExpression()
         {
-            return new Number(Bool ? 1 : 0); 
+            return new Number(Bool ? 1 : 0);
         }
 
         public IScalarExpression AsScalarExpression()
@@ -1149,7 +1164,7 @@ namespace Stac.Api.Models.Cql2
         }
     }
 
-    [JsonConverter(typeof(NoConverter))]
+    [JsonConverter(typeof(PropertyRefConverter))]
     public class PropertyRef : CharExpression, INumericExpression, IIsNullOperand, IGeomExpression, ITemporalExpression
     {
         public PropertyRef()
@@ -1211,7 +1226,6 @@ namespace Stac.Api.Models.Cql2
         }
     }
 
-    [JsonConverter(typeof(NoConverter))]
     public class AccentiExpression : CharExpression, IPatternExpression
     {
         [Newtonsoft.Json.JsonProperty("accenti", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1243,13 +1257,13 @@ namespace Stac.Api.Models.Cql2
         }
     }
 
-    [JsonConverter(typeof(NoConverter))]
     public partial class FunctionRef : CharExpression, INumericExpression, IGeomExpression, ITemporalExpression
     {
         [Newtonsoft.Json.JsonProperty("function", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
         public Function Function { get; set; } = new Function();
 
+        [JsonIgnore]
         public double? Number => null;
 
         public override AccentiExpression AsAccenti()
@@ -1376,7 +1390,6 @@ namespace Stac.Api.Models.Cql2
         }
     }
 
-    [JsonConverter(typeof(NoConverter))]
     public partial class EnvelopeLiteral : ISpatialLiteral
     {
         [Newtonsoft.Json.JsonProperty("bbox", Required = Newtonsoft.Json.Required.Always)]
@@ -1462,7 +1475,6 @@ namespace Stac.Api.Models.Cql2
         }
     }
 
-    [JsonConverter(typeof(NoConverter))]
     public class DateLiteral : InstantLiteral
     {
         [Newtonsoft.Json.JsonProperty("date", Required = Newtonsoft.Json.Required.Always)]
@@ -1493,9 +1505,14 @@ namespace Stac.Api.Models.Cql2
         }
     }
 
-    [JsonConverter(typeof(NoConverter))]
+    [JsonConverter(typeof(TimestampLiteralConverter))]
     public class TimestampLiteral : InstantLiteral
     {
+        public TimestampLiteral(DateTime value)
+        {
+            DateTime = value;
+        }
+
         [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public override DateTimeOffset DateTime { get; set; }
@@ -1530,7 +1547,7 @@ namespace Stac.Api.Models.Cql2
         string ToString();
     }
 
-    [JsonConverter(typeof(NoConverter))]
+    [JsonConverter(typeof(IntervalLiteralConverter))]
     public class IntervalLiteral : ITemporalLiteral
     {
         [Newtonsoft.Json.JsonProperty("interval", Required = Newtonsoft.Json.Required.Always)]
@@ -1540,6 +1557,11 @@ namespace Stac.Api.Models.Cql2
         public IntervalArray Interval { get; set; } = new IntervalArray();
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
+
+        public IntervalLiteral(IntervalArray intervalArray)
+        {
+            Interval = intervalArray;
+        }
 
         [Newtonsoft.Json.JsonExtensionData]
         public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
@@ -1709,6 +1731,7 @@ namespace Stac.Api.Models.Cql2
         public string ToString();
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum IsLikePredicateOp
     {
@@ -1718,6 +1741,7 @@ namespace Stac.Api.Models.Cql2
 
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum IsBetweenPredicateOp
     {
@@ -1727,6 +1751,7 @@ namespace Stac.Api.Models.Cql2
 
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum NumericExpressionOp
     {
@@ -1748,6 +1773,7 @@ namespace Stac.Api.Models.Cql2
 
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum IsInListPredicateOp
     {
@@ -1757,6 +1783,7 @@ namespace Stac.Api.Models.Cql2
 
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum IsNullPredicateOp
     {
@@ -1766,6 +1793,7 @@ namespace Stac.Api.Models.Cql2
 
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum SpatialPredicateOp
     {
@@ -1804,6 +1832,7 @@ namespace Stac.Api.Models.Cql2
         public FunctionRef AsFunctionRef();
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum TemporalPredicateOp
     {

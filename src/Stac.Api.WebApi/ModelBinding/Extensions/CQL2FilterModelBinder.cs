@@ -34,10 +34,10 @@ namespace Stac.Api.WebApi.ModelBinding.Extensions
             try
             {
                 // Get filter lang from query string
-                Api.Converters.CQL2FilterConverter.FilterLang? filter_lang = StacAccessorsHelpers.LazyEnumParse(typeof(Api.Converters.CQL2FilterConverter.FilterLang), bindingContext.HttpContext.Request.Query["filter-lang"].ToString()) as Api.Converters.CQL2FilterConverter.FilterLang?;
-                var cql2FilterConverter = new CQL2FilterConverter(filter_lang != null ? Enum.Parse<CQL2FilterConverter.FilterLang>(filter_lang.ToString()) : null);
-                CQL2Expression cql2Filter = cql2FilterConverter.ReadJson(new JsonTextReader(new StringReader(value)), typeof(CQL2Expression), null, new JsonSerializer()) as CQL2Expression;
-                bindingContext.Result = ModelBindingResult.Success(cql2Filter);
+                Api.Models.Cql2.FilterLang? filter_lang = StacAccessorsHelpers.LazyEnumParse(typeof(Api.Models.Cql2.FilterLang), bindingContext.HttpContext.Request.Query["filter-lang"].ToString()) as Api.Models.Cql2.FilterLang?;
+                var cql2FilterConverter = new CQL2FilterConverter();
+                BooleanExpression be = cql2FilterConverter.CreateFilter(JObject.Parse(value), filter_lang);
+                bindingContext.Result = ModelBindingResult.Success(be);
             }
             catch (Exception ex)
             {

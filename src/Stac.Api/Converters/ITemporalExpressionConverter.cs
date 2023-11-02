@@ -34,7 +34,7 @@ namespace Stac.Api.Converters
                 return jo.ToObject<PropertyRef>(serializer);
             }
             // function ref
-            if ( jo.ContainsKey("name") )
+            if ( jo.ContainsKey("function") )
             {
                 return jo.ToObject<FunctionRef>(serializer);
             }

@@ -310,5 +310,20 @@ namespace Stac.Api.Tests
             var json2 = JsonConvert.SerializeObject(new CQL2Expression(be), _settings);
             JsonAssert.AreEqual(json, json2);
         }
+
+        [Fact]
+        public async Task Example13Test()
+        {
+            var json = GetJson("CQL2", "Example13");
+            JObject jObject = JObject.Parse(json);
+            var be = JsonConvert.DeserializeObject<BooleanExpression>(jObject["filter"].ToString(), _settings);
+            Assert.IsType<SpatialPredicate>(be);
+            Assert.NotNull(be.AsSpatialPredicate());
+            Assert.Equal(SpatialPredicateOp.S_intersects, be.AsSpatialPredicate().Op);
+            Assert.Equal(2, be.AsSpatialPredicate().Args.Count);
+
+            var json2 = JsonConvert.SerializeObject(new CQL2Expression(be), _settings);
+            JsonAssert.AreEqual(json, json2);
+        }
     }
 }

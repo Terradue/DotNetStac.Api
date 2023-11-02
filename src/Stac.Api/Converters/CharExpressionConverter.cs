@@ -15,6 +15,11 @@ namespace Stac.Api.Converters
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             reader.DateParseHandling = DateParseHandling.None;
+            // if the reader is a string, then it's a simple string
+            if ( reader.TokenType == JsonToken.String )
+            {
+                return new Models.Cql2.String(reader.Value.ToString());
+            }
             JObject jo = JObject.Load(reader);
             return ReadJObject(jo, objectType, existingValue, serializer);
         }
