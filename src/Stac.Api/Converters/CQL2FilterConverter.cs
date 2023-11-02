@@ -48,7 +48,12 @@ namespace Stac.Api.Converters
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
+            writer.WriteStartObject();
+            writer.WritePropertyName("filter-lang");
+            writer.WriteValue("cql2-json");
+            writer.WritePropertyName("filter");
             serializer.Serialize(writer, (value as CQL2Expression).Expression);
+            writer.WriteEndObject();
         }
 
         private BooleanExpression CreateFilter(FilterLang? filter_lang, JObject filterParameter)

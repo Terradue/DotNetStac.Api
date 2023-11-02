@@ -20,7 +20,7 @@ namespace Stac.Api.Converters
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteRawValue(((DateString)value).ToString());
+            writer.WriteValue(((DateString)value).ToString());
         }
     }
 }

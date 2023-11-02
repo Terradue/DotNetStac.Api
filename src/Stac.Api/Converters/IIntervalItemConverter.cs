@@ -62,7 +62,7 @@ namespace Stac.Api.Converters
             switch (value)
             {
                 case IInstantString iis:
-                    writer.WriteRawValue(iis.ToString());
+                    writer.WriteValue(iis.DateTime);
                     break;
                 case PropertyRef pr:
                     serializer.Serialize(writer, pr);

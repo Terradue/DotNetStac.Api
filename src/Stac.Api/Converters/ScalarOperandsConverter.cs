@@ -21,7 +21,7 @@ namespace Stac.Api.Converters
                 JArray array = JArray.Load(reader);
                 return new ScalarOperands(array.ToObject<IScalarExpression[]>());
             }
-            catch{}
+            catch { }
 
             throw new JsonSerializationException($"Could not convert {reader.Value} to ScalarOperands");
 
@@ -29,7 +29,13 @@ namespace Stac.Api.Converters
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, value);
+            var operands = (ScalarOperands)value;
+            writer.WriteStartArray();
+            foreach (var operand in operands)
+            {
+                serializer.Serialize(writer, operand);
+            }
+            writer.WriteEndArray();
         }
     }
 

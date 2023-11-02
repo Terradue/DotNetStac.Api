@@ -14,6 +14,7 @@ namespace Stac.Api.Models.Cql2
     using GeoJSON.Net;
     using GeoJSON.Net.Geometry;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
     using Stac;
     using Stac.Api.Converters;
     using System = global::System;
@@ -84,7 +85,7 @@ namespace Stac.Api.Models.Cql2
         }
     }
 
-    [JsonConverter(typeof(NoConverter))]
+    [JsonConverter(typeof(AndOrExpressionConverter))]
     public class AndOrExpression : BooleanExpression
     {
         [Newtonsoft.Json.JsonProperty("op", Required = Newtonsoft.Json.Required.Always)]
@@ -182,7 +183,7 @@ namespace Stac.Api.Models.Cql2
         public abstract IsNullPredicate AsIsNullPredicate();
     }
 
-    [JsonConverter(typeof(NoConverter))]
+    [JsonConverter(typeof(BinaryComparisonPredicateConverter))]
     public class BinaryComparisonPredicate : ComparisonPredicate
     {
         [Newtonsoft.Json.JsonProperty("op", Required = Newtonsoft.Json.Required.Always)]
@@ -407,6 +408,7 @@ namespace Stac.Api.Models.Cql2
 
         public abstract DateTimeOffset DateTime { get; set; }
 
+        [JsonIgnore]
         public IComparable Value => DateTime;
 
         public BooleanExpression AsBooleanExpression()
@@ -1546,6 +1548,7 @@ namespace Stac.Api.Models.Cql2
             set { _additionalProperties = value; }
         }
 
+        [JsonIgnore]
         public Itenso.TimePeriod.ITimeInterval TimeInterval
         {
             get
@@ -1633,6 +1636,7 @@ namespace Stac.Api.Models.Cql2
         }
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum AndOrExpressionOp
     {
 
@@ -1644,6 +1648,7 @@ namespace Stac.Api.Models.Cql2
 
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum NotExpressionOp
     {
 
@@ -1652,6 +1657,7 @@ namespace Stac.Api.Models.Cql2
 
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum ComparisonPredicateOp
     {
