@@ -15,7 +15,7 @@ using Stac.Api.Interfaces;
 using Stac.Api.Models;
 using Stac.Api.Services.Filtering;
 using Stac.Api.Services.Queryable;
-using Stars.Geometry.NTS;
+using Stac.Api.Extensions;
 
 namespace Stac.Api.WebApi.Implementations.Default.Services
 {
